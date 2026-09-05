@@ -1,0 +1,697 @@
+{
+  "components": {
+    "input": "输入",
+    "cache_write": "缓存写入",
+    "cache_write_5min": "缓存写入(5min)",
+    "cache_write_30min": "缓存写入(30min)",
+    "cache_write_1h": "缓存写入(1h)",
+    "cache_hit": "缓存命中",
+    "output": "输出"
+  },
+  "usd_to_cny": 6.66,
+  "subscriptions": {
+    "Claude": {
+      "currency": "USD",
+      "type": "money_quota",
+      "plans": {
+        "Pro": {
+          "fee": 20,
+          "quota_monthly": 165
+        },
+        "Max 5x": {
+          "fee": 100,
+          "quota_monthly": 1375
+        },
+        "Max 20x": {
+          "fee": 200,
+          "quota_monthly": 2750
+        }
+      },
+      "models": [
+        "Fable 5.1",
+        "Fable 5",
+        "Opus 5",
+        "Sonnet 5",
+        "Haiku 4.5"
+      ],
+      "priceOverrides": {
+        "Fable 5.1": {
+          "cache_hit": 1
+        }
+      }
+    },
+    "Kimi": {
+      "currency": "CNY",
+      "type": "money_quota",
+      "plans": {
+        "Andante": {
+          "fee": 49,
+          "quota_5h": 32.5,
+          "quota_weekly": 162.5,
+          "quota_monthly": 696.43
+        },
+        "Moderato": {
+          "fee": 99,
+          "quota_5h": 65,
+          "quota_weekly": 325,
+          "quota_monthly": 1392.86
+        },
+        "Allegretto": {
+          "fee": 199,
+          "quota_5h": 130,
+          "quota_weekly": 650,
+          "quota_monthly": 2785.71
+        },
+        "Allegro": {
+          "fee": 699,
+          "quota_5h": 325,
+          "quota_weekly": 1625,
+          "quota_monthly": 6964.29
+        }
+      },
+      "models": [
+        "Kimi K3",
+        "Kimi K2.7 Code",
+        "Kimi K2.6"
+      ]
+    },
+    "百炼 TokenPlan": {
+      "currency": "CNY",
+      "type": "credit",
+      "credit_to_currency": 0.01,
+      "plans": {
+        "Lite": {
+          "fee": 39,
+          "quota_5h": 700,
+          "quota_weekly": 2500,
+          "quota_monthly": 10833.33
+        },
+        "Standard": {
+          "fee": 139,
+          "quota_5h": 3000,
+          "quota_weekly": 10000,
+          "quota_monthly": 43333.33
+        },
+        "Pro": {
+          "fee": 499,
+          "quota_5h": 12000,
+          "quota_weekly": 40000,
+          "quota_monthly": 173333.33
+        }
+      },
+      "models": [
+        "Qwen 3.8 Max",
+        "Qwen 3.8 Flash",
+        "DeepSeek V4 Pro",
+        "DeepSeek V4 Flash"
+      ]
+    },
+    "GLM Coding": {
+      "currency": "CNY",
+      "type": "coefficient",
+      "plans": {
+        "Lite": {
+          "fee": 118,
+          "quota_5h": 2000,
+          "quota_weekly": 10000,
+          "quota_monthly": 43333.33
+        },
+        "Pro": {
+          "fee": 538,
+          "quota_5h": 12000,
+          "quota_weekly": 60000,
+          "quota_monthly": 260000
+        },
+        "Max": {
+          "fee": 1078,
+          "quota_5h": 28000,
+          "quota_weekly": 140000,
+          "quota_monthly": 606666.67
+        }
+      },
+      "models": [
+        "GLM-5.3",
+        "GLM-5.3-Flash"
+      ]
+    }
+  },
+  "providers": {
+    "Anthropic": {
+      "weights": {
+        "cache_write_5min": 1.5,
+        "cache_hit": 30,
+        "output": 0.2
+      },
+      "models": {
+        "Fable 5.1": {
+          "default": {
+            "usd": {
+              "input": 10,
+              "cache_write_5min": 12.5,
+              "cache_write_1h": 20,
+              "cache_hit": 0.25,
+              "output": 50
+            }
+          }
+        },
+        "Fable 5": {
+          "default": {
+            "usd": {
+              "input": 10,
+              "cache_write_5min": 12.5,
+              "cache_write_1h": 20,
+              "cache_hit": 1,
+              "output": 50
+            }
+          }
+        },
+        "Opus 5": {
+          "default": {
+            "usd": {
+              "input": 5,
+              "cache_write_5min": 6.25,
+              "cache_write_1h": 10,
+              "cache_hit": 0.5,
+              "output": 25
+            },
+            "packy_cc_sale": {
+              "input": 4,
+              "cache_write_5min": 5,
+              "cache_hit": 0.4,
+              "output": 20
+            }
+          }
+        },
+        "Sonnet 5": {
+          "default": {
+            "usd": {
+              "input": 2,
+              "cache_write_5min": 2.5,
+              "cache_write_1h": 4,
+              "cache_hit": 0.2,
+              "output": 10
+            },
+            "packy_cc_sale": {
+              "input": 1.6,
+              "cache_write_5min": 2,
+              "cache_hit": 0.16,
+              "output": 8
+            }
+          }
+        },
+        "Haiku 4.5": {
+          "default": {
+            "usd": {
+              "input": 1,
+              "cache_write_5min": 1.25,
+              "cache_write_1h": 2,
+              "cache_hit": 0.1,
+              "output": 5
+            },
+            "packy_cc_sale": {
+              "input": 0.8,
+              "cache_write_5min": 1,
+              "cache_hit": 0.08,
+              "output": 4
+            }
+          }
+        }
+      }
+    },
+    "OpenAI": {
+      "weights": {
+        "cache_write_30min": 1,
+        "cache_hit": 30,
+        "output": 0.2
+      },
+      "models": {
+        "GPT 6 Astra": {
+          "≤272K": {
+            "usd": {
+              "input": 10,
+              "cache_write_30min": 12.5,
+              "cache_hit": 1,
+              "output": 50
+            }
+          },
+          ">272K": {
+            "usd": {
+              "input": 20,
+              "cache_write_30min": 25,
+              "cache_hit": 2,
+              "output": 75
+            }
+          }
+        },
+        "GPT 5.6 Sol": {
+          "≤272K": {
+            "usd": {
+              "input": 4,
+              "cache_write_30min": 5,
+              "cache_hit": 0.4,
+              "output": 20
+            },
+            "packy_codex": {
+              "input": 2.5,
+              "cache_write_30min": 3.125,
+              "cache_hit": 0.25,
+              "output": 15
+            }
+          },
+          ">272K": {
+            "usd": {
+              "input": 8,
+              "cache_write_30min": 10,
+              "cache_hit": 0.8,
+              "output": 30
+            },
+            "packy_codex": {
+              "input": 5,
+              "cache_write_30min": 6.25,
+              "cache_hit": 0.5,
+              "output": 22.5
+            }
+          }
+        },
+        "GPT 5.6 Terra": {
+          "≤272K": {
+            "usd": {
+              "input": 2,
+              "cache_write_30min": 2.5,
+              "cache_hit": 0.2,
+              "output": 12
+            },
+            "packy_codex": {
+              "input": 1,
+              "cache_write_30min": 1.25,
+              "cache_hit": 0.1,
+              "output": 6
+            }
+          },
+          ">272K": {
+            "usd": {
+              "input": 4,
+              "cache_write_30min": 5,
+              "cache_hit": 0.4,
+              "output": 18
+            },
+            "packy_codex": {
+              "input": 2,
+              "cache_write_30min": 2.5,
+              "cache_hit": 0.2,
+              "output": 9
+            }
+          }
+        },
+        "GPT 5.6 Luna": {
+          "≤272K": {
+            "usd": {
+              "input": 0.2,
+              "cache_write_30min": 0.25,
+              "cache_hit": 0.02,
+              "output": 1.2
+            },
+            "packy_codex": {
+              "input": 0.5,
+              "cache_write_30min": 0.625,
+              "cache_hit": 0.05,
+              "output": 3
+            }
+          },
+          ">272K": {
+            "usd": {
+              "input": 0.4,
+              "cache_write_30min": 0.5,
+              "cache_hit": 0.04,
+              "output": 1.8
+            },
+            "packy_codex": {
+              "input": 1,
+              "cache_write_30min": 1.25,
+              "cache_hit": 0.1,
+              "output": 4.5
+            }
+          }
+        }
+      }
+    },
+    "xAI": {
+      "weights": {
+        "input": 1,
+        "cache_hit": 30,
+        "output": 0.2
+      },
+      "models": {
+        "Grok 4.6": {
+          "≤200K": {
+            "usd": {
+              "input": 2,
+              "cache_hit": 0.5,
+              "output": 6
+            }
+          },
+          ">200K": {
+            "usd": {
+              "input": 4,
+              "cache_hit": 1,
+              "output": 12
+            }
+          },
+          "default": {
+            "packy_grok_sale": {
+              "input": 0.2,
+              "cache_hit": 0.05,
+              "output": 0.6
+            }
+          }
+        },
+        "Grok 4.5": {
+          "≤200K": {
+            "usd": {
+              "input": 2,
+              "cache_hit": 0.3,
+              "output": 6
+            },
+            "packy_grok_sale": {
+              "input": 0.2,
+              "cache_hit": 0.05,
+              "output": 0.6
+            }
+          },
+          ">200K": {
+            "usd": {
+              "input": 4,
+              "cache_hit": 0.6,
+              "output": 12
+            },
+            "packy_grok_sale": {
+              "input": 0.4,
+              "cache_hit": 0.1,
+              "output": 1.2
+            }
+          }
+        }
+      },
+      "channelWeights": {
+        "packy_grok_sale": {
+          "input": 31,
+          "output": 0.2
+        }
+      }
+    },
+    "Google": {
+      "models": {
+        "Gemini 3.7 Flash": {
+          "2026年(优惠价)": {
+            "usd": {
+              "input": 0.75,
+              "cache_hit": 0.075,
+              "output": 3.75
+            },
+            "packy_gemini_slb": {
+              "input": 2.25,
+              "cache_hit": 0.225,
+              "output": 11.25
+            }
+          }
+        }
+      }
+    },
+    "智谱": {
+      "weights": {
+        "input": 1,
+        "cache_hit": 30,
+        "output": 0.2
+      },
+      "models": {
+        "GLM-5.3": {
+          "default": {
+            "opencode": {
+              "input": 1.4,
+              "cache_hit": 0.26,
+              "output": 4.4
+            },
+            "cny": {
+              "input": 8,
+              "cache_hit": 2,
+              "output": 28
+            },
+            "glm_coding_points": {
+              "input": 6.9,
+              "cache_hit": 1.7,
+              "output": 24
+            }
+          }
+        },
+        "GLM-5.3-Flash": {
+          "default": {
+            "opencode": {
+              "input": 0.15,
+              "cache_hit": 0.03,
+              "output": 0.5
+            },
+            "cny": {
+              "input": 0.8,
+              "cache_hit": 0.23,
+              "output": 2.8
+            },
+            "glm_coding_points": {
+              "input": 2.3,
+              "cache_hit": 0.56,
+              "output": 8
+            }
+          },
+          "限时五折": {
+            "cny": {
+              "input": 0.4,
+              "cache_hit": 0.115,
+              "output": 1.4
+            }
+          }
+        }
+      }
+    },
+    "月之暗面": {
+      "weights": {
+        "input": 0.7,
+        "cache_hit": 30,
+        "output": 0.2
+      },
+      "models": {
+        "Kimi K3": {
+          "default": {
+            "opencode": {
+              "input": 3,
+              "cache_hit": 0.3,
+              "output": 15
+            },
+            "cny": {
+              "input": 20,
+              "cache_hit": 2,
+              "output": 100
+            }
+          }
+        },
+        "Kimi K2.7 Code": {
+          "default": {
+            "opencode": {
+              "input": 0.95,
+              "cache_hit": 0.19,
+              "output": 4
+            },
+            "cny": {
+              "input": 6.5,
+              "cache_hit": 1.3,
+              "output": 27
+            }
+          }
+        },
+        "Kimi K2.6": {
+          "default": {
+            "cny": {
+              "input": 6.5,
+              "cache_hit": 1.1,
+              "output": 27
+            }
+          }
+        }
+      }
+    },
+    "DeepSeek": {
+      "weights": {
+        "input": 0.25,
+        "cache_hit": 30,
+        "output": 0.2
+      },
+      "models": {
+        "DeepSeek V4 Pro": {
+          "峰": {
+            "opencode": {
+              "input": 1.32,
+              "cache_hit": 0.044,
+              "output": 3.96
+            },
+            "cny": {
+              "input": 9,
+              "cache_hit": 0.3,
+              "output": 27
+            }
+          },
+          "谷": {
+            "opencode": {
+              "input": 0.66,
+              "cache_hit": 0.022,
+              "output": 1.98
+            },
+            "cny": {
+              "input": 4.5,
+              "cache_hit": 0.15,
+              "output": 13.5
+            }
+          }
+        },
+        "DeepSeek V4 Flash": {
+          "峰": {
+            "opencode": {
+              "input": 0.44,
+              "cache_hit": 0.014,
+              "output": 1.32
+            },
+            "cny": {
+              "input": 3,
+              "cache_hit": 0.1,
+              "output": 9
+            }
+          },
+          "谷": {
+            "opencode": {
+              "input": 0.22,
+              "cache_hit": 0.007,
+              "output": 0.66
+            },
+            "cny": {
+              "input": 1.5,
+              "cache_hit": 0.05,
+              "output": 4.5
+            }
+          }
+        }
+      }
+    },
+    "千问": {
+      "weights": {
+        "cache_write_30min": 1,
+        "cache_hit": 30,
+        "output": 0.2
+      },
+      "models": {
+        "Qwen 3.8 Max": {
+          "default": {
+            "opencode": {
+              "input": 2,
+              "cache_write_30min": 2.5,
+              "cache_hit": 0.25,
+              "output": 6
+            },
+            "cny": {
+              "input": 12,
+              "cache_write": 15,
+              "cache_hit": 1.2,
+              "output": 36
+            }
+          }
+        },
+        "Qwen 3.8 Flash": {
+          "default": {
+            "opencode": {
+              "input": 0.15,
+              "cache_write_30min": 0.2,
+              "cache_hit": 0.016,
+              "output": 0.47
+            },
+            "cny": {
+              "input": 0.8,
+              "cache_write": 1,
+              "cache_hit": 0.08,
+              "output": 2.7
+            }
+          }
+        }
+      }
+    },
+    "腾讯混元": {
+      "models": {
+        "Hy4 Preview": {
+          "default": {
+            "opencode": {
+              "input": 0.834,
+              "cache_hit": 0.042,
+              "output": 2.5
+            },
+            "cny": {
+              "input": 6,
+              "cache_hit": 0.3,
+              "output": 18
+            }
+          }
+        },
+        "Hy3": {
+          "default": {
+            "opencode": {
+              "input": 0.14,
+              "cache_hit": 0.035,
+              "output": 0.58
+            },
+            "cny": {
+              "input": 1,
+              "cache_hit": 0.25,
+              "output": 4
+            }
+          }
+        }
+      }
+    },
+    "MiniMax": {
+      "models": {
+        "MiniMax M3": {
+          "≤512K": {
+            "cny": {
+              "input": 2.1,
+              "cache_hit": 0.42,
+              "output": 8.4
+            }
+          },
+          ">512K": {
+            "cny": {
+              "input": 4.2,
+              "cache_hit": 0.84,
+              "output": 16.8
+            }
+          }
+        }
+      }
+    },
+    "小米": {
+      "models": {
+        "MiMo-V2.5-Pro": {
+          "default": {
+            "cny": {
+              "input": 3,
+              "cache_hit": 0.025,
+              "output": 6
+            }
+          }
+        },
+        "MiMo-V2.5": {
+          "default": {
+            "cny": {
+              "input": 1,
+              "cache_hit": 0.02,
+              "output": 2
+            }
+          }
+        }
+      }
+    }
+  }
+}
