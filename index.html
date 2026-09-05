@@ -3,231 +3,281 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LLM 价格 · API 与订阅对比</title>
+<title>LLM 价格对比 · API 与订阅</title>
 <style>
 :root{
-  --bg:#f5f6f8;
-  --card:#ffffff;
-  --border:#e7e9ef;
-  --text:#16181f;
-  --muted:#5c6370;
-  --faint:#8a92a0;
-  --accent:#4f46e5;
-  --accent-soft:#eef0ff;
-  --usd:#0e9f6e; --usd-soft:#e7f7f0;
-  --cny:#d97706; --cny-soft:#fdf0e0;
-  --mid:#7c3aed; --mid-soft:#f1ebfd;
-  --sub:#0e7490; --sub-soft:#e3f2f8;
-  --blue:#0ea5e9;
-  --point:#db2777; --point-soft:#fbe9f2;
-  --radius:14px;
-  --shadow:0 1px 2px rgba(16,24,40,.05);
+  --bg:#faf9f7; --card:#ffffff; --line:#e9e6e0;
+  --grid:#e4e0d6; --grid-strong:#d3ccbd;
+  --ink:#1b1a17; --muted:#75716a; --faint:#a8a49b;
+  --usd:#2376d2; --cny:#c2402a; --mid:#7a5af5; --sub:#0e9384; --point:#7a5af5;
+  --gold:#e8b13e; --gold-d:#c3922a;
+  --hover:#f5f3ee; --ref:#f4f2ee;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
-  margin:0;background:var(--bg);color:var(--text);
-  font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
   -webkit-font-smoothing:antialiased;
 }
-.container{max-width:1280px;margin:0 auto;padding:0 24px}
-a{color:var(--accent);text-decoration:none}
+.wrap{max-width:1440px;margin:0 auto;padding:0 18px}
+a{color:inherit;text-decoration:none}
 
-.site-header{
-  position:sticky;top:0;z-index:50;background:rgba(255,255,255,.85);
-  backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid var(--border);
+/* 顶栏 */
+.top{
+  position:sticky;top:0;z-index:50;background:rgba(250,249,247,.88);
+  backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line);
 }
-.header-inner{display:flex;align-items:center;justify-content:space-between;height:60px}
-.brand{display:flex;align-items:baseline;gap:10px}
-.brand-mark{width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:16px}
-.brand-name{font-weight:800;font-size:17px;letter-spacing:-.01em}
-.brand-sub{font-size:12px;color:var(--faint)}
-.nav{display:flex;gap:4px}
-.nav a{padding:7px 14px;border-radius:999px;color:var(--muted);font-size:13.5px;font-weight:500}
-.nav a:hover{background:var(--accent-soft);color:var(--accent)}
+.top-in{display:flex;align-items:center;justify-content:space-between;height:50px}
+.brand{font-weight:800;font-size:15.5px;letter-spacing:-.01em}
+.top-r{display:flex;align-items:center;gap:14px;font-size:13px}
+.fx{padding:3px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);background:var(--card);font-variant-numeric:tabular-nums}
+.top-r a{color:var(--muted);font-weight:500}
+.top-r a:hover{color:var(--ink)}
 
-.hero{background:linear-gradient(180deg,#eef1ff 0%,var(--bg) 100%);border-bottom:1px solid var(--border);padding:52px 0 44px}
-.hero h1{font-size:30px;line-height:1.25;margin:0 0 8px;letter-spacing:-.02em}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
-.stat .k{font-size:12px;color:var(--faint)}
-.stat .v{font-size:22px;font-weight:750;margin-top:2px}
-.stat .v small{font-size:12px;font-weight:500;color:var(--muted);margin-left:3px}
-
-.section{padding:40px 0 8px}
-.section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
-.section-head h2{font-size:21px;margin:0;letter-spacing:-.01em}
-
-.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600}
-.badge-usd{background:var(--usd-soft);color:var(--usd)}
-.badge-cny{background:var(--cny-soft);color:var(--cny)}
-.tag{font-size:12px;color:var(--muted);font-weight:500}
-
-.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);box-shadow:var(--shadow)}
-table{width:100%;border-collapse:collapse;font-size:15px;min-width:640px}
-.table-wrap table{table-layout:fixed;min-width:860px}
-thead th{background:#fafbfd;color:var(--faint);font-size:13px;font-weight:400;text-align:center;padding:12px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
-thead th.l{text-align:left}
-tbody td{padding:11px 14px;border-bottom:1px solid var(--border);text-align:right;vertical-align:middle}
-tbody tr:last-child td{border-bottom:none}
-tbody tr:hover td{background:#fafbfd}
-td.l{text-align:left}
-td.c{text-align:center}
-.cell-strong{font-weight:650}
-.num{font-variant-numeric:tabular-nums}
-.dash{color:#c3c8d2}
-.m-usd{color:var(--usd);font-weight:600}
-.m-cny{color:var(--cny);font-weight:600}
-.m-mid{color:var(--mid);font-weight:600}
-.m-sub{color:var(--sub);font-weight:650}
-.m-point{color:var(--point);font-weight:600}
-.m-blue{color:var(--blue);font-weight:600}
-.cur{font-size:.9em;margin-right:2px;opacity:.85}
-.num-p{white-space:nowrap;font-variant-numeric:tabular-nums}
-.p-sym{display:inline-block;width:1.2em;text-align:left;opacity:.8;font-weight:700}
-.p-int{display:inline-block;width:2.6em;text-align:right;font-weight:700}
-.p-dec{display:inline-block;width:2.9em;font-size:.8em;text-align:left;font-weight:400}
-.mini{font-size:12.5px;color:var(--faint)}
-.tag{font-size:13px}
-thead th.grp,tbody td.grp{border-left:1px solid var(--border)}
-thead th.h-usd{color:var(--usd)}
-thead th.h-cny{color:var(--cny)}
-thead th.h-mid{color:var(--mid)}
-thead th.h-point{color:var(--point)}
-thead th.h-sub{color:var(--blue)}
-.sub-best .m-blue{font-weight:800;text-decoration:underline;text-underline-offset:3px}
-
-.vendor-block{margin-bottom:22px}
-.vendor-head{display:flex;align-items:baseline;gap:12px;padding:0 2px 8px}
-.vendor-name{font-size:17px;font-weight:750}
-.vendor-weights{font-size:13px;color:var(--faint)}
-.vendor-weights b{color:var(--muted)}
-
-.plan-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.plan-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
-.plan-card .plan-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.plan-card .plan-name{font-size:16px;font-weight:750}
-.plan-card table{font-size:13px;min-width:0}
-.plan-card thead th{background:transparent;padding:8px 9px}
-.plan-card tbody td{padding:8px 9px}
-.plan-models{margin-top:10px;font-size:12px;color:var(--faint)}
-
-.raw-section{display:grid;gap:16px}
-
-@media (max-width:820px){
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .plan-grid{grid-template-columns:1fr}
+.inf{
+  display:inline-flex;width:14px;height:14px;border-radius:50%;border:1px solid currentColor;
+  align-items:center;justify-content:center;font-size:9.5px;font-style:normal;font-weight:700;
+  color:var(--faint);cursor:help;vertical-align:1px;margin-left:4px;flex:none;
 }
+.inf:hover{color:var(--ink)}
+
+/* 主表 */
+#compareBox{margin:20px 0 8px}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table.cmp{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max-content;min-width:100%;font-size:15px}
+.cmp th,.cmp td{padding:9px 12px;border-right:1px solid var(--grid);border-bottom:1px solid var(--grid);text-align:right;vertical-align:middle;white-space:nowrap}
+.cmp tbody tr:last-child td{border-bottom:none}
+.cmp thead th{background:#f7f5f1;color:var(--muted);font-size:12.5px;font-weight:600;border-bottom:1px solid var(--grid);padding:7px 12px}
+.cmp thead th{text-align:center}
+.cmp thead tr:last-child th{border-bottom:1px solid var(--grid-strong)}
+.cmp th.vh{text-align:left;vertical-align:middle}
+.vn{font-size:14px;font-weight:750;color:var(--ink)}
+.vn .hit{margin-left:5px;font-size:11.5px;font-weight:600;color:var(--faint)}
+.vw{font-size:11.5px;color:var(--faint);font-weight:500;margin-top:3px;white-space:normal}
+.vw b{color:var(--muted);font-weight:600}
+.vt{margin-bottom:14px}
+.cmp th.l,.cmp td.l{text-align:left}
+.cmp td.c{text-align:center}
+.cmp tbody tr:hover>td{background:var(--hover)}
+.sk{position:sticky;z-index:3;background:var(--card)}
+thead .sk{z-index:6;background:#f7f5f1}
+.rf{background:var(--ref)}
+thead .rf{background:#f0ede7}
+.sep{border-right:1px solid var(--grid-strong);box-shadow:7px 0 9px -7px rgba(60,50,30,.18)}
+.grp{border-left:1px solid var(--grid-strong)}
+th.thm{color:var(--mid)}
+th.ths{color:var(--sub)}
+.fill{padding:0;border-right:none}
+thead .fill{background:#f7f5f1}
+.mcell{font-weight:700}
+.mut{color:var(--muted);font-size:12.5px}
+
+/* 数字：符号槽 + 整数 + 弱化小数，小数点对齐；颜色统一为墨色 */
+.np{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--ink)}
+.psym{display:inline-block;width:.95em;text-align:left;opacity:.5;font-weight:600;font-size:.85em;margin-right:1px}
+.pint{display:inline-block;width:2.6em;text-align:right;font-weight:650}
+.pdec{display:inline-block;width:3em;text-align:left;font-size:.78em;font-weight:400;color:var(--muted)}
+.rf .np{opacity:.55}
+.best .np{font-weight:750}
+.best .ce{align-items:center}
+.best{white-space:normal}
+.bname{font-size:11.5px;color:var(--faint);font-weight:600;line-height:1.3}
+
+/* 单元格内容右对齐列：数字在上、硬币在下 */
+.ce{display:flex;flex-direction:column;align-items:flex-end}
+.coins{display:flex;gap:2px;margin-top:2.5px;height:8px;align-items:center;justify-content:flex-end}
+.coin{width:8px;height:8px;border-radius:50%;background:var(--gold);border:1px solid var(--gold-d);flex:none}
+.coin.part{background:conic-gradient(var(--gold) var(--p),rgba(0,0,0,0) var(--p))}
+.coin-x{font-size:10px;line-height:1;color:var(--faint);font-weight:700;font-style:normal;margin-left:1px}
+
+/* hover 面板 */
+#tip{
+  position:fixed;z-index:99;min-width:280px;max-width:350px;background:#28251f;color:#f4f2ec;border-radius:10px;
+  padding:12px 14px;font-size:12.5px;line-height:1.5;box-shadow:0 10px 30px rgba(20,16,8,.35);
+  opacity:0;pointer-events:none;transition:opacity .12s;
+}
+#tip.on{opacity:1}
+#tip .tt{font-weight:700;font-size:13.5px;margin-bottom:8px}
+#tip .tt .tc{color:#b3ada0;font-weight:500}
+#tip .tt small{color:#b3ada0;font-weight:500}
+table.tt-t{width:100%;border-collapse:collapse}
+.tt-t th{font-size:11px;color:#a29d8f;font-weight:500;text-align:right;padding:2px 0 5px 18px}
+.tt-t th:first-child,.tt-t td:first-child{text-align:left;padding-left:0}
+.tt-t td{padding:3px 0 3px 18px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tt-t td small{color:#a29d8f}
+.tt-t tr.sum td{font-weight:700;font-size:13px}
+.tdiv{border-top:1px solid #4c4840;margin:7px 0}
+.tdiv.dash{border-top-style:dashed}
+.tform{margin:3px 0;color:#a29d8f;font-size:11.5px}
+.tsec{padding-top:3px;color:#b3ada0;font-size:12px}
+.tsec b{color:#f4f2ec;font-weight:600}
+.tnote{margin-top:8px;color:#eec674;font-size:12px}
+
+/* 折叠区 */
+.src{margin:30px 0 60px}
+details{border:1px solid var(--line);border-radius:12px;background:var(--card);margin-bottom:14px}
+summary{cursor:pointer;padding:13px 16px;font-weight:650;font-size:14px;color:var(--muted);list-style:none;user-select:none}
+summary::before{content:'▸';margin-right:8px;color:var(--faint)}
+details[open] summary::before{content:'▾'}
+details .body{padding:2px 16px 18px}
+
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(620px,1fr));gap:12px}
+.pc{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.pc .ph{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.pc .pn{font-weight:700;font-size:14px}
+.badge{display:inline-flex;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:700}
+.b-usd{background:rgba(35,118,210,.1);color:var(--usd)}
+.b-cny{background:rgba(194,64,42,.1);color:var(--cny)}
+.pc .pt{font-size:12px;color:var(--faint)}
+.pc table{width:100%;border-collapse:collapse;font-size:13px}
+.pc th{color:var(--faint);font-weight:500;font-size:12px;text-align:right;padding:4px 6px;border-bottom:1px solid var(--grid)}
+.pc td{padding:5px 6px;text-align:right;border-bottom:1px solid var(--grid);font-variant-numeric:tabular-nums}
+.pc tr:last-child td{border-bottom:none}
+.pc th:first-child,.pc td:first-child{text-align:left}
+.pc .pf{margin-top:8px;font-size:12px;color:var(--faint)}
+
+/* 原始价格：厂商名吸收为表内标题行 */
+.rawv{margin-bottom:16px}
+.rawv:last-child{margin-bottom:0}
+table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max-content;min-width:100%;font-size:13px}
+.raw th,.raw td{padding:7px 10px;border-right:1px solid var(--grid);border-bottom:1px solid var(--grid);text-align:right;white-space:nowrap}
+.raw thead th{background:#f7f5f1;font-size:12px;font-weight:600;color:var(--muted);text-align:center}
+.raw thead tr:last-child th{border-bottom:1px solid var(--grid-strong)}
+.raw tbody tr:last-child td{border-bottom:none}
+.raw th.cap{text-align:left;font-size:13.5px;font-weight:700;color:var(--ink);padding:9px 12px}
+.raw td.l{text-align:left}
+.raw .grp{border-left:1px solid var(--grid-strong)}
+.raw .fill{padding:0;border-right:none}
+.h-usd{color:var(--usd)} .h-cny{color:var(--cny)} .h-mid{color:var(--mid)} .h-sub{color:var(--sub)} .h-point{color:var(--point)}
+
+.loadfail{padding:26px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:14px;margin-top:22px}
 </style>
 </head>
 <body>
-<header class="site-header">
-  <div class="container header-inner">
-    <div class="brand">
-      <span class="brand-mark">¥</span>
-      <span class="brand-name">LLM 价格</span>
-      <span class="brand-sub">API &amp; 订阅对比</span>
+<header class="top">
+  <div class="wrap top-in">
+    <span class="brand">LLM 价格对比</span>
+    <div class="top-r">
+      <span class="fx" id="fxChip">汇率 …</span>
+      <a href="#compareBox">综合对比</a>
+      <a href="#plansDet" data-open>订阅方案</a>
+      <a href="#rawDet" data-open>原始数据</a>
     </div>
-    <nav class="nav">
-      <a href="#compare">综合价</a>
-      <a href="#plans">订阅方案</a>
-      <a href="#raw">原始价格</a>
-    </nav>
   </div>
 </header>
 
-<section class="hero">
-  <div class="container">
-    <h1>各家大模型 API 与订阅价格对比</h1>
-    <div class="stats" id="stats"></div>
-  </div>
-</section>
+<main class="wrap">
+  <div id="compareBox"></div>
 
-<main class="container">
-  <section class="section" id="compare">
-    <div class="section-head"><h2>综合价</h2></div>
-    <div id="compareBox"></div>
-  </section>
-
-  <section class="section" id="plans">
-    <div class="section-head"><h2>订阅方案</h2></div>
-    <div class="plan-grid" id="plansBox"></div>
-  </section>
-
-  <section class="section" id="raw">
-    <div class="section-head"><h2>原始价格</h2></div>
-    <div class="raw-section" id="rawBox"></div>
+  <section class="src">
+    <details id="plansDet">
+      <summary>订阅方案详情</summary>
+      <div class="body"><div class="pg" id="plansBox"></div></div>
+    </details>
+    <details id="rawDet">
+      <summary>原始价格（数据来源）</summary>
+      <div class="body" id="rawBox"></div>
+    </details>
   </section>
 </main>
+
+<div id="tip" role="tooltip"></div>
 
 <script>
 (async function main(){
 let DATA;
 try {
-  const res = await fetch('llm-prices.json');
+  const res = await fetch('llm-prices.json', {cache: 'no-cache'});
   if (!res.ok) throw new Error('HTTP ' + res.status);
   DATA = await res.json();
 } catch (e) {
-  document.getElementById('stats').outerHTML =
-    '<div class="stat" style="grid-column:1/-1"><div class="k">加载失败</div>' +
-    '<div class="v" style="font-size:14px;font-weight:500;color:var(--muted)">无法读取 llm-prices.json，请通过本地 HTTP 服务打开本页（如 python -m http.server）</div></div>';
+  document.getElementById('compareBox').innerHTML =
+    '<div class="loadfail">无法读取 llm-prices.json。请通过本地 HTTP 服务打开本页，例如 <code>python -m http.server</code> 后访问 http://localhost:8000</div>';
   return;
 }
 const USD_CNY = DATA.usd_to_cny;
 const COMP = DATA.components || {};
+document.getElementById('fxChip').textContent = '汇率 ¥' + USD_CNY + ' / $';
+
+/* 列宽（px）：模型列 150；其余所有列统一 132 定宽，保证格点跨行跨表对齐 */
+const W = {model:150, col:132};
+const COIN_CAP = 10;
 
 const CHANNELS = {
-  usd:               {label:"美元官方", cls:"usd"},
-  cny:               {label:"人民币官方", cls:"cny"},
-  packy_cc_sale:     {label:"中转站 cc-sale", cls:"mid"},
-  packy_codex:       {label:"中转站 codex", cls:"mid"},
-  packy_grok_sale:   {label:"中转站 grok-sale", cls:"mid"},
-  packy_gemini_slb:  {label:"中转站 gemini-slb", cls:"mid"},
-  glm_coding_points: {label:"GLM 积分系数", cls:"point"},
-  opencode:          {label:"OpenCode", cls:"usd"},
+  usd:               {label:'美元官方',        kind:'usd'},
+  cny:               {label:'人民币官方',      kind:'cny'},
+  opencode:          {label:'OpenCode',        kind:'usd'},
+  packy_cc_sale:     {label:'cc-sale',         kind:'cny'},
+  packy_codex:       {label:'codex',           kind:'cny'},
+  packy_grok_sale:   {label:'grok-sale',       kind:'cny'},
+  packy_gemini_slb:  {label:'gemini-slb',      kind:'cny'},
+  glm_coding_points: {label:'GLM 积分',        kind:'point',
+    note:'官方以抵扣系数计费：积分数 = Σ(token × 系数) ÷ 10000。此处已按全站统一标准换算为每 1M tokens 积分（= 系数 × 100）'},
+  bailian_credits:   {label:'百炼积分',        kind:'point',
+    note:'积分单价为按 1 积分 = ¥0.01 从官方人民币价反推的经验值，未经官方证实'},
 };
 
-function fmt(v, d){
+/* ---------- 基础工具 ---------- */
+function fmt(v){
   if (v == null) return '';
-  if (typeof v !== 'number') return v;
-  return String(Number(v.toFixed(d == null ? 4 : d)));
+  return String(Number(v.toFixed(4)));
 }
-function curSign(u){ return u === 'USD' ? '$' : '¥'; }
-// 价格按小数点对齐：币种符号槽 + 整数槽 + 固定宽度的小数块（小号字）
-function price(v, cls, color){
-  if (v == null) return '<span class="dash">—</span>';
-  const sym = cls === 'usd' ? '$' : (cls === 'point' ? '' : '¥');
-  let s = '<span class="num-p m-' + (color || cls) + '">';
-  if (sym) s += '<span class="p-sym">' + sym + '</span>';
-  let str = fmt(v);
-  const d = str.indexOf('.');
-  if (d < 0) str += '.00';
-  else if (str.length - d - 1 === 1) str += '0';
-  const dot = str.indexOf('.');
-  s += '<span class="p-int">' + str.slice(0, dot) + '</span><span class="p-dec">.' + str.slice(dot + 1) + '</span>';
-  return s + '</span>';
+function fix2(s){
+  const d = s.indexOf('.');
+  if (d < 0) return s + '.00';
+  if (s.length - d - 1 === 1) return s + '0';
+  return s;
 }
-function resolvePrice(prices, key){
-  if (prices[key] != null) return prices[key];
-  if (key.indexOf('cache_write') === 0){
-    if (prices.cache_write != null) return prices.cache_write;
-    if (prices.input != null) return prices.input;
-  }
-  return 0;
+function curSym(kind){ return kind === 'usd' ? '$' : (kind === 'point' ? '' : '¥'); }
+function tprice(v, kind){
+  if (v == null) return '—';
+  return curSym(kind) + (kind === 'point' ? fmt(v) : fix2(fmt(v)));
 }
-function weightSum(prices, prov, chk){
+function priceHTML(v, kind){
+  if (v == null) return '';
+  const sym = curSym(kind);
+  const s = fix2(fmt(v));
+  const d = s.indexOf('.');
+  return '<span class="np">' +
+    (sym ? '<span class="psym">' + sym + '</span>' : '') +
+    '<span class="pint">' + s.slice(0, d) + '</span>' +
+    '<span class="pdec">.' + s.slice(d + 1) + '</span></span>';
+}
+/* 硬币堆：CNY 每枚 ¥5，USD 每枚 $1，不足一枚按比例填充，超上限截断为 +N */
+function coinsHTML(v, kind){
+  if (v == null || v <= 0) return '';
+  const unit = kind === 'usd' ? 1 : 5;
+  const total = v / unit;
+  let full = Math.floor(total + 1e-9);
+  const frac = total - full;
+  const over = full > COIN_CAP ? full - COIN_CAP : 0;
+  if (over) full = COIN_CAP;
+  let h = '<span class="coins">';
+  for (let i = 0; i < full; i++) h += '<i class="coin"></i>';
+  if (!over && frac > 0.02) h += '<i class="coin part" style="--p:' + Math.round(frac * 100) + '%"></i>';
+  if (over) h += '<b class="coin-x">+' + over + '</b>';
+  return h + '</span>';
+}
+
+/* ---------- 权重计价 ----------
+   返回 {rows:[{key,label,price,w,sub}], total, w}，供数值与 hover 面板共用。
+   权重键必须在价格数据中存在，不做任何回退。 */
+function weightDetail(prices, prov, chk){
   if (prices == null || prov == null) return null;
   const w = (chk != null && prov.channelWeights && prov.channelWeights[chk]) || prov.weights;
   if (w == null) return null;
-  let sum = 0;
-  for (const key in w) sum += resolvePrice(prices, key) * w[key];
-  return sum;
+  const rows = [];
+  let total = 0;
+  for (const key in w){
+    const price = prices[key] != null ? prices[key] : 0;
+    const sub = price * w[key];
+    total += sub;
+    rows.push({key: key, label: COMP[key] || key, price: price, w: w[key], sub: sub});
+  }
+  return {rows: rows, total: total, w: w};
 }
-function coefficientEffective(coef, plan){
-  const f = k => plan.fee * coef[k] * 100 / plan.quota_monthly;
-  return {input:f('input'), cache_hit:f('cache_hit'), output:f('output')};
-}
-// 中转站不区分条件：仅含中转站渠道的条件并入其他条件行，不单独成行
+/* 中转站不区分条件：仅含中转站渠道的条件并入其他条件行 */
 function normalizeConditions(conditions){
   const merged = [];
   const carry = {};
@@ -237,7 +287,7 @@ function normalizeConditions(conditions){
     if (chks.length > 0 && chks.every(c => c.indexOf('packy') === 0)){
       for (const c of chks) carry[c] = channels[c];
     } else {
-      merged.push({ck:ck, channels:Object.assign({}, channels)});
+      merged.push({ck: ck, channels: Object.assign({}, channels)});
     }
   }
   for (const item of merged){
@@ -245,195 +295,306 @@ function normalizeConditions(conditions){
   }
   return merged;
 }
-function subscriptionPrices(mname, channels, prov, usd, cny){
-  const out = [];
+
+/* ---------- hover 面板 ---------- */
+const TIPS = [];
+function regTip(html){ TIPS.push(html); return TIPS.length - 1; }
+function cellTip(o){
+  const unit = o.unit || '';
+  const sumRow = (label, value, kind, u) =>
+    '<table class="tt-t"><tr class="sum"><td colspan="3">' + label + '</td><td>' + tprice(value, kind) + (u || '') + '</td></tr></table>';
+  let h = '<div class="tt">' + o.title + (o.titleSub ? ' <small>· ' + o.titleSub + '</small>' : '') + '</div>';
+  const secs = [];
+  if (o.det){
+    let t = '<table class="tt-t"><tr><th>分量</th><th>单价</th><th>权重</th><th>小计</th></tr>';
+    for (const r of o.det.rows){
+      t += '<tr><td>' + r.label + '</td>' +
+        '<td>' + tprice(r.price, o.kind) + unit + '</td>' +
+        '<td>×' + r.w + '</td>' +
+        '<td>' + tprice(r.sub, o.kind) + unit + '</td></tr>';
+    }
+    secs.push(t + '</table>');
+    secs.push(sumRow(o.sumLabel || '综合价', o.det.total, o.kind, unit));
+  }
+  if (o.finalValue != null && o.finalValue !== (o.det && o.det.total)){
+    let t = sumRow('折算后', o.finalValue, o.finalKind || o.kind);
+    if (o.plan && o.plan.formula) t += '<div class="tform">' + o.plan.formula + '</div>';
+    secs.push(t);
+  }
+  if (o.kind === 'usd'){
+    const v = o.finalValue != null ? o.finalValue : (o.det ? o.det.total : null);
+    if (v != null) secs.push(sumRow('汇率换算 <small>×' + USD_CNY + '</small>', v * USD_CNY, 'cny'));
+  }
+  h += secs.join('<div class="tdiv"></div>');
+  if (o.plan){
+    const p = o.plan;
+    const curKind = p.currency === 'USD' ? 'usd' : 'cny';
+    const quotaStr = p.quotaUnit === '积分' ? fmt(p.quota) + ' 积分' : tprice(p.quota, curKind);
+    h += (secs.length ? '<div class="tdiv dash"></div>' : '') +
+      '<div class="tsec"><b>' + p.group + ' · ' + p.plan + '</b>　月费 ' + tprice(p.fee, curKind) +
+      ' · 月额度 ' + quotaStr + '</div>';
+  }
+  if (o.notes && o.notes.length){
+    for (const n of o.notes) h += '<div class="tnote">⚠ ' + n + '</div>';
+  }
+  return h;
+}
+function infoTip(title, text){
+  return '<div class="tt">' + title + '</div><div style="color:#d9d4c7">' + text + '</div>';
+}
+
+/* ---------- 订阅折算（含 hover 所需的全部细节） ---------- */
+function subDetail(mname, channels, prov){
+  const out = {};
   for (const gname in DATA.subscriptions){
     const g = DATA.subscriptions[gname];
     if (g.models.indexOf(mname) < 0) continue;
-    if (g.type === 'coefficient' && channels.glm_coding_points){
-      const coef = channels.glm_coding_points;
+    if (g.type === 'points'){
+      /* 积分制：积分单价（每 M tokens）按权重汇总，再按（综合消耗 ÷ 月额度）× 月费 折人民币。
+         积分渠道由订阅组的 points_channel 声明（GLM 积分 / 百炼积分）。 */
+      const pts = channels[g.points_channel];
+      if (!pts) continue;
+      const det = weightDetail(pts, prov, null);
+      const notes = g.credit_to_currency
+        ? ['积分单价按 1 积分 = ¥' + g.credit_to_currency + ' 由官方人民币价反推（经验值，未经官方证实）']
+        : null;
       for (const pl in g.plans){
-        const v = weightSum(coefficientEffective(coef, g.plans[pl]), prov, 'glm_coding_points');
-        out.push({group:gname, plan:pl, value:v, currency:'CNY'});
+        const p = g.plans[pl];
+        out[gname + '||' + pl] = {
+          value: det.total * p.fee / p.quota_monthly, currency: 'CNY', det: det, points: true, notes: notes,
+          plan: {group: gname, plan: pl, fee: p.fee, quota: p.quota_monthly, quotaUnit: '积分', currency: 'CNY',
+                 formula: '折算 =（综合消耗 ÷ 月额度）× 月费'},
+        };
       }
-    } else if (g.type === 'money_quota' || g.type === 'credit'){
-      const src = g.currency === 'USD' ? (channels.usd || channels.opencode) : channels.cny;
-      if (src){
-        // 订阅渠道可能有价格覆盖（如 Fable 5.1 缓存命中无优惠）
-        const ov = (g.priceOverrides && g.priceOverrides[mname]) || {};
-        const base = weightSum(Object.assign({}, src, ov), prov);
-        for (const pl in g.plans){
-          const p = g.plans[pl];
-          const quotaMoney = g.type === 'credit' ? p.quota_monthly * g.credit_to_currency : p.quota_monthly;
-          const v = base * p.fee / quotaMoney;
-          out.push({group:gname, plan:pl, value:v, currency:g.currency});
-        }
+    } else if (g.type === 'money_quota'){
+      const srcKey = g.currency === 'USD' ? (channels.usd ? 'usd' : (channels.opencode ? 'opencode' : null))
+                                          : (channels.cny ? 'cny' : null);
+      if (!srcKey) continue;
+      const ov = (g.priceOverrides && g.priceOverrides[mname]) || {};
+      const det = weightDetail(Object.assign({}, channels[srcKey], ov), prov, null);
+      const kind = g.currency === 'USD' ? 'usd' : 'cny';
+      const notes = Object.keys(ov).length
+        ? ['订阅价格覆盖：' + Object.entries(ov).map(([k, v]) => (COMP[k] || k) + ' 按 ' + tprice(v, kind) + ' 计（无优惠）').join('，')]
+        : null;
+      for (const pl in g.plans){
+        const p = g.plans[pl];
+        out[gname + '||' + pl] = {
+          value: det.total * p.fee / p.quota_monthly, currency: g.currency, det: det, notes: notes,
+          plan: {group: gname, plan: pl, fee: p.fee, quota: p.quota_monthly, currency: g.currency,
+                 formula: '折算 =（综合价 ÷ 月额度）× 月费'},
+        };
       }
     }
   }
-  out.sort((a,b) => a.value - b.value);
   return out;
 }
 
-(function stats(){
-  let modelCount = 0;
-  for (const pn in DATA.providers) modelCount += Object.keys(DATA.providers[pn].models).length;
-  document.getElementById('stats').innerHTML =
-    '<div class="stat"><div class="k">汇率</div><div class="v">' + DATA.usd_to_cny + '<small>¥ / $</small></div></div>' +
-    '<div class="stat"><div class="k">厂商</div><div class="v">' + Object.keys(DATA.providers).length + '</div></div>' +
-    '<div class="stat"><div class="k">模型</div><div class="v">' + modelCount + '</div></div>' +
-    '<div class="stat"><div class="k">订阅方案</div><div class="v">' + Object.keys(DATA.subscriptions).length + '</div></div>';
-})();
-
-/* 综合价主表：同模型跨行合并；中转站、订阅各档拆为独立列（只保留有值的列） */
+/* ---------- 综合价：每厂商一张表，厂商名吸收为表内标题行 ---------- */
 (function compare(){
   const box = document.getElementById('compareBox');
   const out = [];
   for (const pname in DATA.providers){
     const prov = DATA.providers[pname];
     if (prov.weights == null) continue;
-    const fmtW = w => Object.entries(w).map(([k,v]) => '<b>' + (COMP[k] || k) + '</b> ' + v).join(' · ');
-    let wDesc = '权重 ' + fmtW(prov.weights);
-    for (const chk in (prov.channelWeights || {})){
-      const ci = CHANNELS[chk] || {label:chk};
-      wDesc += '；' + ci.label + ' 权重 ' + fmtW(prov.channelWeights[chk]);
-    }
+    const pnotes = prov.notes || {};
 
+    /* 行数据 */
     const groups = [], midSet = [];
     for (const mname in prov.models){
-      const g = {mname:mname, rows:[]};
+      const g = {mname: mname, rows: []};
       for (const {ck, channels} of normalizeConditions(prov.models[mname])){
-        const usd = channels.usd ? weightSum(channels.usd, prov, 'usd')
-                   : channels.opencode ? weightSum(channels.opencode, prov, 'opencode') : null;
-        let cny = channels.cny ? weightSum(channels.cny, prov, 'cny') : null;
-        if (cny == null && usd != null) cny = usd * USD_CNY;
+        const usdKey = channels.usd ? 'usd' : (channels.opencode ? 'opencode' : null);
+        const usdDet = usdKey ? weightDetail(channels[usdKey], prov, usdKey) : null;
+        const cnyDet = channels.cny ? weightDetail(channels.cny, prov, 'cny') : null;
+        const usd = usdDet ? usdDet.total : null;
+        let cny = cnyDet ? cnyDet.total : null;
+        let cnyDerived = false;
+        if (cny == null && usd != null){ cny = usd * USD_CNY; cnyDerived = true; }
+
         const mids = {};
         for (const chk in channels) if (chk.indexOf('packy') === 0){
-          mids[chk] = weightSum(channels[chk], prov, chk);
+          const det = weightDetail(channels[chk], prov, chk);
+          mids[chk] = {det: det, value: det ? det.total : null, notes: pnotes[chk] || null};
           if (midSet.indexOf(chk) < 0) midSet.push(chk);
         }
-        const subs = {};
+        const subs = subDetail(mname, channels, prov);
+
+        /* 最优：全部渠道折人民币取最低 */
         let best = null;
-        for (const s of subscriptionPrices(mname, channels, prov, usd, cny)){
-          subs[s.group + '||' + s.plan] = s;
-          if (best == null || s.value < best) best = s.value;
+        for (const chk in mids){
+          const m = mids[chk];
+          if (m.value == null) continue;
+          if (!best || m.value < best.cny) best = {label: '中转站 ' + CHANNELS[chk].label, value: m.value, kind: 'cny', cny: m.value, mid: chk};
         }
-        g.rows.push({ck:ck, usd:usd, cny:cny, mids:mids, subs:subs, best:best});
+        for (const key in subs){
+          const s = subs[key];
+          const cnyV = s.currency === 'USD' ? s.value * USD_CNY : s.value;
+          if (!best || cnyV < best.cny) best = {label: key.split('||')[0] + ' ' + key.split('||')[1], value: s.value, kind: s.currency === 'USD' ? 'usd' : 'cny', cny: cnyV, sub: key};
+        }
+        g.rows.push({ck: ck, mname: mname, usdDet: usdDet, usdKey: usdKey, usd: usd,
+                     cnyDet: cnyDet, cny: cny, cnyDerived: cnyDerived, mids: mids, subs: subs, best: best});
       }
       groups.push(g);
     }
 
+    /* 渠道列：本厂商实际有的中转站 + 有值的订阅档 */
     const vendorModels = Object.keys(prov.models);
-    const subCols = [];
+    const subGroups = [];
     for (const gname in DATA.subscriptions){
       const g = DATA.subscriptions[gname];
       if (!g.models.some(m => vendorModels.indexOf(m) >= 0)) continue;
+      const plans = [];
       for (const pl in g.plans){
-        if (groups.some(gr => gr.rows.some(r => r.subs[gname + '||' + pl]))) subCols.push({group:gname, plan:pl});
+        if (groups.some(gr => gr.rows.some(r => r.subs[gname + '||' + pl]))) plans.push(pl);
       }
+      if (plans.length) subGroups.push({group: gname, plans: plans});
     }
-
     const colDefs = [];
-    midSet.forEach(chk => colDefs.push({kind:'mid', key:chk, label:(CHANNELS[chk] ? CHANNELS[chk].label.replace(/^中转站 /, '') : chk)}));
+    midSet.forEach((chk, i) => colDefs.push({kind: 'mid', key: chk, label: CHANNELS[chk].label, grp: i === 0, note: pnotes[chk] || null}));
     let prevGroup = null;
-    for (const sc of subCols){
-      colDefs.push({kind:'sub', key:sc.group + '||' + sc.plan, label:sc.plan, group:sc.group, grp:sc.group !== prevGroup});
-      prevGroup = sc.group;
+    for (const sg of subGroups){
+      for (const pl of sg.plans){
+        colDefs.push({kind: 'sub', key: sg.group + '||' + pl, label: pl, group: sg.group, grp: sg.group !== prevGroup});
+        prevGroup = sg.group;
+      }
     }
     if (colDefs.length) colDefs[0].grp = true;
 
-    const hasCond = groups.some(gr => gr.rows.some(r => r.ck !== 'default'));
-    // 模型（含条件）固定占 300px，无独立条件列时由模型列吸收，保证美元/人民币列跨表对齐
-    const modelW = hasCond ? 200 : 300;
-    let cg = '<col style="width:' + modelW + 'px">' + (hasCond ? '<col style="width:100px">' : '') + '<col style="width:150px"><col style="width:150px">';
-    for (const cd of colDefs) cg += '<col>';
-    let head = '<tr><th rowspan="2">模型</th>' + (hasCond ? '<th rowspan="2">条件</th>' : '') + '<th rowspan="2" class="h-usd">美元</th><th rowspan="2" class="h-cny">人民币</th>';
-    if (midSet.length) head += '<th colspan="' + midSet.length + '" class="h-mid">中转站</th>';
-    let gi = 0;
-    while (gi < subCols.length){
-      let gj = gi;
-      while (gj < subCols.length && subCols[gj].group === subCols[gi].group) gj++;
-      head += '<th colspan="' + (gj - gi) + '" class="h-sub">' + subCols[gi].group + '</th>';
-      gi = gj;
+    /* 条件列始终渲染；所有数据列同宽，保证格点跨行跨表对齐 */
+    const L = {model: 0, cond: W.model, ref: W.model + W.col, best: W.model + W.col * 3};
+
+    let cg = '<col style="width:' + W.model + 'px">';
+    for (let i = 0; i < 4 + colDefs.length; i++) cg += '<col style="width:' + W.col + 'px">';
+    cg += '<col>'; /* 弹性填充列 */
+
+    const fmtW = w => Object.entries(w).map(([k, x]) => '<b>' + (COMP[k] || k) + '</b>×' + x).join(' · ');
+    /* 缓存命中率 = 缓存命中 ÷（缓存命中 + 输入 + 缓存写入），按权重计算 */
+    const w0 = prov.weights;
+    let inW = w0.input || 0;
+    for (const k in w0) if (k.indexOf('cache_write') === 0) inW += w0[k];
+    const hitRate = ((w0.cache_hit || 0) / ((w0.cache_hit || 0) + inW) * 100).toFixed(1);
+
+    /* 左上角：模型+条件表头合并为厂商标题区 */
+    let head = '<tr><th class="sk vh" colspan="2" rowspan="2" style="left:0">' +
+      '<div class="vn">' + pname + '<span class="hit">缓存命中率 ' + hitRate + '%</span></div>' +
+      '<div class="vw">' + fmtW(prov.weights) + '</div></th>' +
+      '<th class="sk rf" colspan="2" style="left:' + L.ref + 'px">参考</th>' +
+      '<th class="sk sep" rowspan="2" style="left:' + L.best + 'px">最优</th>';
+    if (midSet.length) head += '<th colspan="' + midSet.length + '" class="thm">中转站</th>';
+    for (const sg of subGroups) head += '<th colspan="' + sg.plans.length + '" class="ths">' + sg.group + '</th>';
+    head += '<th class="fill" rowspan="2"></th></tr><tr>';
+    /* 参考列按实际来源命名：美国厂商 $官方 + ¥换算；中国厂商 $OpenCode + ¥官方 */
+    const usdOfficial = groups.some(g => g.rows.some(r => r.usdKey === 'usd'));
+    const cnyDerived = groups.some(g => g.rows.some(r => r.cnyDerived));
+    head += '<th class="sk rf" style="left:' + L.ref + 'px">' + (usdOfficial ? '$ 官方' : '$ OpenCode') + '</th>' +
+            '<th class="sk rf" style="left:' + (L.ref + W.col) + 'px">' + (cnyDerived ? '¥ 换算' : '¥ 官方') + '</th>';
+    for (const cd of colDefs){
+      const inf = cd.note ? '<span class="inf" data-tip="' + regTip(infoTip(cd.label, cd.note)) + '">i</span>' : '';
+      head += '<th class="' + (cd.kind === 'mid' ? 'thm' : 'ths') + (cd.grp ? ' grp' : '') + '">' + cd.label + inf + '</th>';
     }
-    head += '</tr><tr>';
-    for (const cd of colDefs) head += '<th class="' + (cd.grp ? 'grp ' : '') + (cd.kind === 'mid' ? 'h-mid' : 'h-sub') + '">' + cd.label + '</th>';
     head += '</tr>';
 
+    /* 表体 */
     let body = '';
     for (const g of groups){
       g.rows.forEach((r, ri) => {
+        const titleHtml = r.mname + (r.ck !== 'default' ? ' <span class="tc">' + r.ck + '</span>' : '');
         body += '<tr>';
-        if (ri === 0) body += '<td class="l cell-strong" rowspan="' + g.rows.length + '">' + g.mname + '</td>';
-        if (hasCond) body += '<td class="c">' + (r.ck === 'default' ? '' : '<span class="tag">' + r.ck + '</span>') + '</td>';
-        body += '<td class="num">' + price(r.usd, 'usd') + '</td>' +
-          '<td class="num">' + price(r.cny, 'cny') + '</td>';
+        if (ri === 0) body += '<td class="sk l mcell" rowspan="' + g.rows.length + '" style="left:0">' + g.mname + '</td>';
+        body += '<td class="sk c" style="left:' + L.cond + 'px">' + (r.ck === 'default' ? '' : '<span class="mut">' + r.ck + '</span>') + '</td>';
+
+        const usdTip = regTip(cellTip({title: titleHtml, titleSub: (CHANNELS[r.usdKey] ? CHANNELS[r.usdKey].label : '美元'),
+                                       det: r.usdDet, kind: 'usd'}));
+        /* ¥ 换算格：面板与美元格同构（美元分量 → 综合价 $ → 汇率换算 ¥） */
+        const cnyTip = r.cnyDerived
+          ? regTip(cellTip({title: titleHtml, titleSub: (CHANNELS[r.usdKey] ? CHANNELS[r.usdKey].label : '美元') + ' · 汇率换算',
+                            det: r.usdDet, kind: 'usd'}))
+          : regTip(cellTip({title: titleHtml, titleSub: '人民币官方', det: r.cnyDet, kind: 'cny', finalValue: r.cny}));
+        body += '<td class="sk rf" style="left:' + L.ref + 'px" data-tip="' + usdTip + '">' + priceHTML(r.usd, 'usd') + '</td>' +
+                '<td class="sk rf" style="left:' + (L.ref + W.col) + 'px" data-tip="' + cnyTip + '">' + priceHTML(r.cny, 'cny') + '</td>';
+
+        let bestTip = '';
+        if (r.best){
+          if (r.best.mid){
+            const m = r.mids[r.best.mid];
+            bestTip = cellTip({title: titleHtml, titleSub: '最优 · 中转站 ' + CHANNELS[r.best.mid].label,
+                               det: m.det, kind: 'cny', notes: m.notes ? [m.notes] : null});
+          } else {
+            const s = r.subs[r.best.sub];
+            bestTip = cellTip({title: titleHtml, titleSub: '最优 · ' + s.plan.group + ' ' + s.plan.plan,
+                               det: s.det, kind: s.points ? 'point' : (s.currency === 'USD' ? 'usd' : 'cny'),
+                               unit: s.points ? ' 积分' : '', sumLabel: s.points ? '综合消耗' : undefined,
+                               finalValue: s.value, finalKind: s.points ? 'cny' : undefined, plan: s.plan, notes: s.notes});
+          }
+        }
+        body += '<td class="sk sep best" style="left:' + L.best + 'px"' +
+          (r.best ? ' data-tip="' + regTip(bestTip) + '"' : '') + '>' +
+          (r.best ? '<div class="ce"><span class="bname">' + r.best.label + '</span>' + priceHTML(r.best.value, r.best.kind) + '</div>' : '') + '</td>';
+
         for (const cd of colDefs){
-          let inner;
+          let inner = '', tipId = '';
           if (cd.kind === 'mid'){
-            inner = price(r.mids[cd.key], 'mid');
+            const m = r.mids[cd.key];
+            if (m && m.value != null){
+              tipId = ' data-tip="' + regTip(cellTip({title: titleHtml, titleSub: '中转站 ' + cd.label,
+                                                      det: m.det, kind: 'cny', notes: m.notes ? [m.notes] : null})) + '"';
+              inner = '<div class="ce">' + priceHTML(m.value, 'cny') + coinsHTML(m.value, 'cny') + '</div>';
+            }
           } else {
             const s = r.subs[cd.key];
             if (s){
-              inner = price(s.value, s.currency === 'USD' ? 'usd' : 'cny', 'blue');
-              if (subCols.length > 1 && s.value === r.best) inner = '<span class="sub-best">' + inner + '</span>';
-            } else {
-              inner = price(null, 'cny');
+              const kind = s.points ? 'point' : (s.currency === 'USD' ? 'usd' : 'cny');
+              tipId = ' data-tip="' + regTip(cellTip({title: titleHtml, titleSub: s.plan.group + ' ' + s.plan.plan,
+                                                      det: s.det, kind: kind, unit: s.points ? ' 积分' : '',
+                                                      sumLabel: s.points ? '综合消耗' : undefined,
+                                                      finalValue: s.value, finalKind: s.points ? 'cny' : undefined,
+                                                      plan: s.plan, notes: s.notes})) + '"';
+              inner = '<div class="ce">' + priceHTML(s.value, s.currency === 'USD' ? 'usd' : 'cny') + coinsHTML(s.value, s.currency === 'USD' ? 'usd' : 'cny') + '</div>';
             }
           }
-          body += '<td class="num' + (cd.grp ? ' grp' : '') + '">' + inner + '</td>';
+          body += '<td' + (cd.grp ? ' class="grp"' : '') + tipId + '>' + inner + '</td>';
         }
-        body += '</tr>';
+        body += '<td class="fill"></td></tr>';
       });
     }
-    out.push('<div class="vendor-block">');
-    out.push('<div class="vendor-head"><span class="vendor-name">' + pname + '</span>' +
-             '<span class="vendor-weights">' + wDesc + '</span></div>');
-    out.push('<div class="table-wrap"><table><colgroup>' + cg + '</colgroup><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div></div>');
+    out.push('<div class="vt"><div class="scroll"><table class="cmp"><colgroup>' + cg + '</colgroup><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div></div>');
   }
   box.innerHTML = out.join('');
 })();
 
-/* 订阅方案 */
+/* ---------- 订阅方案详情（折叠） ---------- */
 (function plans(){
-  const box = document.getElementById('plansBox');
+  const typeLabel = {money_quota: '额度制', points: '积分制'};
   const out = [];
-  const typeLabel = {money_quota:'额度制', credit:'积分制', coefficient:'积分系数制'};
   for (const gname in DATA.subscriptions){
     const g = DATA.subscriptions[gname];
-    const unit = g.currency;
+    const kind = g.currency === 'USD' ? 'usd' : 'cny';
     const isMoney = g.type === 'money_quota';
     const hasWH = (Object.values(g.plans)[0] || {}).quota_weekly != null;
-    let head = '<div class="plan-head"><span class="plan-name">' + gname + '</span>' +
-      '<span class="badge ' + (unit === 'USD' ? 'badge-usd' : 'badge-cny') + '">' + curSign(unit) + '</span>' +
-      '<span class="tag">' + (typeLabel[g.type] || g.type) + '</span></div>';
-    let table = '<table><thead><tr><th class="l">套餐</th><th>月费</th>';
-    if (hasWH) table += '<th>5h 额度</th><th>周额度</th>';
-    table += '<th>月额度</th></tr></thead><tbody>';
-    const quotaCell = v => isMoney
-      ? '<span class="num">' + curSign(unit) + fmt(v) + '</span>'
-      : '<span class="num">' + fmt(v) + ' <span class="mini">积分</span></span>';
+    let h = '<div class="pc"><div class="ph"><span class="pn">' + gname + '</span>' +
+      '<span class="badge b-' + kind + '">' + curSym(kind) + '</span>' +
+      '<span class="pt">' + (typeLabel[g.type] || g.type) + '</span></div>';
+    h += '<table><thead><tr><th>套餐</th><th>月费</th>' + (hasWH ? '<th>5h 额度</th><th>周额度</th>' : '') + '<th>月额度</th></tr></thead><tbody>';
+    const q = v => isMoney ? tprice(v, kind) : fmt(v) + ' 积分';
     for (const pname in g.plans){
       const p = g.plans[pname];
-      table += '<tr><td class="l cell-strong">' + pname + '</td>' +
-        '<td class="num">' + curSign(unit) + fmt(p.fee) + '</td>';
-      if (hasWH) table += '<td>' + quotaCell(p.quota_5h) + '</td><td>' + quotaCell(p.quota_weekly) + '</td>';
-      table += '<td>' + quotaCell(p.quota_monthly) + '</td></tr>';
+      h += '<tr><td><b>' + pname + '</b></td><td>' + tprice(p.fee, kind) + '</td>';
+      if (hasWH) h += '<td>' + q(p.quota_5h) + '</td><td>' + q(p.quota_weekly) + '</td>';
+      h += '<td>' + q(p.quota_monthly) + '</td></tr>';
     }
-    table += '</tbody></table>';
-    let extra = g.type === 'credit' ? '<div class="plan-models">1 积分 = ' + curSign(unit) + g.credit_to_currency + ' · 适用：' + g.models.join('、') + '</div>'
-                                   : '<div class="plan-models">适用：' + g.models.join('、') + '</div>';
-    out.push('<div class="plan-card">' + head + table + extra + '</div>');
+    h += '</tbody></table><div class="pf">' +
+      (g.credit_to_currency ? '1 积分 ≈ ' + tprice(g.credit_to_currency, kind) + '（经验值）· ' : '') +
+      '适用：' + g.models.join('、') + '</div></div>';
+    out.push(h);
   }
-  box.innerHTML = out.join('');
+  document.getElementById('plansBox').innerHTML = out.join('');
 })();
 
-/* 原始价格：渠道拆为列组（列头即渠道），同模型跨行合并，只保留实际存在的渠道与分量 */
+/* ---------- 原始价格（折叠，来源求证；厂商名吸收为表内标题行） ---------- */
 (function raw(){
-  const box = document.getElementById('rawBox');
+  const ORDER = ['input', 'cache_write', 'cache_write_5min', 'cache_write_30min', 'cache_write_1h', 'cache_hit', 'output'];
+  const CHAN_ORDER = ['usd', 'cny', 'opencode', 'packy_cc_sale', 'packy_codex', 'packy_grok_sale', 'packy_gemini_slb', 'glm_coding_points', 'bailian_credits'];
   const out = [];
-  const ORDER = ['input','cache_write','cache_write_5min','cache_write_30min','cache_write_1h','cache_hit','output'];
-  const CHAN_ORDER = ['usd','cny','opencode','packy_cc_sale','packy_codex','packy_grok_sale','packy_gemini_slb','glm_coding_points'];
   for (const pname in DATA.providers){
     const prov = DATA.providers[pname];
     const chanSet = [], chanFields = {};
@@ -441,8 +602,7 @@ function subscriptionPrices(mname, channels, prov, usd, cny){
       for (const {channels} of normalizeConditions(prov.models[mname])){
         for (const chk in channels){
           if (chanSet.indexOf(chk) < 0){ chanSet.push(chk); chanFields[chk] = new Set(); }
-          const prices = channels[chk];
-          for (const f in prices) if (prices[f] != null) chanFields[chk].add(f);
+          for (const f in channels[chk]) if (channels[chk][f] != null) chanFields[chk].add(f);
         }
       }
     }
@@ -453,45 +613,91 @@ function subscriptionPrices(mname, channels, prov, usd, cny){
     for (const chk of chans) chanCols[chk] = ORDER.filter(f => chanFields[chk].has(f));
     const hasCond = Object.values(prov.models).some(conds => normalizeConditions(conds).some(it => it.ck !== 'default'));
 
-    const modelW = hasCond ? 200 : 300;
-    let cg = '<col style="width:' + modelW + 'px">' + (hasCond ? '<col style="width:100px">' : '');
-    for (const chk of chans) for (const f of chanCols[chk]) cg += '<col>';
-    let head = '<tr><th rowspan="2">模型</th>' + (hasCond ? '<th rowspan="2">条件</th>' : '');
+    const ncols = 1 + (hasCond ? 1 : 0) + chans.reduce((n, chk) => n + chanCols[chk].length, 0) + 1;
+    let cg = '<col style="width:' + W.model + 'px">';
+    for (let i = 0; i < ncols - 2; i++) cg += '<col style="width:' + W.col + 'px">';
+    cg += '<col>';
+
+    let head = '<tr><th class="cap" colspan="' + ncols + '">' + pname + '</th></tr>';
+    head += '<tr><th rowspan="2">模型</th>' + (hasCond ? '<th rowspan="2">条件</th>' : '');
     for (const chk of chans){
-      const ci = CHANNELS[chk] || {label:chk, cls:'cny'};
-      head += '<th colspan="' + chanCols[chk].length + '" class="h-' + ci.cls + '">' + ci.label + '</th>';
+      const ci = CHANNELS[chk] || {label: chk, kind: 'cny'};
+      const ciNote = ci.note ? '<span class="inf" data-tip="' + regTip(infoTip(ci.label, ci.note)) + '">i</span>' : '';
+      head += '<th colspan="' + chanCols[chk].length + '" class="h-' + ci.kind + '">' + ci.label + ciNote + '</th>';
     }
-    head += '</tr><tr>';
+    head += '<th class="fill" rowspan="2"></th></tr><tr>';
     chans.forEach((chk, i) => {
-      const ci = CHANNELS[chk] || {label:chk, cls:'cny'};
-      for (const f of chanCols[chk]) head += '<th class="' + (i === 0 ? 'grp ' : '') + 'h-' + ci.cls + '">' + (COMP[f] || f) + '</th>';
+      const ci = CHANNELS[chk] || {label: chk, kind: 'cny'};
+      for (const f of chanCols[chk]) head += '<th class="' + (i === 0 ? 'grp ' : '') + 'h-' + ci.kind + '">' + (COMP[f] || f) + '</th>';
     });
     head += '</tr>';
 
     let body = '';
     for (const mname in prov.models){
       const merged = normalizeConditions(prov.models[mname]);
-      const condKeys = merged.map(it => it.ck);
-      condKeys.forEach((ck, ci) => {
-        const channels = merged[ci].channels;
+      merged.forEach((it, mi) => {
         body += '<tr>';
-        if (ci === 0) body += '<td class="l cell-strong" rowspan="' + condKeys.length + '">' + mname + '</td>';
-        if (hasCond) body += '<td class="c">' + (ck === 'default' ? '' : '<span class="tag">' + ck + '</span>') + '</td>';
+        if (mi === 0) body += '<td class="l" rowspan="' + merged.length + '"><b>' + mname + '</b></td>';
+        if (hasCond) body += '<td>' + (it.ck === 'default' ? '' : '<span class="mut">' + it.ck + '</span>') + '</td>';
         chans.forEach((chk, i) => {
-          const ci2 = CHANNELS[chk] || {label:chk, cls:'cny'};
-          const prices = channels[chk];
+          const ci2 = CHANNELS[chk] || {label: chk, kind: 'cny'};
+          const prices = it.channels[chk];
           for (const f of chanCols[chk]){
-            body += '<td class="num' + (i === 0 ? ' grp' : '') + '">' + price(prices ? prices[f] : null, ci2.cls) + '</td>';
+            body += '<td' + (i === 0 ? ' class="grp"' : '') + '>' + (prices && prices[f] != null ? priceHTML(prices[f], ci2.kind) : '') + '</td>';
           }
         });
-        body += '</tr>';
+        body += '<td class="fill"></td></tr>';
       });
     }
-    out.push('<div class="vendor-block"><div class="vendor-head"><span class="vendor-name">' + pname + '</span></div>' +
-             '<div class="table-wrap"><table><colgroup>' + cg + '</colgroup><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div></div>');
+    out.push('<div class="rawv"><div class="scroll"><table class="raw"><colgroup>' + cg + '</colgroup><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div></div>');
   }
-  box.innerHTML = out.join('');
+  document.getElementById('rawBox').innerHTML = out.join('');
 })();
+
+/* ---------- tooltip 引擎 ---------- */
+(function tipEngine(){
+  const el = document.getElementById('tip');
+  let timer = null, cur = null;
+  function move(e){
+    const pad = 14;
+    const r = el.getBoundingClientRect();
+    let x = e.clientX + pad, y = e.clientY + pad;
+    if (x + r.width > window.innerWidth - 8) x = e.clientX - r.width - pad;
+    if (y + r.height > window.innerHeight - 8) y = e.clientY - r.height - pad;
+    el.style.left = Math.max(4, x) + 'px';
+    el.style.top = Math.max(4, y) + 'px';
+  }
+  function hide(){
+    clearTimeout(timer);
+    cur = null;
+    el.classList.remove('on');
+  }
+  document.addEventListener('mouseover', e => {
+    const t = e.target.closest('[data-tip]');
+    if (!t || t === cur) return;
+    cur = t;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      el.innerHTML = TIPS[+t.dataset.tip] || '';
+      el.classList.add('on');
+      move(e);
+    }, 110);
+  });
+  document.addEventListener('mousemove', e => { if (cur && el.classList.contains('on')) move(e); });
+  document.addEventListener('mouseout', e => {
+    const t = e.target.closest('[data-tip]');
+    if (t && t === cur && !(e.relatedTarget && t.contains(e.relatedTarget))) hide();
+  });
+  document.addEventListener('scroll', hide, true);
+})();
+
+/* 顶栏锚点点击时展开对应 details */
+document.querySelectorAll('a[data-open]').forEach(a => {
+  a.addEventListener('click', () => {
+    const d = document.querySelector(a.getAttribute('href'));
+    if (d && d.tagName === 'DETAILS') d.open = true;
+  });
+});
 })();
 </script>
 </body>

@@ -77,7 +77,8 @@
     },
     "百炼 TokenPlan": {
       "currency": "CNY",
-      "type": "credit",
+      "type": "points",
+      "points_channel": "bailian_credits",
       "credit_to_currency": 0.01,
       "plans": {
         "Lite": {
@@ -108,7 +109,8 @@
     },
     "GLM Coding": {
       "currency": "CNY",
-      "type": "coefficient",
+      "type": "points",
+      "points_channel": "glm_coding_points",
       "plans": {
         "Lite": {
           "fee": 118,
@@ -397,6 +399,9 @@
           "input": 31,
           "output": 0.2
         }
+      },
+      "notes": {
+        "packy_grok_sale": "该中转站不支持缓存命中计费，综合价按 输入×31 + 输出×0.2 折算"
       }
     },
     "Google": {
@@ -437,9 +442,9 @@
               "output": 28
             },
             "glm_coding_points": {
-              "input": 6.9,
-              "cache_hit": 1.7,
-              "output": 24
+              "input": 690,
+              "cache_hit": 170,
+              "output": 2400
             }
           }
         },
@@ -456,9 +461,9 @@
               "output": 2.8
             },
             "glm_coding_points": {
-              "input": 2.3,
-              "cache_hit": 0.56,
-              "output": 8
+              "input": 230,
+              "cache_hit": 56,
+              "output": 800
             }
           },
           "限时五折": {
@@ -535,6 +540,11 @@
               "input": 9,
               "cache_hit": 0.3,
               "output": 27
+            },
+            "bailian_credits": {
+              "input": 900,
+              "cache_hit": 30,
+              "output": 2700
             }
           },
           "谷": {
@@ -547,6 +557,11 @@
               "input": 4.5,
               "cache_hit": 0.15,
               "output": 13.5
+            },
+            "bailian_credits": {
+              "input": 450,
+              "cache_hit": 15,
+              "output": 1350
             }
           }
         },
@@ -561,6 +576,11 @@
               "input": 3,
               "cache_hit": 0.1,
               "output": 9
+            },
+            "bailian_credits": {
+              "input": 300,
+              "cache_hit": 10,
+              "output": 900
             }
           },
           "谷": {
@@ -573,6 +593,11 @@
               "input": 1.5,
               "cache_hit": 0.05,
               "output": 4.5
+            },
+            "bailian_credits": {
+              "input": 150,
+              "cache_hit": 5,
+              "output": 450
             }
           }
         }
@@ -580,7 +605,7 @@
     },
     "千问": {
       "weights": {
-        "cache_write_30min": 1,
+        "cache_write": 1,
         "cache_hit": 30,
         "output": 0.2
       },
@@ -589,7 +614,7 @@
           "default": {
             "opencode": {
               "input": 2,
-              "cache_write_30min": 2.5,
+              "cache_write": 2.5,
               "cache_hit": 0.25,
               "output": 6
             },
@@ -598,6 +623,12 @@
               "cache_write": 15,
               "cache_hit": 1.2,
               "output": 36
+            },
+            "bailian_credits": {
+              "input": 1200,
+              "cache_write": 1500,
+              "cache_hit": 120,
+              "output": 3600
             }
           }
         },
@@ -605,7 +636,7 @@
           "default": {
             "opencode": {
               "input": 0.15,
-              "cache_write_30min": 0.2,
+              "cache_write": 0.2,
               "cache_hit": 0.016,
               "output": 0.47
             },
@@ -614,6 +645,12 @@
               "cache_write": 1,
               "cache_hit": 0.08,
               "output": 2.7
+            },
+            "bailian_credits": {
+              "input": 80,
+              "cache_write": 100,
+              "cache_hit": 8,
+              "output": 270
             }
           }
         }
