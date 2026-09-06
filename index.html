@@ -137,6 +137,10 @@ details .body{padding:2px 16px 18px}
 .pc th:first-child,.pc td:first-child{text-align:left}
 .pc .pf{margin-top:8px;font-size:12px;color:var(--faint)}
 
+/* 价格来源链接 */
+.src-a{font-size:11px;font-weight:700;color:var(--faint);margin-left:5px;vertical-align:1px}
+.src-a:hover{color:var(--usd)}
+
 /* 原始价格：厂商名吸收为表内标题行 */
 .rawv{margin-bottom:16px}
 .rawv:last-child{margin-bottom:0}
@@ -219,6 +223,12 @@ const CHANNELS = {
 };
 
 /* ---------- 基础工具 ---------- */
+/* 来源链接：sources 可为单个 URL 或 URL 数组 */
+function srcLinks(src){
+  if (!src) return '';
+  const arr = Array.isArray(src) ? src : [src];
+  return arr.map(u => '<a class="src-a" href="' + u + '" target="_blank" rel="noopener" title="' + u + '">↗</a>').join('');
+}
 function fmt(v){
   if (v == null) return '';
   return String(Number(v.toFixed(4)));
@@ -360,6 +370,7 @@ function subDetail(mname, channels, prov){
         : null;
       for (const pl in g.plans){
         const p = g.plans[pl];
+        if (p.excluded_models && p.excluded_models.indexOf(mname) >= 0) continue;
         out[gname + '||' + pl] = {
           value: det.total * p.fee / p.quota_monthly, currency: 'CNY', det: det, points: true, notes: notes,
           plan: {group: gname, plan: pl, fee: p.fee, quota: p.quota_monthly, quotaUnit: '积分', currency: 'CNY',
@@ -378,6 +389,7 @@ function subDetail(mname, channels, prov){
         : null;
       for (const pl in g.plans){
         const p = g.plans[pl];
+        if (p.excluded_models && p.excluded_models.indexOf(mname) >= 0) continue;
         out[gname + '||' + pl] = {
           value: det.total * p.fee / p.quota_monthly, currency: g.currency, det: det, notes: notes,
           plan: {group: gname, plan: pl, fee: p.fee, quota: p.quota_monthly, currency: g.currency,
@@ -397,6 +409,9 @@ function subDetail(mname, channels, prov){
     const prov = DATA.providers[pname];
     if (prov.weights == null) continue;
     const pnotes = prov.notes || {};
+    /* 厂商任一模型有官方人民币价 → 参考列为 ¥ 官方，缺官方价的行不做汇率换算 */
+    const provHasCny = Object.values(prov.models).some(conds =>
+      normalizeConditions(conds).some(it => it.channels.cny));
 
     /* 行数据 */
     const groups = [], midSet = [];
@@ -409,7 +424,7 @@ function subDetail(mname, channels, prov){
         const usd = usdDet ? usdDet.total : null;
         let cny = cnyDet ? cnyDet.total : null;
         let cnyDerived = false;
-        if (cny == null && usd != null){ cny = usd * USD_CNY; cnyDerived = true; }
+        if (cny == null && usd != null && !provHasCny){ cny = usd * USD_CNY; cnyDerived = true; }
 
         const mids = {};
         for (const chk in channels) if (chk.indexOf('packy') === 0){
@@ -463,6 +478,11 @@ function subDetail(mname, channels, prov){
     /* 条件列始终渲染；所有数据列同宽，保证格点跨行跨表对齐 */
     const L = {model: 0, cond: W.model, ref: W.model + W.col, best: W.model + W.col * 3};
 
+    /* 条件注明：conditionNotes 为条件名 → 说明，hover 浮窗显示 */
+    const cnotes = prov.conditionNotes || {};
+    const condInf = ck => (ck !== 'default' && cnotes[ck])
+      ? '<span class="inf" data-tip="' + regTip(infoTip(ck, cnotes[ck])) + '">i</span>' : '';
+
     let cg = '<col style="width:' + W.model + 'px">';
     for (let i = 0; i < 4 + colDefs.length; i++) cg += '<col style="width:' + W.col + 'px">';
     cg += '<col>'; /* 弹性填充列 */
@@ -485,9 +505,8 @@ function subDetail(mname, channels, prov){
     head += '<th class="fill" rowspan="2"></th></tr><tr>';
     /* 参考列按实际来源命名：美国厂商 $官方 + ¥换算；中国厂商 $OpenCode + ¥官方 */
     const usdOfficial = groups.some(g => g.rows.some(r => r.usdKey === 'usd'));
-    const cnyDerived = groups.some(g => g.rows.some(r => r.cnyDerived));
     head += '<th class="sk rf" style="left:' + L.ref + 'px">' + (usdOfficial ? '$ 官方' : '$ OpenCode') + '</th>' +
-            '<th class="sk rf" style="left:' + (L.ref + W.col) + 'px">' + (cnyDerived ? '¥ 换算' : '¥ 官方') + '</th>';
+            '<th class="sk rf" style="left:' + (L.ref + W.col) + 'px">' + (provHasCny ? '¥ 官方' : '¥ 换算') + '</th>';
     for (const cd of colDefs){
       const inf = cd.note ? '<span class="inf" data-tip="' + regTip(infoTip(cd.label, cd.note)) + '">i</span>' : '';
       head += '<th class="' + (cd.kind === 'mid' ? 'thm' : 'ths') + (cd.grp ? ' grp' : '') + '">' + cd.label + inf + '</th>';
@@ -501,7 +520,7 @@ function subDetail(mname, channels, prov){
         const titleHtml = r.mname + (r.ck !== 'default' ? ' <span class="tc">' + r.ck + '</span>' : '');
         body += '<tr>';
         if (ri === 0) body += '<td class="sk l mcell" rowspan="' + g.rows.length + '" style="left:0">' + g.mname + '</td>';
-        body += '<td class="sk c" style="left:' + L.cond + 'px">' + (r.ck === 'default' ? '' : '<span class="mut">' + r.ck + '</span>') + '</td>';
+        body += '<td class="sk c" style="left:' + L.cond + 'px">' + (r.ck === 'default' ? '' : '<span class="mut">' + r.ck + '</span>' + condInf(r.ck)) + '</td>';
 
         const usdTip = regTip(cellTip({title: titleHtml, titleSub: (CHANNELS[r.usdKey] ? CHANNELS[r.usdKey].label : '美元'),
                                        det: r.usdDet, kind: 'usd'}));
@@ -572,6 +591,7 @@ function subDetail(mname, channels, prov){
     const isMoney = g.type === 'money_quota';
     const hasWH = (Object.values(g.plans)[0] || {}).quota_weekly != null;
     let h = '<div class="pc"><div class="ph"><span class="pn">' + gname + '</span>' +
+      srcLinks(g.source) +
       '<span class="badge b-' + kind + '">' + curSym(kind) + '</span>' +
       '<span class="pt">' + (typeLabel[g.type] || g.type) + '</span></div>';
     h += '<table><thead><tr><th>套餐</th><th>月费</th>' + (hasWH ? '<th>5h 额度</th><th>周额度</th>' : '') + '<th>月额度</th></tr></thead><tbody>';
@@ -584,7 +604,10 @@ function subDetail(mname, channels, prov){
     }
     h += '</tbody></table><div class="pf">' +
       (g.credit_to_currency ? '1 积分 ≈ ' + tprice(g.credit_to_currency, kind) + '（经验值）· ' : '') +
-      '适用：' + g.models.join('、') + '</div></div>';
+      '适用：' + g.models.join('、') + '</div>' +
+      Object.entries(g.plans).filter(([, p]) => p.excluded_models && p.excluded_models.length)
+        .map(([pl, p]) => '<div class="pf">⚠ ' + pl + ' 不含：' + p.excluded_models.join('、') + '</div>').join('') +
+      '</div></div>';
     out.push(h);
   }
   document.getElementById('plansBox').innerHTML = out.join('');
@@ -612,6 +635,7 @@ function subDetail(mname, channels, prov){
     const chanCols = {};
     for (const chk of chans) chanCols[chk] = ORDER.filter(f => chanFields[chk].has(f));
     const hasCond = Object.values(prov.models).some(conds => normalizeConditions(conds).some(it => it.ck !== 'default'));
+    const cnotes = prov.conditionNotes || {};
 
     const ncols = 1 + (hasCond ? 1 : 0) + chans.reduce((n, chk) => n + chanCols[chk].length, 0) + 1;
     let cg = '<col style="width:' + W.model + 'px">';
@@ -623,7 +647,7 @@ function subDetail(mname, channels, prov){
     for (const chk of chans){
       const ci = CHANNELS[chk] || {label: chk, kind: 'cny'};
       const ciNote = ci.note ? '<span class="inf" data-tip="' + regTip(infoTip(ci.label, ci.note)) + '">i</span>' : '';
-      head += '<th colspan="' + chanCols[chk].length + '" class="h-' + ci.kind + '">' + ci.label + ciNote + '</th>';
+      head += '<th colspan="' + chanCols[chk].length + '" class="h-' + ci.kind + '">' + ci.label + srcLinks(prov.sources && prov.sources[chk]) + ciNote + '</th>';
     }
     head += '<th class="fill" rowspan="2"></th></tr><tr>';
     chans.forEach((chk, i) => {
@@ -638,7 +662,8 @@ function subDetail(mname, channels, prov){
       merged.forEach((it, mi) => {
         body += '<tr>';
         if (mi === 0) body += '<td class="l" rowspan="' + merged.length + '"><b>' + mname + '</b></td>';
-        if (hasCond) body += '<td>' + (it.ck === 'default' ? '' : '<span class="mut">' + it.ck + '</span>') + '</td>';
+        if (hasCond) body += '<td>' + (it.ck === 'default' ? '' : '<span class="mut">' + it.ck + '</span>' +
+          ((it.ck !== 'default' && cnotes[it.ck]) ? '<span class="inf" data-tip="' + regTip(infoTip(it.ck, cnotes[it.ck])) + '">i</span>' : '')) + '</td>';
         chans.forEach((chk, i) => {
           const ci2 = CHANNELS[chk] || {label: chk, kind: 'cny'};
           const prices = it.channels[chk];
