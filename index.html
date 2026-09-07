@@ -109,7 +109,6 @@ table.tt-t{width:100%;border-collapse:collapse}
 .tt-t tr.sum td{font-weight:700;font-size:13px}
 .tdiv{border-top:1px solid #4c4840;margin:7px 0}
 .tdiv.dash{border-top-style:dashed}
-.tform{margin:3px 0;color:#a29d8f;font-size:11.5px}
 .tsec{padding-top:3px;color:#b3ada0;font-size:12px}
 .tsec b{color:#f4f2ec;font-weight:600}
 .tnote{margin-top:8px;color:#eec674;font-size:12px}
@@ -136,6 +135,10 @@ details .body{padding:2px 16px 18px}
 .pc tr:last-child td{border-bottom:none}
 .pc th:first-child,.pc td:first-child{text-align:left}
 .pc .pf{margin-top:8px;font-size:12px;color:var(--faint)}
+/* 卡片内嵌折叠（如 OpenCode Go 各模型额度表）：轻量样式，无边框 */
+.pc details{border:none;background:none;margin:8px 0 0;border-radius:0}
+.pc details summary{padding:2px 0;font-size:12.5px;font-weight:600;color:var(--muted)}
+.pc details summary::before{margin-right:5px}
 
 /* 价格来源链接 */
 .src-a{font-size:11px;font-weight:700;color:var(--faint);margin-left:5px;vertical-align:1px}
@@ -208,19 +211,8 @@ document.getElementById('fxChip').textContent = '汇率 ¥' + USD_CNY + ' / $';
 const W = {model:150, col:132};
 const COIN_CAP = 10;
 
-const CHANNELS = {
-  usd:               {label:'美元官方',        kind:'usd'},
-  cny:               {label:'人民币官方',      kind:'cny'},
-  opencode:          {label:'OpenCode',        kind:'usd'},
-  packy_cc_sale:     {label:'cc-sale',         kind:'cny'},
-  packy_codex:       {label:'codex',           kind:'cny'},
-  packy_grok_sale:   {label:'grok-sale',       kind:'cny'},
-  packy_gemini_slb:  {label:'gemini-slb',      kind:'cny'},
-  glm_coding_points: {label:'GLM 积分',        kind:'point',
-    note:'官方以抵扣系数计费：积分数 = Σ(token × 系数) ÷ 10000。此处已按全站统一标准换算为每 1M tokens 积分（= 系数 × 100）'},
-  bailian_credits:   {label:'百炼积分',        kind:'point',
-    note:'积分单价为按 1 积分 = ¥0.01 从官方人民币价反推的经验值，未经官方证实'},
-};
+/* 渠道元数据（label/kind/note）在数据文件中维护 */
+const CHANNELS = DATA.channels || {};
 
 /* ---------- 基础工具 ---------- */
 /* 来源链接：sources 可为单个 URL 或 URL 数组 */
@@ -270,6 +262,13 @@ function coinsHTML(v, kind){
   return h + '</span>';
 }
 
+/* 折算比写作 1 : n（月费 : 月额度），即每元月费买到 n 元标价额度；n 接近整数取整，否则一位小数 */
+const ratioNum = inv => {
+  const ni = Math.round(inv);
+  return Math.abs(inv - ni) < 0.05 ? String(ni) : inv.toFixed(1);
+};
+const ratioStr = (fee, quota) => '<span style="color:var(--faint)">1 :</span> ' + ratioNum(quota / fee);
+
 /* ---------- 权重计价 ----------
    返回 {rows:[{key,label,price,w,sub}], total, w}，供数值与 hover 面板共用。
    权重键必须在价格数据中存在，不做任何回退。 */
@@ -287,14 +286,15 @@ function weightDetail(prices, prov, chk){
   }
   return {rows: rows, total: total, w: w};
 }
-/* 中转站不区分条件：仅含中转站渠道的条件并入其他条件行 */
+/* 中转站不区分条件：仅含中转站渠道的条件并入其他条件行（中转站由渠道元数据 mid 标记） */
+function isMid(chk){ return !!(CHANNELS[chk] && CHANNELS[chk].mid); }
 function normalizeConditions(conditions){
   const merged = [];
   const carry = {};
   for (const ck in conditions){
     const channels = conditions[ck];
     const chks = Object.keys(channels);
-    if (chks.length > 0 && chks.every(c => c.indexOf('packy') === 0)){
+    if (chks.length > 0 && chks.every(isMid)){
       for (const c of chks) carry[c] = channels[c];
     } else {
       merged.push({ck: ck, channels: Object.assign({}, channels)});
@@ -327,9 +327,7 @@ function cellTip(o){
     secs.push(sumRow(o.sumLabel || '综合价', o.det.total, o.kind, unit));
   }
   if (o.finalValue != null && o.finalValue !== (o.det && o.det.total)){
-    let t = sumRow('折算后', o.finalValue, o.finalKind || o.kind);
-    if (o.plan && o.plan.formula) t += '<div class="tform">' + o.plan.formula + '</div>';
-    secs.push(t);
+    secs.push(sumRow('折算后', o.finalValue, o.finalKind || o.kind));
   }
   if (o.kind === 'usd'){
     const v = o.finalValue != null ? o.finalValue : (o.det ? o.det.total : null);
@@ -342,15 +340,15 @@ function cellTip(o){
     const quotaStr = p.quotaUnit === '积分' ? fmt(p.quota) + ' 积分' : tprice(p.quota, curKind);
     h += (secs.length ? '<div class="tdiv dash"></div>' : '') +
       '<div class="tsec"><b>' + p.group + ' · ' + p.plan + '</b>　月费 ' + tprice(p.fee, curKind) +
-      ' · 月额度 ' + quotaStr + '</div>';
+      ' · 月额度 ' + quotaStr + (p.quotaUnit === '积分' ? '' : ' · ' + ratioStr(p.fee, p.quota)) + '</div>';
   }
   if (o.notes && o.notes.length){
-    for (const n of o.notes) h += '<div class="tnote">⚠ ' + n + '</div>';
+    for (const n of o.notes) h += '<div class="tnote">⚠ ' + n.replace(/\n/g, '<br>') + '</div>';
   }
   return h;
 }
 function infoTip(title, text){
-  return '<div class="tt">' + title + '</div><div style="color:#d9d4c7">' + text + '</div>';
+  return '<div class="tt">' + title + '</div><div style="color:#d9d4c7">' + text.replace(/\n/g, '<br>') + '</div>';
 }
 
 /* ---------- 订阅折算（含 hover 所需的全部细节） ---------- */
@@ -365,35 +363,39 @@ function subDetail(mname, channels, prov){
       const pts = channels[g.points_channel];
       if (!pts) continue;
       const det = weightDetail(pts, prov, null);
-      const notes = g.credit_to_currency
-        ? ['积分单价按 1 积分 = ¥' + g.credit_to_currency + ' 由官方人民币价反推（经验值，未经官方证实）']
-        : null;
+      /* 积分渠道的说明（换算口径、单价来源等）由渠道元数据的 note 提供 */
+      const chNote = CHANNELS[g.points_channel] && CHANNELS[g.points_channel].note;
+      const notes = chNote ? [chNote] : null;
       for (const pl in g.plans){
         const p = g.plans[pl];
         if (p.excluded_models && p.excluded_models.indexOf(mname) >= 0) continue;
         out[gname + '||' + pl] = {
           value: det.total * p.fee / p.quota_monthly, currency: 'CNY', det: det, points: true, notes: notes,
-          plan: {group: gname, plan: pl, fee: p.fee, quota: p.quota_monthly, quotaUnit: '积分', currency: 'CNY',
-                 formula: '折算 =（综合消耗 ÷ 月额度）× 月费'},
+          plan: {group: gname, plan: pl, fee: p.fee, quota: p.quota_monthly, quotaUnit: '积分', currency: 'CNY'},
         };
       }
     } else if (g.type === 'money_quota'){
-      const srcKey = g.currency === 'USD' ? (channels.usd ? 'usd' : (channels.opencode ? 'opencode' : null))
-                                          : (channels.cny ? 'cny' : null);
+      /* price_channel 指定消耗所依据的标价渠道（OpenCode Go 按 opencode 标价、Ollama 按 ollama 标价）；
+         未指定时保持原逻辑：美元订阅取 usd/opencode，人民币订阅取 cny */
+      const srcKey = g.price_channel
+        ? (channels[g.price_channel] ? g.price_channel : null)
+        : g.currency === 'USD' ? (channels.usd ? 'usd' : (channels.opencode ? 'opencode' : null))
+                               : (channels.cny ? 'cny' : null);
       if (!srcKey) continue;
       const ov = (g.priceOverrides && g.priceOverrides[mname]) || {};
       const det = weightDetail(Object.assign({}, channels[srcKey], ov), prov, null);
       const kind = g.currency === 'USD' ? 'usd' : 'cny';
-      const notes = Object.keys(ov).length
-        ? ['订阅价格覆盖：' + Object.entries(ov).map(([k, v]) => (COMP[k] || k) + ' 按 ' + tprice(v, kind) + ' 计（无优惠）').join('，')]
-        : null;
+      /* 订阅注释一律手写于数据中的 notes 字段，不按数据拼接 */
+      const notes = (g.notes && g.notes.length) ? g.notes : null;
       for (const pl in g.plans){
         const p = g.plans[pl];
         if (p.excluded_models && p.excluded_models.indexOf(mname) >= 0) continue;
+        /* 各模型月额度可不同（OpenCode Go）；缺省回落到套餐统一的 quota_monthly */
+        const quota = (p.quota_monthly_by_model && p.quota_monthly_by_model[mname] != null)
+          ? p.quota_monthly_by_model[mname] : p.quota_monthly;
         out[gname + '||' + pl] = {
-          value: det.total * p.fee / p.quota_monthly, currency: g.currency, det: det, notes: notes,
-          plan: {group: gname, plan: pl, fee: p.fee, quota: p.quota_monthly, currency: g.currency,
-                 formula: '折算 =（综合价 ÷ 月额度）× 月费'},
+          value: det.total * p.fee / quota, currency: g.currency, det: det, notes: notes,
+          plan: {group: gname, plan: pl, fee: p.fee, quota: quota, currency: g.currency},
         };
       }
     }
@@ -427,7 +429,7 @@ function subDetail(mname, channels, prov){
         if (cny == null && usd != null && !provHasCny){ cny = usd * USD_CNY; cnyDerived = true; }
 
         const mids = {};
-        for (const chk in channels) if (chk.indexOf('packy') === 0){
+        for (const chk in channels) if (isMid(chk)){
           const det = weightDetail(channels[chk], prov, chk);
           mids[chk] = {det: det, value: det ? det.total : null, notes: pnotes[chk] || null};
           if (midSet.indexOf(chk) < 0) midSet.push(chk);
@@ -494,9 +496,11 @@ function subDetail(mname, channels, prov){
     for (const k in w0) if (k.indexOf('cache_write') === 0) inW += w0[k];
     const hitRate = ((w0.cache_hit || 0) / ((w0.cache_hit || 0) + inW) * 100).toFixed(1);
 
-    /* 左上角：模型+条件表头合并为厂商标题区 */
+    /* 左上角：模型+条件表头合并为厂商标题区；权重来源 ⓘ 在缓存命中率左侧 */
+    const wnote = prov.weights_note
+      ? '<span class="inf" style="margin:0 3px 0 0" data-tip="' + regTip(infoTip('缓存命中 · 综合权重', prov.weights_note)) + '">i</span>' : '';
     let head = '<tr><th class="sk vh" colspan="2" rowspan="2" style="left:0">' +
-      '<div class="vn">' + pname + '<span class="hit">缓存命中率 ' + hitRate + '%</span></div>' +
+      '<div class="vn">' + pname + '<span class="hit">' + wnote + '缓存命中率 ' + hitRate + '%</span></div>' +
       '<div class="vw">' + fmtW(prov.weights) + '</div></th>' +
       '<th class="sk rf" colspan="2" style="left:' + L.ref + 'px">参考</th>' +
       '<th class="sk sep" rowspan="2" style="left:' + L.best + 'px">最优</th>';
@@ -584,6 +588,8 @@ function subDetail(mname, channels, prov){
 /* ---------- 订阅方案详情（折叠） ---------- */
 (function plans(){
   const typeLabel = {money_quota: '额度制', points: '积分制'};
+  const ratioInf = '<span class="inf" data-tip="' + regTip(infoTip('折算比',
+    '1 : n = 月费 : 月额度，故实际成本 = 标价 ÷ n。')) + '">i</span>';
   const out = [];
   for (const gname in DATA.subscriptions){
     const g = DATA.subscriptions[gname];
@@ -592,20 +598,51 @@ function subDetail(mname, channels, prov){
     const hasWH = (Object.values(g.plans)[0] || {}).quota_weekly != null;
     let h = '<div class="pc"><div class="ph"><span class="pn">' + gname + '</span>' +
       srcLinks(g.source) +
-      '<span class="badge b-' + kind + '">' + curSym(kind) + '</span>' +
-      '<span class="pt">' + (typeLabel[g.type] || g.type) + '</span></div>';
-    h += '<table><thead><tr><th>套餐</th><th>月费</th>' + (hasWH ? '<th>5h 额度</th><th>周额度</th>' : '') + '<th>月额度</th></tr></thead><tbody>';
+      '<span class="badge b-' + kind + '">' + curSym(kind) + ' ' + (typeLabel[g.type] || g.type) + '</span></div>';
+    h += '<table><thead><tr><th>套餐</th><th>月费</th>' + (hasWH ? '<th>5h 额度</th><th>周额度</th>' : '') + '<th>月额度</th>' +
+      (isMoney ? '<th>折算比' + ratioInf + '</th>' : '') + '</tr></thead><tbody>';
     const q = v => isMoney ? tprice(v, kind) : fmt(v) + ' 积分';
     for (const pname in g.plans){
       const p = g.plans[pname];
-      h += '<tr><td><b>' + pname + '</b></td><td>' + tprice(p.fee, kind) + '</td>';
-      if (hasWH) h += '<td>' + q(p.quota_5h) + '</td><td>' + q(p.quota_weekly) + '</td>';
-      h += '<td>' + q(p.quota_monthly) + '</td></tr>';
+      /* 各模型额度不同（OpenCode Go）：5h/周/月额度均随模型变化，显示区间而非基准值 */
+      const qv = p.quota_monthly_by_model
+        ? g.models.filter(m => p.quota_monthly_by_model[m] != null).map(m => p.quota_monthly_by_model[m])
+        : null;
+      const rng = f => qv
+        ? tprice(Math.min.apply(null, qv) * f, kind) + ' ~ ' + tprice(Math.max.apply(null, qv) * f, kind)
+        : null;
+      h += '<tr><td><b>' + pname + '</b></td>' +
+        '<td>' + tprice(p.fee, kind) + '</td>';
+      if (hasWH) h += '<td>' + (rng(0.2) || q(p.quota_5h)) + '</td><td>' + (rng(0.5) || q(p.quota_weekly)) + '</td>';
+      h += '<td>' + (rng(1) || q(p.quota_monthly)) + '</td>';
+      if (isMoney) h += '<td>' + (qv
+        ? '<span style="color:var(--faint)">1 :</span> ' + ratioNum(Math.min.apply(null, qv) / p.fee) + ' ~ ' + ratioNum(Math.max.apply(null, qv) / p.fee)
+        : ratioStr(p.fee, p.quota_monthly)) + '</td>';
+      h += '</tr>';
     }
-    h += '</tbody></table><div class="pf">' +
-      (g.credit_to_currency ? '1 积分 ≈ ' + tprice(g.credit_to_currency, kind) + '（经验值）· ' : '') +
-      '适用：' + g.models.join('、') + '</div>' +
-      Object.entries(g.plans).filter(([, p]) => p.excluded_models && p.excluded_models.length)
+    h += '</tbody></table>';
+    const mrows = [];
+    for (const pl in g.plans){
+      const p = g.plans[pl];
+      if (!p.quota_monthly_by_model) continue;
+      for (const m in p.quota_monthly_by_model)
+        if (g.models.indexOf(m) >= 0) mrows.push({m: m, q: p.quota_monthly_by_model[m], fee: p.fee});
+    }
+    if (mrows.length){
+      mrows.sort((a, b) => a.q - b.q || (a.m < b.m ? -1 : 1));
+      h += '<details><summary>各模型额度（' + mrows.length + ' 个模型）</summary>' +
+        '<table><thead><tr><th>模型</th><th>5h 额度</th><th>周额度</th><th>月额度</th><th>折算比</th></tr></thead><tbody>';
+      for (const r of mrows)
+        h += '<tr><td>' + r.m + '</td><td>' + tprice(r.q / 5, kind) + '</td><td>' + tprice(r.q / 2, kind) + '</td>' +
+          '<td>' + tprice(r.q, kind) + '</td><td>' + ratioStr(r.fee, r.q) + '</td></tr>';
+      h += '</tbody></table></details>';
+    }
+    if (g.notes) for (const n of g.notes) h += '<div class="pf">⚠ ' + n.replace(/\n/g, '<br>') + '</div>';
+    /* 积分渠道的说明与 hover 同源：渠道元数据的 note；有各模型额度表时不再重复“适用”清单 */
+    const chNote = g.points_channel && CHANNELS[g.points_channel] && CHANNELS[g.points_channel].note;
+    if (chNote) h += '<div class="pf">⚠ ' + chNote.replace(/\n/g, '<br>') + '</div>';
+    if (!mrows.length) h += '<div class="pf">适用：' + g.models.join('、') + '</div>';
+    h += Object.entries(g.plans).filter(([, p]) => p.excluded_models && p.excluded_models.length)
         .map(([pl, p]) => '<div class="pf">⚠ ' + pl + ' 不含：' + p.excluded_models.join('、') + '</div>').join('') +
       '</div></div>';
     out.push(h);
@@ -616,7 +653,7 @@ function subDetail(mname, channels, prov){
 /* ---------- 原始价格（折叠，来源求证；厂商名吸收为表内标题行） ---------- */
 (function raw(){
   const ORDER = ['input', 'cache_write', 'cache_write_5min', 'cache_write_30min', 'cache_write_1h', 'cache_hit', 'output'];
-  const CHAN_ORDER = ['usd', 'cny', 'opencode', 'packy_cc_sale', 'packy_codex', 'packy_grok_sale', 'packy_gemini_slb', 'glm_coding_points', 'bailian_credits'];
+  const CHAN_ORDER = ['usd', 'cny', 'opencode', 'ollama', 'packy_cc_sale', 'packy_codex', 'packy_grok_sale', 'packy_gemini_slb', 'glm_coding_points', 'bailian_credits'];
   const out = [];
   for (const pname in DATA.providers){
     const prov = DATA.providers[pname];
