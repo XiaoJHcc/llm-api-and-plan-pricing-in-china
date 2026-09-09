@@ -33,6 +33,10 @@ a{color:inherit;text-decoration:none}
 .fx{padding:3px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);background:var(--card);font-variant-numeric:tabular-nums}
 .top-r a{color:var(--muted);font-weight:500}
 .top-r a:hover{color:var(--ink)}
+@media (max-width:640px){
+  .top-in{height:auto;flex-wrap:wrap;padding:7px 0;gap:0 12px}
+  .top-r{flex-wrap:wrap;gap:6px 12px;font-size:12.5px}
+}
 
 .inf{
   display:inline-flex;width:14px;height:14px;border-radius:50%;border:1px solid currentColor;
@@ -41,10 +45,20 @@ a{color:inherit;text-decoration:none}
 }
 .inf:hover{color:var(--ink)}
 
-/* 模型筛选：工具栏 + 厂商行（左厂商名整组开关，右标签云胶囊） */
-#fltDet{margin:18px 0 0}
-#fltSum .flt-n{margin-left:6px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--faint)}
-#fltSum .flt-n.part{color:var(--usd)}
+/* 模型筛选：折叠态为信息完整的开关条（名称 + 分类计数 + 展开箭头），展开态为浅色面板；内部为工具栏 + 厂商行（左厂商名整组开关，右标签云胶囊） */
+#fltDet{margin:2px 0 6px;border:none;background:none;border-radius:0;text-align:right}
+#fltSum{display:inline-flex;align-items:center;gap:14px;padding:8px 16px;border:1px solid var(--line);border-radius:10px;background:var(--card);transition:all .12s}
+#fltSum:hover{border-color:var(--grid-strong)}
+#fltSum::before{content:none}
+#fltSum::after{content:'▾';font-size:9px;color:var(--faint);transition:transform .15s}
+#fltDet[open] > summary{border-color:var(--grid-strong);background:var(--ref)}
+#fltDet[open] > summary::after{transform:rotate(180deg)}
+#fltSum .flt-ico{width:13px;height:13px;color:var(--faint);flex:none;align-self:center}
+#fltSum .flt-t{font-size:13px;font-weight:700}
+#fltSum .flt-g{display:inline-flex;align-items:baseline;gap:4px;padding-left:12px;border-left:1px solid var(--line);font-size:11px;color:var(--faint)}
+#fltSum .flt-g b{font-size:14.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+#fltSum .flt-g.part b{color:var(--usd)}
+#fltDet .body{margin-top:12px;padding:14px 18px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;text-align:left}
 .flt-sec{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
 .flt-acts{display:flex;gap:8px;flex:none}
 .flt-acts a{padding:2px 12px;border:1px solid var(--line);border-radius:999px;font-size:12.5px;color:var(--muted);cursor:pointer;user-select:none;transition:all .12s}
@@ -159,8 +173,8 @@ summary::before{content:'▸';margin-right:8px;color:var(--faint)}
 details[open] summary::before{content:'▾'}
 details .body{padding:2px 16px 18px}
 
-.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(620px,1fr));gap:12px}
-.pc{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(620px,100%),1fr));gap:12px}
+.pc{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--card)}
 .pc .ph{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .pc .pn{font-weight:700;font-size:14px}
 .badge{display:inline-flex;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:700}
@@ -197,6 +211,99 @@ table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
 .h-usd{color:var(--usd)} .h-cny{color:var(--cny)} .h-mid{color:var(--mid)} .h-sub{color:var(--sub)} .h-point{color:var(--point)}
 
 .loadfail{padding:26px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:14px;margin-top:22px}
+
+/* 首页主视觉 */
+.hero{position:relative;margin:30px 0 14px;padding:54px 0 42px;overflow:hidden}
+.hero-deco{position:absolute;right:2px;top:-12px;display:flex;align-items:flex-end;gap:8px;opacity:.08;pointer-events:none}
+.hero-deco i{width:18px;border-radius:4px 4px 0 0;background:var(--ink)}
+.hero-deco i:nth-child(1){height:46px;background:var(--usd)}
+.hero-deco i:nth-child(2){height:82px}
+.hero-deco i:nth-child(3){height:32px;background:var(--sub)}
+.hero-deco i:nth-child(4){height:104px;background:var(--cny)}
+.hero-deco i:nth-child(5){height:58px}
+.hero-deco i:nth-child(6){height:128px;background:var(--mid)}
+.hero-deco i:nth-child(7){height:74px;background:var(--point)}
+.hero-deco i:nth-child(8){height:40px}
+.hero-kicker{font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--cny)}
+.hero-h1{position:relative;margin:18px 0 20px;font:800 44px/1.18 Georgia,"Times New Roman","Songti SC","STSong",serif;letter-spacing:.005em}
+.hero-lede{position:relative;margin:0;color:var(--muted);font-size:15.5px;max-width:660px}
+.hero-feats{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:36px;max-width:1120px}
+.hf{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:11px 14px}
+.hf-t{font-size:13.5px;font-weight:750}
+.hf-t::before{content:'';display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:7px;background:var(--usd);vertical-align:1px}
+.hf:nth-child(2) .hf-t::before{background:var(--sub)}
+.hf:nth-child(3) .hf-t::before{background:var(--cny)}
+.hf-d{margin-top:3px;font-size:12px;color:var(--muted);line-height:1.55}
+.hf-off{border-style:dashed;background:var(--ref)}
+.hf-off .hf-t{color:var(--faint)}
+.hf-off .hf-t::before{background:var(--faint)}
+.hf-off .hf-d{color:var(--faint)}
+.hero-stats{position:relative;display:grid;grid-template-columns:repeat(4,1fr);margin-top:46px;border-top:1px solid var(--grid-strong)}
+.stat{padding:20px 26px 0;border-left:1px solid var(--line)}
+.stat:first-child{padding-left:0;border-left:none}
+.stat-n{font-size:32px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stat-l{margin-top:5px;font-size:12.5px;font-weight:700}
+.stat-s{display:block;margin-top:1px;font-size:11.5px;font-weight:500;color:var(--faint)}
+@media (max-width:900px){
+  .hero-feats{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:760px){
+  .hero-h1{font-size:31px}
+  .hero-deco{display:none}
+  .hero-feats{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .hero-stats{grid-template-columns:1fr}
+  .stat{border-left:none;padding:12px 0 0;border-top:1px dashed var(--line);margin-top:12px}
+  .stat:first-child{border-top:none;margin-top:0;padding-top:16px}
+}
+
+/* 价格全景柱状图 */
+.charts{margin:26px 0 4px}
+.cmp-sec,.plans-sec{margin:52px 0 4px}
+.charts-head{display:flex;align-items:center;gap:22px;margin:0 0 24px}
+.charts-head::before,.charts-head::after{content:'';flex:1;border-top:1px solid var(--grid-strong)}
+.charts-head h2{margin:0;font-size:20px;font-weight:800;letter-spacing:.14em;text-indent:.14em;white-space:nowrap}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.chart-card{min-width:0;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:15px 18px 13px}
+.chart-card h3{margin:0 0 10px;font-size:14.5px;font-weight:750}
+/* 每行 = 模型名 + 双面条（深色主条=最便宜条件，浅色副条=最贵条件）+ 数值；渠道/条件小字在条下对齐条头，两行定高槽位保证两图行高一致 */
+/* hover 聚焦：同图其余行淡出，当前行条柱加粗、文字提亮；明细经 data-tip 浮窗展示 */
+.bar-row{display:grid;grid-template-columns:150px minmax(0,1fr) 112px;gap:2px 10px;padding:3.5px 6px;margin:0 -6px;border-radius:6px;cursor:pointer;transition:opacity .15s}
+.chart:hover .bar-row:not(:hover){opacity:.38}
+.bar-name{font-size:12.5px;font-weight:600;color:var(--muted);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3;align-self:center;transition:color .15s}
+.bar-row:hover .bar-name{color:var(--ink)}
+.bar-track{position:relative;height:13px;background:var(--ref);border-radius:3px;overflow:hidden;align-self:center;transition:transform .15s cubic-bezier(.2,.7,.3,1)}
+.bar-row:hover .bar-track{transform:scaleY(1.5)}
+.bar-fill{position:absolute;left:0;top:0;bottom:0;border-radius:3px;animation:barIn .45s cubic-bezier(.2,.7,.3,1) both}
+@keyframes barIn{from{width:0}}
+.bar-fill.hi{background:#dcd8cd}
+.bar-fill.lo{background:#565249}
+#chartBest .bar-fill.hi{background:rgba(14,147,132,.22)}
+#chartBest .bar-fill.lo{background:var(--sub)}
+.bar-val{font-size:12.5px;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap;align-self:center}
+.bar-val-hi{font-size:11px;font-weight:400;color:var(--faint);transition:color .15s}
+.bar-row:hover .bar-val-hi{color:var(--muted)}
+.bar-subs{grid-column:2;min-height:30px;padding-top:3px;font-size:10.5px;line-height:15px;font-weight:400;overflow:hidden}
+.bar-sub{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-sub.lo{color:#565249}
+#chartBest .bar-sub.lo{color:var(--sub)}
+.bar-sub.hi{color:var(--faint);transition:color .15s}
+.bar-row:hover .bar-sub.hi{color:#8f8a7e}
+.bar-row.best .bar-fill.lo{background:#1e7e34}
+.bar-row.best .bar-fill.hi{background:rgba(30,126,52,.18)}
+.bar-row.best .bar-name{color:var(--ink)}
+.bar-row.best .bar-val{color:#1e7e34;font-weight:750}
+.bar-row.best .bar-sub.lo{color:#1e7e34}
+.chart-empty{padding:24px 0;text-align:center;font-size:13px;color:var(--faint)}
+/* 点击图表条形后定位到对比表对应行的闪烁提示 */
+@keyframes rowFlash{0%{background-color:#fce9c6}100%{background-color:transparent}}
+.cmp tbody tr.flash>td{animation:rowFlash 1.6s ease-out}
+@media (max-width:1100px){.charts-grid{grid-template-columns:1fr}}
+@media (max-width:760px){
+  .bar-row{grid-template-columns:96px minmax(0,1fr) 68px}
+  .bar-val-hi{display:none}
+}
 </style>
 </head>
 <body>
@@ -205,25 +312,69 @@ table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
     <span class="brand">LLM 价格对比</span>
     <div class="top-r">
       <span class="fx" id="fxChip">汇率 …</span>
+      <a href="#charts">价格全景</a>
       <a href="#compareBox">综合对比</a>
-      <a href="#plansDet" data-open>订阅方案</a>
+      <a href="#plansDet">订阅方案</a>
       <a href="#rawDet" data-open>原始数据</a>
     </div>
   </div>
 </header>
 
 <main class="wrap">
-  <details id="fltDet">
-    <summary id="fltSum">模型筛选</summary>
-    <div class="body" id="fltBox"></div>
-  </details>
-  <div id="compareBox"></div>
+  <section class="hero">
+    <div class="hero-deco" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="hero-kicker">编程场景 · 缓存命中率加权 · 订阅价格折算</div>
+    <h1 class="hero-h1">大模型综合使用成本</h1>
+    <p class="hero-lede">汇总各家 LLM 官方 API 价格，与 Coding Plan 订阅、中转站等渠道换算价格，按编程场景实际用量比例加权，综合对比成本。</p>
+    <div class="hero-feats">
+      <div class="hf"><div class="hf-t">加权综合价</div><div class="hf-d">长上下文编程任务，结合各厂商缓存命中率加权</div></div>
+      <div class="hf"><div class="hf-t">订阅渠道换算</div><div class="hf-d">官方与第三方订阅，按额度或积分折算优惠单价</div></div>
+      <div class="hf"><div class="hf-t">人民币折算</div><div class="hf-d">美元、积分统一折算为 ¥，自动标出最优渠道</div></div>
+      <div class="hf hf-off"><div class="hf-t">模型思考效率（未计入）</div><div class="hf-d">各模型思考努力程度、任务复杂度不同，无法量化计入</div></div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-n" id="statModels">–</div><div class="stat-l">统计模型<span class="stat-s">参与加权综合价计算</span></div></div>
+      <div class="stat"><div class="stat-n" id="statChans">–</div><div class="stat-l">订阅渠道<span class="stat-s">官方订阅 + 第三方中转站</span></div></div>
+      <div class="stat"><div class="stat-n">1:30:0.2</div><div class="stat-l">典型权重<span class="stat-s">来自个人实测</span></div></div>
+      <div class="stat"><div class="stat-n" id="statDate">–</div><div class="stat-l">数据更新<span class="stat-s">对照官方来源人工核对</span></div></div>
+    </div>
+  </section>
+
+  <section class="charts" id="charts">
+    <div class="charts-head">
+      <h2>价格全景</h2>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>各模型原价</h3>
+        <div class="chart" id="chartRef"></div>
+      </div>
+      <div class="chart-card">
+        <h3>各模型最低渠道价</h3>
+        <div class="chart" id="chartBest"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cmp-sec">
+    <div class="charts-head">
+      <h2>详细价格</h2>
+    </div>
+    <details id="fltDet">
+      <summary id="fltSum">模型筛选</summary>
+      <div class="body" id="fltBox"></div>
+    </details>
+    <div id="compareBox"></div>
+  </section>
+
+  <section class="plans-sec" id="plansDet">
+    <div class="charts-head">
+      <h2>订阅方案</h2>
+    </div>
+    <div class="pg" id="plansBox"></div>
+  </section>
 
   <section class="src">
-    <details id="plansDet">
-      <summary>订阅方案详情</summary>
-      <div class="body"><div class="pg" id="plansBox"></div></div>
-    </details>
     <details id="rawDet">
       <summary>原始价格（数据来源）</summary>
       <div class="body" id="rawBox"></div>
@@ -254,6 +405,12 @@ const W = {model:150, col:132};
 
 /* 渠道元数据（label/kind/note）在数据文件中维护 */
 const CHANNELS = DATA.channels || {};
+
+/* 汇总柱状图数据：主表每行的参考价（折人民币）与最优候选索引（BEST_ROWS 下标） */
+const CHART_ROWS = [];
+/* 筛选联动钩子：sync() 每次执行后以 (visible, chVisible) 回调；FILTER_STATE 保留最近一次状态 */
+const FILTER_HOOKS = [];
+let FILTER_STATE = null;
 
 /* ---------- 基础工具 ---------- */
 /* 来源链接：sources 可为单个 URL 或 URL 数组 */
@@ -613,7 +770,7 @@ function heatColor(v){
         for (const chk in r.mids){
           const m = r.mids[chk];
           if (m.value == null) continue;
-          cands.push({ch: 'mid', cny: m.value,
+          cands.push({ch: 'mid', cny: m.value, label: '中转站 ' + CHANNELS[chk].label,
             html: '<span class="pna">中转站 ' + CHANNELS[chk].label + '</span>' + pnumHTML(m.value, 'cny', heatColor(m.value)),
             tip: cellTip({title: titleHtml, titleSub: '最优 · 中转站 ' + CHANNELS[chk].label,
                           det: m.det, kind: 'cny', notes: m.notes ? [m.notes] : null})});
@@ -622,7 +779,7 @@ function heatColor(v){
           const s = r.subs[key];
           const cnyV = s.currency === 'USD' ? s.value * USD_CNY : s.value;
           const label = key.split('||')[0] + ' ' + key.split('||')[1];
-          cands.push({ch: 'sub:' + key.split('||')[0], cny: cnyV,
+          cands.push({ch: 'sub:' + key.split('||')[0], cny: cnyV, label: label,
             html: '<span class="pna">' + label + '</span>' + pnumHTML(cnyV, 'cny', heatColor(cnyV)),
             tip: cellTip({title: titleHtml, titleSub: '最优 · ' + s.plan.group + ' ' + s.plan.plan,
                           det: s.det, kind: s.points ? 'point' : (s.currency === 'USD' ? 'usd' : 'cny'),
@@ -632,6 +789,7 @@ function heatColor(v){
         for (const c of cands) c.tipId = regTip(c.tip);
         const bestIdx = BEST_ROWS.length;
         BEST_ROWS.push(cands);
+        CHART_ROWS.push({m: g.mname, ck: r.ck, ref: r.cny, best: bestIdx});
         let best0 = null;
         for (const c of cands) if (!best0 || c.cny < best0.cny) best0 = c;
         body += '<td class="sk sep px" style="left:' + L.best + 'px" data-best="' + bestIdx + '"' +
@@ -672,9 +830,12 @@ function heatColor(v){
 
 /* ---------- 筛选（默认折叠；仅影响综合对比主表：行按 data-m、渠道列按 data-ch 显隐） ---------- */
 (function filter(){
-  const defArr = DATA.filter_defaults || [];
-  const defSet = new Set(defArr);
-  const useDef = defArr.length > 0;
+  /* 默认勾选（模型 + 渠道）在 llm-prices.json 的 filter_defaults 中维护；缺省或为空则全部勾选 */
+  const defs = DATA.filter_defaults || {};
+  const defSet = new Set(defs.models || []);
+  const useDef = defSet.size > 0;
+  const chDefSet = new Set(defs.channels || []);
+  const useChDef = chDefSet.size > 0;
   const sum = document.getElementById('fltSum');
   const box = document.getElementById('fltBox');
 
@@ -699,8 +860,7 @@ function heatColor(v){
   if (chEls.mid) chans.push({key: 'mid', label: '中转站'});
   for (const gname in DATA.subscriptions) if (chEls['sub:' + gname]) chans.push({key: 'sub:' + gname, label: gname});
   const chVisible = {};
-  for (const c of chans) chVisible[c.key] = true;
-  const total = mTotal + chans.length;
+  for (const c of chans) chVisible[c.key] = useChDef ? chDefSet.has(c.key) : true;
 
   let h = '<div class="flt-cols"><div class="flt-main">' +
     '<div class="flt-sec"><span class="flt-cap">模型</span>' +
@@ -813,14 +973,152 @@ function heatColor(v){
       if (b){ td.innerHTML = b.html; td.setAttribute('data-tip', b.tipId); }
       else { td.innerHTML = ''; td.removeAttribute('data-tip'); }
     }
-    const n = Object.keys(visible).filter(m => visible[m]).length +
-              Object.keys(chVisible).filter(k => chVisible[k]).length;
-    sum.innerHTML = '筛选<span class="flt-n' + (n < total ? ' part' : '') + '">' + n + '/' + total + '</span>';
+    const mOn = Object.keys(visible).filter(m => visible[m]).length;
+    const cOn = Object.keys(chVisible).filter(k => chVisible[k]).length;
+    sum.innerHTML = '<svg class="flt-ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5h11l-4.3 4.9v4.1l-2.4 1.2v-5.3L2.5 3.5z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>' +
+      '<span class="flt-t">筛选</span>' +
+      '<span class="flt-g' + (mOn < mTotal ? ' part' : '') + '">模型 <b>' + mOn + '</b>/' + mTotal + '</span>' +
+      '<span class="flt-g' + (cOn < chans.length ? ' part' : '') + '">渠道 <b>' + cOn + '</b>/' + chans.length + '</span>';
+    FILTER_STATE = {visible: visible, chVisible: chVisible};
+    for (const f of FILTER_HOOKS) f(visible, chVisible);
   }
   sync();
 })();
 
-/* ---------- 订阅方案详情（折叠） ---------- */
+/* ---------- 首页计数 + 汇总柱状图（与筛选联动） ---------- */
+(function overview(){
+  /* 计数与主表口径一致：有权重、参与综合价的模型；渠道 = 中转站（整组）+ 订阅组 */
+  let nModels = 0;
+  let hasMid = false;
+  for (const pname in DATA.providers){
+    const prov = DATA.providers[pname];
+    if (prov.weights == null) continue;
+    const ms = Object.keys(prov.models);
+    nModels += ms.length;
+    if (!hasMid){
+      for (const m of ms){
+        for (const {channels} of normalizeConditions(prov.models[m])){
+          for (const chk in channels) if (isMid(chk)){ hasMid = true; break; }
+          if (hasMid) break;
+        }
+        if (hasMid) break;
+      }
+    }
+  }
+  document.getElementById('statModels').textContent = nModels;
+  document.getElementById('statChans').textContent = (hasMid ? 1 : 0) + Object.keys(DATA.subscriptions).length;
+  document.getElementById('statDate').textContent = DATA.updated || '—';
+
+  /* 按模型聚合主表行：refLo/refHi = 官方人民币价最低/最高的条件；rows 记录各条件行最优格索引，
+     最低价图在可见渠道内逐行取最优后，再跨条件取最低（主条）与最高（副条） */
+  const byModel = {};
+  for (const r of CHART_ROWS){
+    const o = byModel[r.m] || (byModel[r.m] = {refLo: null, refHi: null, rows: []});
+    if (r.ref != null){
+      if (!o.refLo || r.ref < o.refLo.v) o.refLo = {v: r.ref, ck: r.ck};
+      if (!o.refHi || r.ref > o.refHi.v) o.refHi = {v: r.ref, ck: r.ck};
+    }
+    o.rows.push({ck: r.ck, ref: r.ref, idx: r.best});
+  }
+  /* 条件标签：单一条件时仅非 default 才显示；双条件时 default 显示为「默认」 */
+  function condLabels(loCk, hiCk){
+    if (loCk === hiCk) return {lo: loCk === 'default' ? '' : loCk, hi: ''};
+    const f = ck => ck === 'default' ? '默认' : ck;
+    return {lo: f(loCk), hi: f(hiCk)};
+  }
+
+  const refEl = document.getElementById('chartRef');
+  const bestEl = document.getElementById('chartBest');
+  /* 点击条形：平滑滚动到对比表中该模型的首个可见行，并闪烁提示 */
+  function jumpTo(mname){
+    const trs = document.querySelectorAll('#compareBox tr[data-m="' + mname + '"]');
+    for (const tr of trs){
+      if (tr.style.display === 'none') continue;
+      tr.scrollIntoView({behavior: 'smooth', block: 'center'});
+      tr.classList.remove('flash');
+      void tr.offsetWidth;
+      tr.classList.add('flash');
+      return;
+    }
+  }
+  for (const el of [refEl, bestEl]) el.addEventListener('click', e => {
+    const row = e.target.closest('.bar-row');
+    if (row) jumpTo(row.dataset.m);
+  });
+  /* hover 浮窗：全部条件各一行（按价格升序），渠道图每条件只显示可见渠道中最便宜的一档 */
+  function condTip(mname, list, withChan){
+    let t = '<div class="tt">' + mname + '</div><table class="tt-t"><tr><th>条件</th>' +
+      (withChan ? '<th>最低渠道</th>' : '') + '<th>综合价</th></tr>';
+    for (const r of list)
+      t += '<tr><td>' + (r.ck === 'default' ? '默认' : r.ck) + '</td>' +
+        (withChan ? '<td>' + r.label + '</td>' : '') +
+        '<td>¥' + r.v.toFixed(2) + '</td></tr>';
+    return t + '</table>';
+  }
+  /* 双面条：深色主条 = 最便宜条件（lo），浅色副条延伸 = 最贵条件（hi）；
+     小字在条下对齐条头，lo 深色、hi 浅色；绿色高亮落在最低价图最便宜的一行（末行） */
+  function render(el, entries, isBest){
+    if (!entries.length){
+      el.innerHTML = '<div class="chart-empty">没有可见模型，请在下方「筛选」中选择</div>';
+      return;
+    }
+    let max = 0;
+    for (const e of entries) if (e.hi > max) max = e.hi;
+    let h = '';
+    entries.forEach((e, i) => {
+      const ranged = e.hi > e.lo;
+      const pctLo = Math.max(1.2, e.lo / max * 100);
+      const pctHi = Math.max(1.2, e.hi / max * 100);
+      h += '<div class="bar-row' + (isBest && i === entries.length - 1 ? ' best' : '') + '" data-m="' + e.m + '"' +
+        ' data-tip="' + regTip(condTip(e.m, e.list, isBest)) + '">' +
+        '<span class="bar-name" title="' + e.m + '">' + e.m + '</span>' +
+        '<span class="bar-track">' +
+          (ranged ? '<span class="bar-fill hi" style="width:' + pctHi.toFixed(2) + '%"></span>' : '') +
+          '<span class="bar-fill lo" style="width:' + pctLo.toFixed(2) + '%"></span></span>' +
+        '<span class="bar-val">¥' + e.lo.toFixed(2) +
+          (ranged ? ' <span class="bar-val-hi">~ ' + e.hi.toFixed(2) + '</span>' : '') + '</span>' +
+        '<span class="bar-subs">' +
+          (e.loLabel ? '<span class="bar-sub lo">' + e.loLabel + '</span>' : '') +
+          (ranged && e.hiLabel ? '<span class="bar-sub hi">' + e.hiLabel + '</span>' : '') +
+        '</span></div>';
+    });
+    el.innerHTML = h;
+  }
+  function update(visible, chVisible){
+    const refEntries = [], bestEntries = [];
+    for (const m in byModel){
+      if (visible && !visible[m]) continue;
+      const o = byModel[m];
+      if (o.refLo){
+        const cl = condLabels(o.refLo.ck, o.refHi.ck);
+        const list = o.rows.filter(r => r.ref != null).map(r => ({ck: r.ck, v: r.ref}));
+        list.sort((a, b) => a.v - b.v);
+        refEntries.push({m: m, lo: o.refLo.v, hi: o.refHi.v, loLabel: cl.lo, hiLabel: cl.hi, list: list});
+      }
+      const blist = [];
+      for (const row of o.rows){
+        let rb = null;
+        for (const c of BEST_ROWS[row.idx])
+          if (chVisible[c.ch] && (!rb || c.cny < rb.cny)) rb = c;
+        if (rb) blist.push({ck: row.ck, label: rb.label || '', v: rb.cny});
+      }
+      if (blist.length){
+        blist.sort((a, b) => a.v - b.v);
+        const blo = blist[0], bhi = blist[blist.length - 1];
+        const bl = r => r.label + (r.ck !== 'default' ? ' · ' + r.ck : '');
+        bestEntries.push({m: m, lo: blo.v, hi: bhi.v, loLabel: bl(blo), hiLabel: bl(bhi), list: blist});
+      }
+    }
+    refEntries.sort((a, b) => b.lo - a.lo);
+    bestEntries.sort((a, b) => b.lo - a.lo);
+    render(refEl, refEntries, false);
+    render(bestEl, bestEntries, true);
+  }
+  FILTER_HOOKS.push(update);
+  if (FILTER_STATE) update(FILTER_STATE.visible, FILTER_STATE.chVisible);
+})();
+
+/* ---------- 订阅方案 ---------- */
 (function plans(){
   const typeLabel = {money_quota: '额度制', points: '积分制'};
   const ratioInf = '<span class="inf" data-tip="' + regTip(infoTip('折算比',

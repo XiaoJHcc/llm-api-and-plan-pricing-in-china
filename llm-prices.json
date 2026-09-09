@@ -23,25 +23,36 @@
       "note": "按 1 积分 = ¥0.01 推算的经验值，未经官方证实" }
   },
   "usd_to_cny": 6.66,
-  "filter_defaults": [
-    "Fable 5.1",
-    "Opus 5",
-    "Sonnet 5",
-    "GPT 6 Astra",
-    "GPT 5.6 Sol",
-    "GPT 5.6 Terra",
-    "GPT 5.6 Luna",
-    "Grok 4.6",
-    "Gemini 3.7 Flash",
-    "GLM-5.3",
-    "GLM-5.3-Flash",
-    "Kimi K3",
-    "DeepSeek V4 Pro",
-    "DeepSeek V4 Flash",
-    "DeepSeek V4 Flash Vision Exp",
-    "Qwen 3.8 Max",
-    "Qwen 3.8 Flash"
-  ],
+  "updated": "2026.9.9",
+  "filter_defaults": {
+    "models": [
+      "Fable 5.1",
+      "Opus 5",
+      "Sonnet 5",
+      "GPT 6 Astra",
+      "GPT 5.6 Sol",
+      "GPT 5.6 Terra",
+      "GPT 5.6 Luna",
+      "Grok 4.6",
+      "Gemini 3.7 Flash",
+      "GLM-5.3",
+      "GLM-5.3-Flash",
+      "Kimi K3",
+      "DeepSeek V4 Pro",
+      "DeepSeek V4 Flash",
+      "DeepSeek V4 Flash Vision Exp",
+      "Qwen 3.8 Max",
+      "Qwen 3.8 Flash"
+    ],
+    "channels": [
+      "mid",
+      "sub:Kimi",
+      "sub:百炼 TokenPlan",
+      "sub:GLM Coding",
+      "sub:OpenCode Go",
+      "sub:Ollama"
+    ]
+  },
   "subscriptions": {
     "Claude": {
       "currency": "USD",
