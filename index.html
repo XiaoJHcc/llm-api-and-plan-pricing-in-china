@@ -9,8 +9,7 @@
   --bg:#faf9f7; --card:#ffffff; --line:#e9e6e0;
   --grid:#e4e0d6; --grid-strong:#d3ccbd;
   --ink:#1b1a17; --muted:#75716a; --faint:#a8a49b;
-  --usd:#2376d2; --cny:#c2402a; --mid:#7a5af5; --sub:#0e9384; --point:#7a5af5;
-  --gold:#e8b13e; --gold-d:#c3922a;
+  --usd:#2376d2; --cny:#c2402a; --mid:#7a5af5; --sub:#0e9384; --point:#e8590c;
   --hover:#f5f3ee; --ref:#f4f2ee;
 }
 *{box-sizing:border-box}
@@ -46,9 +45,17 @@ a{color:inherit;text-decoration:none}
 #compareBox{margin:20px 0 8px}
 .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
 table.cmp{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max-content;min-width:100%;font-size:15px}
-.cmp th,.cmp td{padding:9px 12px;border-right:1px solid var(--grid);border-bottom:1px solid var(--grid);text-align:right;vertical-align:middle;white-space:nowrap}
+.cmp th,.cmp td{border-right:1px solid var(--grid);border-bottom:1px solid var(--grid);text-align:right;vertical-align:middle;white-space:nowrap}
 .cmp tbody tr:last-child td{border-bottom:none}
-.cmp thead th{background:#f7f5f1;color:var(--muted);font-size:12.5px;font-weight:600;border-bottom:1px solid var(--grid);padding:7px 12px}
+.cmp thead th{background:#f7f5f1;color:var(--muted);font-size:12.5px;font-weight:600;border-bottom:1px solid var(--grid);padding:7px 12px;height:30px}
+/* 表体单元格统一定高 56px（列宽由 colgroup 固定）：文字内容一律装入绝对定位内层，
+   写不下可换行但被内层裁剪，绝不撑高单元格 */
+.cmp tbody td{height:56px;padding:0;position:relative}
+.cmp tbody td.sk{position:sticky} /* sticky 同样是定位上下文，勿被 relative 覆盖 */
+.pw{position:absolute;inset:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;padding:0 12px;overflow:hidden;line-height:1.35;white-space:normal}
+.pw.l{justify-content:flex-start;text-align:left}
+.pw.c{justify-content:center;text-align:center}
+.pwv{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:7px 12px;overflow:hidden;text-align:left}
 .cmp thead th{text-align:center}
 .cmp thead tr:last-child th{border-bottom:1px solid var(--grid-strong)}
 .cmp th.vh{text-align:left;vertical-align:middle}
@@ -73,23 +80,22 @@ thead .fill{background:#f7f5f1}
 .mcell{font-weight:700}
 .mut{color:var(--muted);font-size:12.5px}
 
-/* 数字：符号槽 + 整数 + 弱化小数，小数点对齐；颜色统一为墨色 */
+/* 原始数据表的数字：符号槽 + 整数 + 弱化小数，小数点对齐；颜色统一为墨色 */
 .np{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--ink)}
 .psym{display:inline-block;width:.95em;text-align:left;opacity:.5;font-weight:600;font-size:.85em;margin-right:1px}
 .pint{display:inline-block;width:2.6em;text-align:right;font-weight:650}
 .pdec{display:inline-block;width:3em;text-align:left;font-size:.78em;font-weight:400;color:var(--muted)}
 .rf .np{opacity:.55}
-.best .np{font-weight:750}
-.best .ce{align-items:center}
-.best{white-space:normal}
-.bname{font-size:11.5px;color:var(--faint);font-weight:600;line-height:1.3}
 
-/* 单元格内容右对齐列：数字在上、硬币在下 */
-.ce{display:flex;flex-direction:column;align-items:flex-end}
-.coins{display:flex;gap:2px;margin-top:2.5px;height:8px;align-items:center;justify-content:flex-end}
-.coin{width:8px;height:8px;border-radius:50%;background:var(--gold);border:1px solid var(--gold-d);flex:none}
-.coin.part{background:conic-gradient(var(--gold) var(--p),rgba(0,0,0,0) var(--p))}
-.coin-x{font-size:10px;line-height:1;color:var(--faint);font-weight:700;font-style:normal;margin-left:1px}
+/* 价格单元格数字块：在定高单元格内绝对定位。
+   币种由放大的 $/¥ 符号直接表达；中转站/订阅归属由列头分组与分隔线表达；
+   数字文字颜色表示全局价格热度（绿廉红贵，仅中转站/订阅/最优格着色），单元格底色不变 */
+.pnum{position:absolute;right:14px;top:50%;transform:translateY(-50%);white-space:nowrap;line-height:1;font-variant-numeric:tabular-nums;color:var(--ink)}
+.rf .pnum{opacity:.75}
+.psy{font-size:14px;font-weight:600;opacity:.7;margin-right:2px}
+.pin{font-size:18px;font-weight:750}
+.pde{display:inline-block;width:2.8em;text-align:left;font-size:12px;font-weight:500;opacity:.75}
+.pna{position:absolute;left:10px;bottom:6px;max-width:112px;overflow:hidden;text-overflow:ellipsis;font-size:10.5px;font-weight:600;color:var(--faint);line-height:1.2}
 
 /* hover 面板 */
 #tip{
@@ -207,9 +213,8 @@ const USD_CNY = DATA.usd_to_cny;
 const COMP = DATA.components || {};
 document.getElementById('fxChip').textContent = '汇率 ¥' + USD_CNY + ' / $';
 
-/* 列宽（px）：模型列 150；其余所有列统一 132 定宽，保证格点跨行跨表对齐 */
+/* 列宽（px）：模型列 150；其余所有列统一 132 定宽，行高由 td.px 定为 56，保证格点跨行跨表对齐 */
 const W = {model:150, col:132};
-const COIN_CAP = 10;
 
 /* 渠道元数据（label/kind/note）在数据文件中维护 */
 const CHANNELS = DATA.channels || {};
@@ -246,20 +251,16 @@ function priceHTML(v, kind){
     '<span class="pint">' + s.slice(0, d) + '</span>' +
     '<span class="pdec">.' + s.slice(d + 1) + '</span></span>';
 }
-/* 硬币堆：CNY 每枚 ¥5，USD 每枚 $1，不足一枚按比例填充，超上限截断为 +N */
-function coinsHTML(v, kind){
-  if (v == null || v <= 0) return '';
-  const unit = kind === 'usd' ? 1 : 5;
-  const total = v / unit;
-  let full = Math.floor(total + 1e-9);
-  const frac = total - full;
-  const over = full > COIN_CAP ? full - COIN_CAP : 0;
-  if (over) full = COIN_CAP;
-  let h = '<span class="coins">';
-  for (let i = 0; i < full; i++) h += '<i class="coin"></i>';
-  if (!over && frac > 0.02) h += '<i class="coin part" style="--p:' + Math.round(frac * 100) + '%"></i>';
-  if (over) h += '<b class="coin-x">+' + over + '</b>';
-  return h + '</span>';
+/* 定高单元格内的数字块：符号 + 大整数 + 定宽小数槽（小数点跨行对齐）；color 省略时为墨色（参考列） */
+function pnumHTML(v, kind, color){
+  if (v == null) return '';
+  const sym = curSym(kind);
+  const s = fix2(fmt(v));
+  const d = s.indexOf('.');
+  return '<span class="pnum"' + (color ? ' style="color:' + color + '"' : '') + '>' +
+    (sym ? '<span class="psy">' + sym + '</span>' : '') +
+    '<span class="pin">' + s.slice(0, d) + '</span>' +
+    '<span class="pde">.' + s.slice(d + 1) + '</span></span>';
 }
 
 /* 折算比写作 1 : n（月费 : 月额度），即每元月费买到 n 元标价额度；n 接近整数取整，否则一位小数 */
@@ -403,6 +404,38 @@ function subDetail(mname, channels, prov){
   return out;
 }
 
+/* ---------- 价格热度：全局所有中转站/订阅格折人民币取对数刻度，均分 5 档离散色（绿廉红贵）；参考列不着色 ---------- */
+const HEAT = (() => {
+  const vals = [];
+  for (const pname in DATA.providers){
+    const prov = DATA.providers[pname];
+    if (prov.weights == null) continue;
+    for (const mname in prov.models){
+      for (const {channels} of normalizeConditions(prov.models[mname])){
+        for (const chk in channels) if (isMid(chk)){
+          const det = weightDetail(channels[chk], prov, chk);
+          if (det && det.total > 0) vals.push(det.total);
+        }
+        const subs = subDetail(mname, channels, prov);
+        for (const k in subs){
+          const s = subs[k], v = s.currency === 'USD' ? s.value * USD_CNY : s.value;
+          if (v > 0) vals.push(v);
+        }
+      }
+    }
+  }
+  if (!vals.length) vals.push(1);
+  const lo = Math.log(Math.min.apply(null, vals));
+  const span = Math.log(Math.max.apply(null, vals)) - lo;
+  return { t: v => (v > 0 && span > 0 ? (Math.log(v) - lo) / span : 0.5) };
+})();
+/* 5 档离散色：深绿 / 黄绿 / 琥珀 / 橙 / 红，档间色差足够大，不依赖细腻渐变 */
+const HEAT_COLORS = ['#1e7e34', '#7a9a01', '#b8860b', '#c75100', '#c02525'];
+function heatColor(v){
+  const lv = Math.min(4, Math.floor(HEAT.t(v) * 5));
+  return HEAT_COLORS[lv];
+}
+
 /* ---------- 综合价：每厂商一张表，厂商名吸收为表内标题行 ---------- */
 (function compare(){
   const box = document.getElementById('compareBox');
@@ -500,8 +533,8 @@ function subDetail(mname, channels, prov){
     const wnote = prov.weights_note
       ? '<span class="inf" style="margin:0 3px 0 0" data-tip="' + regTip(infoTip('缓存命中 · 综合权重', prov.weights_note)) + '">i</span>' : '';
     let head = '<tr><th class="sk vh" colspan="2" rowspan="2" style="left:0">' +
-      '<div class="vn">' + pname + '<span class="hit">' + wnote + '缓存命中率 ' + hitRate + '%</span></div>' +
-      '<div class="vw">' + fmtW(prov.weights) + '</div></th>' +
+      '<div class="pwv"><div class="vn">' + pname + '<span class="hit">' + wnote + '缓存命中率 ' + hitRate + '%</span></div>' +
+      '<div class="vw">' + fmtW(prov.weights) + '</div></div></th>' +
       '<th class="sk rf" colspan="2" style="left:' + L.ref + 'px">参考</th>' +
       '<th class="sk sep" rowspan="2" style="left:' + L.best + 'px">最优</th>';
     if (midSet.length) head += '<th colspan="' + midSet.length + '" class="thm">中转站</th>';
@@ -523,8 +556,8 @@ function subDetail(mname, channels, prov){
       g.rows.forEach((r, ri) => {
         const titleHtml = r.mname + (r.ck !== 'default' ? ' <span class="tc">' + r.ck + '</span>' : '');
         body += '<tr>';
-        if (ri === 0) body += '<td class="sk l mcell" rowspan="' + g.rows.length + '" style="left:0">' + g.mname + '</td>';
-        body += '<td class="sk c" style="left:' + L.cond + 'px">' + (r.ck === 'default' ? '' : '<span class="mut">' + r.ck + '</span>' + condInf(r.ck)) + '</td>';
+        if (ri === 0) body += '<td class="sk l mcell" rowspan="' + g.rows.length + '" style="left:0"><span class="pw l">' + g.mname + '</span></td>';
+        body += '<td class="sk c" style="left:' + L.cond + 'px"><span class="pw c">' + (r.ck === 'default' ? '' : '<span class="mut">' + r.ck + '</span>' + condInf(r.ck)) + '</span></td>';
 
         const usdTip = regTip(cellTip({title: titleHtml, titleSub: (CHANNELS[r.usdKey] ? CHANNELS[r.usdKey].label : '美元'),
                                        det: r.usdDet, kind: 'usd'}));
@@ -533,8 +566,8 @@ function subDetail(mname, channels, prov){
           ? regTip(cellTip({title: titleHtml, titleSub: (CHANNELS[r.usdKey] ? CHANNELS[r.usdKey].label : '美元') + ' · 汇率换算',
                             det: r.usdDet, kind: 'usd'}))
           : regTip(cellTip({title: titleHtml, titleSub: '人民币官方', det: r.cnyDet, kind: 'cny', finalValue: r.cny}));
-        body += '<td class="sk rf" style="left:' + L.ref + 'px" data-tip="' + usdTip + '">' + priceHTML(r.usd, 'usd') + '</td>' +
-                '<td class="sk rf" style="left:' + (L.ref + W.col) + 'px" data-tip="' + cnyTip + '">' + priceHTML(r.cny, 'cny') + '</td>';
+        body += '<td class="sk rf px" style="left:' + L.ref + 'px" data-tip="' + usdTip + '">' + pnumHTML(r.usd, 'usd') + '</td>' +
+                '<td class="sk rf px" style="left:' + (L.ref + W.col) + 'px" data-tip="' + cnyTip + '">' + pnumHTML(r.cny, 'cny') + '</td>';
 
         let bestTip = '';
         if (r.best){
@@ -550,9 +583,9 @@ function subDetail(mname, channels, prov){
                                finalValue: s.value, finalKind: s.points ? 'cny' : undefined, plan: s.plan, notes: s.notes});
           }
         }
-        body += '<td class="sk sep best" style="left:' + L.best + 'px"' +
+        body += '<td class="sk sep px" style="left:' + L.best + 'px"' +
           (r.best ? ' data-tip="' + regTip(bestTip) + '"' : '') + '>' +
-          (r.best ? '<div class="ce"><span class="bname">' + r.best.label + '</span>' + priceHTML(r.best.value, r.best.kind) + '</div>' : '') + '</td>';
+          (r.best ? '<span class="pna">' + r.best.label + '</span>' + pnumHTML(r.best.cny, 'cny', heatColor(r.best.cny)) : '') + '</td>';
 
         for (const cd of colDefs){
           let inner = '', tipId = '';
@@ -561,7 +594,7 @@ function subDetail(mname, channels, prov){
             if (m && m.value != null){
               tipId = ' data-tip="' + regTip(cellTip({title: titleHtml, titleSub: '中转站 ' + cd.label,
                                                       det: m.det, kind: 'cny', notes: m.notes ? [m.notes] : null})) + '"';
-              inner = '<div class="ce">' + priceHTML(m.value, 'cny') + coinsHTML(m.value, 'cny') + '</div>';
+              inner = pnumHTML(m.value, 'cny', heatColor(m.value));
             }
           } else {
             const s = r.subs[cd.key];
@@ -572,10 +605,12 @@ function subDetail(mname, channels, prov){
                                                       sumLabel: s.points ? '综合消耗' : undefined,
                                                       finalValue: s.value, finalKind: s.points ? 'cny' : undefined,
                                                       plan: s.plan, notes: s.notes})) + '"';
-              inner = '<div class="ce">' + priceHTML(s.value, s.currency === 'USD' ? 'usd' : 'cny') + coinsHTML(s.value, s.currency === 'USD' ? 'usd' : 'cny') + '</div>';
+              /* 渠道价格一律显示换算后的人民币价（hover 面板仍保留原币种与换算过程） */
+              const cnyV = s.currency === 'USD' ? s.value * USD_CNY : s.value;
+              inner = pnumHTML(cnyV, 'cny', heatColor(cnyV));
             }
           }
-          body += '<td' + (cd.grp ? ' class="grp"' : '') + tipId + '>' + inner + '</td>';
+          body += '<td class="px' + (cd.grp ? ' grp' : '') + '"' + tipId + '>' + inner + '</td>';
         }
         body += '<td class="fill"></td></tr>';
       });
