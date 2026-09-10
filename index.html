@@ -125,6 +125,10 @@ th.ths{color:var(--sub)}
 thead .fill{background:#f7f5f1}
 .mcell{font-weight:700}
 .mut{color:var(--muted);font-size:12.5px}
+/* 渠道列未选中（不参与柱状图）：仍展示但灰化弱化；列体由筛选 sync() 整组排到右侧 */
+.cmp th[data-ch].off,.cmp td[data-ch].off{opacity:.42}
+.cmp td[data-ch].off .pnum{color:var(--faint) !important}
+.cmp th[data-ch].off{color:var(--faint)}
 
 /* 原始数据表的数字：符号槽 + 整数 + 弱化小数，小数点对齐；颜色统一为墨色 */
 .np{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--ink)}
@@ -928,6 +932,26 @@ function heatColor(v){
     curMg.rows.push(tr);
   }
 
+  /* 按渠道筛选把列整体重排：选中渠道靠左（保持原顺序），未选中靠右。
+     表中渠道列的 DOM 序列（colgroup / thead 两行 / tbody 每行）里，渠道单元均连续成块，
+     故抽出带 data-ch 的子节点按 chPos 稳定排序后放回原块位置，其余锚点列（模型/参考/最优/fill）不动。 */
+  function reorderChannels(pos){
+    document.querySelectorAll('#compareBox .vt[data-p]').forEach(vt => {
+      const blocks = [];
+      const cg = vt.querySelector('colgroup');
+      if (cg) blocks.push(cg);
+      vt.querySelectorAll('thead tr, tbody tr').forEach(tr => blocks.push(tr));
+      for (const block of blocks){
+        const cels = Array.prototype.filter.call(block.children, el => el.hasAttribute && el.hasAttribute('data-ch'));
+        if (cels.length < 2) continue;
+        const ref = cels[cels.length - 1].nextElementSibling;
+        cels.sort((a, b) => (pos[a.dataset.ch] - pos[b.dataset.ch]));
+        for (const el of cels) el.remove();
+        for (const el of cels) block.insertBefore(el, ref);
+      }
+    });
+  }
+
   function sync(){
     for (const g of groups){
       const on = g.models.filter(m => visible[m]).length;
@@ -961,10 +985,17 @@ function heatColor(v){
       for (const tr of trs) if (tr._fltShow){ any = true; break; }
       div.style.display = any ? '' : 'none';
     }
+    /* 渠道列：未选中不再隐藏，改为灰化（保持可见），并整组排到右侧 */
+    const chOrder = [];
+    for (const c of chans){ if (chVisible[c.key]) chOrder.push(c.key); }
+    for (const c of chans){ if (!chVisible[c.key]) chOrder.push(c.key); }
+    const chPos = {};
+    chOrder.forEach((k, i) => { chPos[k] = i; });
     for (const key in chEls){
-      const on = chVisible[key];
-      for (const el of chEls[key]) el.style.display = on ? '' : 'none';
+      const off = !chVisible[key];
+      for (const el of chEls[key]) el.classList.toggle('off', off);
     }
+    reorderChannels(chPos);
     /* 最优：在可见渠道内重算最低 */
     for (const td of bestCells){
       const cands = BEST_ROWS[+td.dataset.best];
