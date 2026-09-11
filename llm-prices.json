@@ -15,7 +15,8 @@
     "ollama": { "label": "Ollama", "kind": "usd" },
     "packy_cc_sale": { "label": "cc-sale", "kind": "cny", "mid": true },
     "packy_codex": { "label": "codex", "kind": "cny", "mid": true },
-    "packy_grok_sale": { "label": "grok-sale", "kind": "cny", "mid": true },
+    "packy_grok_sale": { "label": "grok-sale", "kind": "cny", "mid": true,
+      "note": "该中转站不支持缓存命中计费，综合价按 输入×31 + 输出×0.2 折算" },
     "packy_gemini_slb": { "label": "gemini-slb", "kind": "cny", "mid": true },
     "glm_coding_points": { "label": "GLM 积分", "kind": "point",
       "note": "官方以抵扣系数计费（每 10000 tokens 积分消耗），此处统一标准折算为每 1M tokens 积分消耗" },
@@ -99,8 +100,11 @@
           "cache_hit": 1
         }
       },
+      "priceOverrideNotes": {
+        "Fable 5.1": "据说 Fable 5.1 在订阅中缓存命中仍按 $1.00 计"
+      },
       "notes": [
-        {"kind": "info", "label": "额度来源", "text": "来自网络信息（2026 年 5 月的逆向反推），可能会随机调整，仅供参考。", "link": "https://zhuanlan.zhihu.com/p/2027017728410628819"},
+        {"kind": "info", "label": "额度来源", "text": "来自网络信息（2026 年 5 月的逆向反推），可能会随机调整，仅供参考。", "link": "https://zhuanlan.zhihu.com/p/2027017728410628819", "hover": "额度来自网络信息，仅供估算"},
         {"kind": "warn", "label": "封号", "text": "你买不到。"}
       ],
       "source": "https://claude.com/pricing"
@@ -130,7 +134,7 @@
         "GPT 5.6 Luna"
       ],
       "notes": [
-        {"kind": "info", "label": "额度来源", "text": "来自社区 sub2api 计费估算，可能会随机调整，仅供参考。"},
+        {"kind": "info", "label": "额度来源", "text": "来自社区 sub2api 计费估算，可能会随机调整，仅供参考。", "hover": "额度来自网络信息，仅供估算"},
         {"kind": "warn", "label": "封号", "text": "你买不到。"}
       ],
       "source": "https://chatgpt.com/zh-Hans-CN/pricing/"
@@ -172,11 +176,43 @@
         "Kimi K2.6"
       ],
       "notes": [
-        {"kind": "info", "label": "额度来源", "text": "来自 2026 年 8 月个人 Kimi 订阅用量反推，准确度较高。但未经官方验证。"},
+        {"kind": "info", "label": "额度来源", "text": "来自 2026 年 8 月个人 Kimi 订阅用量反推，准确度较高。但未经官方验证。", "hover": "额度来自个人用量反推，未经官方验证"},
         {"kind": "warn", "label": "特殊限制", "text": "Andante 不含 K3，Moderato 可用 K3 但仅 256K 上下文。"},
         {"kind": "warn", "label": "缺货", "text": "暂未恢复订阅购买，仅老用户可续费。"}
       ],
       "source": "https://www.kimi.com/membership/pricing"
+    },
+    "GLM Coding Plan": {
+      "currency": "CNY",
+      "type": "points",
+      "billing": "per_model_points",
+      "points_channel": "glm_coding_points",
+      "plans": {
+        "Lite": {
+          "fee": 118,
+          "quota_5h": 2000,
+          "quota_weekly": 10000
+        },
+        "Pro": {
+          "fee": 538,
+          "quota_5h": 12000,
+          "quota_weekly": 60000
+        },
+        "Max": {
+          "fee": 1078,
+          "quota_5h": 28000,
+          "quota_weekly": 140000
+        }
+      },
+      "models": [
+        "GLM-5.3",
+        "GLM-5.3-Flash"
+      ],
+      "notes": [
+        {"kind": "good", "label": "积分透明", "text": "官方明确了积分用量与消耗倍率。"},
+        {"kind": "good", "label": "特殊优惠", "text": "在 ZCode 里使用时，积分消耗为 0.67 倍（即等效额度增加 50%）。"}
+      ],
+      "source": "https://docs.bigmodel.cn/cn/coding-plan/overview#%E7%94%A8%E9%87%8F%E8%AF%B4%E6%98%8E"
     },
     "百炼 Token Plan": {
       "currency": "CNY",
@@ -210,41 +246,9 @@
       ],
       "notes": [
         {"kind": "info", "label": "换算来源", "text": "积分与人民币的换算关系，来自早期 Qwen 3.6 Plus 消耗示例反推。", "link": "https://www.aliyunbaike.com/tokenplan/"},
-        {"kind": "warn", "label": "私有部署", "text": "百炼 Token Plan 模型为阿里云私有部署，模型运行速度、新模型上线显著较慢。"}
+        {"kind": "warn", "label": "私有部署", "text": "百炼模型为阿里云私有部署，模型运行速度较慢，新模型上线不及时。"}
       ],
       "source": "https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model&url=3028856"
-    },
-    "GLM Coding Plan": {
-      "currency": "CNY",
-      "type": "points",
-      "billing": "per_model_points",
-      "points_channel": "glm_coding_points",
-      "plans": {
-        "Lite": {
-          "fee": 118,
-          "quota_5h": 2000,
-          "quota_weekly": 10000
-        },
-        "Pro": {
-          "fee": 538,
-          "quota_5h": 12000,
-          "quota_weekly": 60000
-        },
-        "Max": {
-          "fee": 1078,
-          "quota_5h": 28000,
-          "quota_weekly": 140000
-        }
-      },
-      "models": [
-        "GLM-5.3",
-        "GLM-5.3-Flash"
-      ],
-      "notes": [
-        {"kind": "good", "label": "积分透明", "text": "官方明确了积分用量与消耗倍率。"},
-        {"kind": "good", "label": "特殊优惠", "text": "在 ZCode 里使用时，积分消耗为 0.67 倍（即等效额度增加 50%）。"}
-      ],
-      "source": "https://docs.bigmodel.cn/cn/coding-plan/overview#%E7%94%A8%E9%87%8F%E8%AF%B4%E6%98%8E"
     },
     "MiMo Token Plan": {
       "currency": "CNY",
@@ -353,7 +357,7 @@
       ],
       "notes": [
         {"kind": "good", "label": "额度透明", "text": "官方明确了额度倍率。"},
-        {"kind": "warn", "label": "出尔反尔", "text": "曾经在未通告的情况下，大幅降低 DeepSeek 额度，从 $120 降至 $15。"}
+        {"kind": "warn", "label": "出尔反尔", "text": "在未通告的情况下，大幅降低 DeepSeek 额度（从 $120 降至 $15）。"}
       ],
       "source": "https://opencode.ai/docs/zh-cn/go/"
     },
@@ -693,9 +697,6 @@
           "input": 31,
           "output": 0.2
         }
-      },
-      "notes": {
-        "packy_grok_sale": "该中转站不支持缓存命中计费，综合价按 输入×31 + 输出×0.2 折算"
       },
       "sources": {
         "usd": "https://docs.x.ai/developers/pricing",

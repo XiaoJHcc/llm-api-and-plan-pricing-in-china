@@ -781,7 +781,7 @@ function subDetail(mname, channels, prov){
       const pts = channels[g.points_channel];
       if (!pts) continue;
       const det = weightDetail(pts, prov, null);
-      /* 积分渠道的说明（换算口径、单价来源等）由渠道元数据的 note 提供 */
+      /* 渠道 note 补充积分换算口径（百炼 1积分=¥0.01 等），订阅备注不注入价格表 */
       const chNote = CHANNELS[g.points_channel] && CHANNELS[g.points_channel].note;
       const notes = chNote ? [chNote] : null;
       for (const pl in g.plans){
@@ -806,8 +806,11 @@ function subDetail(mname, channels, prov){
       const ov = (g.priceOverrides && g.priceOverrides[mname]) || {};
       const det = weightDetail(Object.assign({}, channels[srcKey], ov), prov, null);
       const kind = g.currency === 'USD' ? 'usd' : 'cny';
-      /* 订阅注释一律手写于数据中的 notes 字段，不按数据拼接 */
-      const notes = (g.notes && g.notes.length) ? g.notes : null;
+      /* 价格表订阅列浮窗：注入特价覆盖说明（priceOverrideNotes）与额度可靠性简句（notes 中 hover 字段）；
+         订阅自身完整备注只在订阅卡片脚注就地展示 */
+      const pon = g.priceOverrideNotes && g.priceOverrideNotes[mname];
+      const hov = (g.notes || []).filter(n => n.hover).map(n => n.hover);
+      const notes = (hov.length || pon) ? hov.concat(pon ? [pon] : []) : null;
       for (const pl in g.plans){
         const p = g.plans[pl];
         if (p.excluded_models && p.excluded_models.indexOf(mname) >= 0) continue;
@@ -864,7 +867,6 @@ function heatColor(v){
   for (const pname in DATA.providers){
     const prov = DATA.providers[pname];
     if (prov.weights == null) continue;
-    const pnotes = prov.notes || {};
     /* 厂商任一模型有官方人民币价 → 参考列为 ¥ 官方，缺官方价的行不做汇率换算 */
     const provHasCny = Object.values(prov.models).some(conds =>
       normalizeConditions(conds).some(it => it.channels.cny));
@@ -885,7 +887,7 @@ function heatColor(v){
         const mids = {};
         for (const chk in channels) if (isMid(chk)){
           const det = weightDetail(channels[chk], prov, chk);
-          mids[chk] = {det: det, value: det ? det.total : null, notes: pnotes[chk] || null};
+          mids[chk] = {det: det, value: det ? det.total : null};
           if (midSet.indexOf(chk) < 0) midSet.push(chk);
         }
         const subs = subDetail(mname, channels, prov);
@@ -909,7 +911,7 @@ function heatColor(v){
       if (plans.length) subGroups.push({group: gname, plans: plans});
     }
     const colDefs = [];
-    midSet.forEach(chk => colDefs.push({kind: 'mid', key: chk, label: CHANNELS[chk].label, note: pnotes[chk] || null}));
+    midSet.forEach(chk => colDefs.push({kind: 'mid', key: chk, label: CHANNELS[chk].label, note: CHANNELS[chk].note || null}));
     let prevGroup = null;
     for (const sg of subGroups){
       for (const pl of sg.plans){
@@ -1001,7 +1003,7 @@ function heatColor(v){
           cands.push({ch: 'mid', cny: m.value, label: '中转站 ' + CHANNELS[chk].label,
             html: '<span class="pna">中转站 ' + CHANNELS[chk].label + '</span>' + pnumHTML(m.value, 'cny', heatColor(m.value)),
             tip: cellTip({title: titleHtml, titleSub: '最优 · 中转站 ' + CHANNELS[chk].label,
-                          det: m.det, kind: 'cny', notes: m.notes ? [m.notes] : null})});
+                          det: m.det, kind: 'cny', notes: CHANNELS[chk].note ? [CHANNELS[chk].note] : null})});
         }
         for (const key in r.subs){
           const s = r.subs[key];
@@ -1029,7 +1031,7 @@ function heatColor(v){
             const m = r.mids[cd.key];
             if (m && m.value != null){
               tipId = ' data-tip="' + regTip(cellTip({title: titleHtml, titleSub: '中转站 ' + cd.label,
-                                                      det: m.det, kind: 'cny', notes: m.notes ? [m.notes] : null})) + '"';
+                                                      det: m.det, kind: 'cny', notes: CHANNELS[cd.key].note ? [CHANNELS[cd.key].note] : null})) + '"';
               inner = pnumHTML(m.value, 'cny', heatColor(m.value));
             }
           } else {
