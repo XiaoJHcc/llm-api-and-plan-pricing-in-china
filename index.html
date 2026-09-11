@@ -113,7 +113,7 @@ table.cmp{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
 .pw{position:absolute;inset:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;padding:0 12px;overflow:hidden;line-height:1.35;white-space:normal}
 .pw.l{justify-content:flex-start;text-align:left}
 .pw.c{justify-content:center;text-align:center}
-.pwv{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:7px 12px;overflow:hidden;text-align:left}
+.pwv{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:5px;padding:5px 12px;overflow:hidden;text-align:left}
 .cmp thead th{text-align:center}
 .cmp thead tr:last-child th{border-bottom:1px solid var(--grid-strong)}
 /* 卡头带：首行（厂商标题 + 渠道分组）以与订阅卡片卡头一致的浅渐变呈现，形成统一的“卡片头”；层间线为浅档 */
@@ -121,10 +121,25 @@ table.cmp{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
 /* 跨两层的表头格（厂商标题/最优/填充列）底边即表头下界，与第二层一致用正常档 */
 .cmp thead tr:first-child th.vh,.cmp thead tr:first-child th.sep,.cmp thead tr:first-child th.fill{border-bottom:1px solid var(--grid-strong)}
 .cmp th.vh{text-align:left;vertical-align:middle}
-.vn{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
-.vn .hit{margin-left:5px;font-size:11.5px;font-weight:600;color:var(--faint)}
-.vw{font-size:11.5px;color:var(--faint);font-weight:500;margin-top:3px;white-space:normal}
-.vw b{color:var(--muted);font-weight:600}
+/* 厂商标题卡（282×61 固定格）：铭牌行（厂商名 + 状态丸 + 来源丸）+ 三枚独立权重丸；结构靠容器归属表达，格内不画线 */
+.vn{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+.vn .vname{font-size:15.5px;font-weight:800;line-height:1.15;color:var(--ink);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vn .vs{display:inline-flex;align-items:center;gap:4px;flex:none}
+/* 状态丸：命中率的四个部件（ⓘ=信息、标签=指标、数值=读数）融合为一个整体，次要但规整；整块为实测来源浮窗触发区 */
+.vn .hit{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:var(--ref);font-size:10px;font-weight:500;color:var(--faint);white-space:nowrap;cursor:help;transition:background .12s}
+.vn .hit:hover{background:#edebe3}
+.vn .hit .hr{font-size:11.5px;font-weight:750;color:var(--ink);font-variant-numeric:tabular-nums}
+.vn .hit .inf{margin:0;width:11px;height:11px;font-size:8px}
+/* 来源丸：实测（绿）/ 估算（琥珀），实心浅色、与状态丸相邻而独立（数据 hit_rate.estimated 区分） */
+.vn .vb{padding:2px 7px;border-radius:999px;font-size:9.5px;font-weight:650;letter-spacing:.03em;white-space:nowrap}
+.vn .vb.est{background:rgba(184,134,11,.13);color:#9a6f06}
+.vn .vb.mst{background:rgba(30,126,52,.12);color:#1e7e34}
+/* 权重丸：一个事实一枚容器，同形重复成节奏；三丸等比放宽铺满格宽（两端对齐、间距不变）；丸内标签弱化、倍率强调 */
+.vw{display:flex;gap:6px;min-width:0}
+.vw .wi{flex:1 1 auto;display:inline-flex;align-items:baseline;gap:4px;min-width:0;padding:3px 9px;border-radius:999px;background:var(--ref)}
+.vw .wl{font-size:9.5px;font-weight:500;color:var(--faint);white-space:nowrap}
+.vw .wn{font-size:11.5px;font-weight:750;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.vw .wn::before{content:'×';margin-right:1px;font-size:9px;font-weight:500;color:var(--faint)}
 .vt{margin-bottom:16px}
 .cmp th.l,.cmp td.l{text-align:left}
 .cmp td.c{text-align:center}
@@ -176,6 +191,8 @@ thead .fill{background:#f7f5f1}
 #tip .tt{font-weight:700;font-size:13.5px;margin-bottom:8px}
 #tip .tt .tc{color:#b3ada0;font-weight:500}
 #tip .tt small{color:#b3ada0;font-weight:500}
+/* ⓘ 浮窗的来源说明行（实测/估算出处） */
+#tip .tsrc{margin:-3px 0 7px;color:#d9d4c7}
 table.tt-t{width:100%;border-collapse:collapse}
 .tt-t th{font-size:11px;color:#a29d8f;font-weight:500;text-align:right;padding:2px 0 5px 18px}
 .tt-t th:first-child,.tt-t td:first-child{text-align:left;padding-left:0}
@@ -476,6 +493,44 @@ table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
 
 <div id="tip" role="tooltip"></div>
 
+<!-- 综合对比左表头：结构固定（厂商标题卡 + 参考/最优列），模板定义结构，脚本仅填槽位 -->
+<template id="tmplHeadL">
+  <tr>
+    <th class="vh" colspan="2" rowspan="2" data-v="card"></th>
+    <th class="rf" colspan="2">参考</th>
+    <th class="sep" rowspan="2">最优</th>
+  </tr>
+  <tr>
+    <th class="rf" data-v="ref-usd"></th>
+    <th class="rf" data-v="ref-cny"></th>
+  </tr>
+</template>
+<!-- 厂商标题卡：定宽定高、信息固定（厂商名 / 状态丸[ⓘ+缓存命中率+读数] / 来源丸[实测|估算] / 三枚权重丸） -->
+<template id="tmplVhead">
+  <div class="pwv">
+    <div class="vn"><span class="vname" data-v="name"></span><span class="vs"><span class="hit" data-v="hit"><span class="inf" data-v="inf">i</span><span class="hl">缓存命中率</span><span class="hr" data-v="rate"></span></span><span class="vb" data-v="badge"></span></span></div>
+    <div class="vw" data-v="weights"></div>
+  </div>
+</template>
+<template id="tmplWitem">
+  <span class="wi"><span class="wl" data-v="label"></span><span class="wn" data-v="num"></span></span>
+</template>
+<!-- 缓存命中率 ⓘ 浮窗：来源说明 + 实测统计表（估算厂商无统计表） -->
+<template id="tmplHitTip">
+  <div>
+    <div class="tt" data-v="title"></div>
+    <div class="tsrc" data-v="source"></div>
+    <table class="tt-t" data-v="stats">
+      <tr data-k="requests"><td>请求数</td><td data-v="v"></td></tr>
+      <tr data-k="total_input"><td>总输入</td><td data-v="v"></td></tr>
+      <tr data-k="cache_write"><td>缓存写入</td><td data-v="v"></td></tr>
+      <tr data-k="cache_hit"><td>缓存命中</td><td data-v="v"></td></tr>
+      <tr data-k="output"><td>输出</td><td data-v="v"></td></tr>
+      <tr class="sum" data-k="hit_rate"><td>缓存命中率</td><td data-v="v"></td></tr>
+    </table>
+  </div>
+</template>
+
 <script>
 (async function main(){
 let DATA;
@@ -660,6 +715,60 @@ function infoTip(title, text){
   return '<div class="tt">' + title + '</div><div style="color:#d9d4c7">' + text.replace(/\n/g, '<br>') + '</div>';
 }
 
+/* ---------- 结构化模板渲染：clone → 填槽（textContent / setAttribute）→ 序列化，不做字符串拼接 ---------- */
+function cloneTpl(id){ return document.getElementById(id).content.cloneNode(true); }
+function slot(frag, name){ return frag.querySelector('[data-v="' + name + '"]'); }
+function fragHTML(frag){
+  const host = document.createElement('div');
+  host.appendChild(frag);
+  return host.innerHTML;
+}
+/* 缓存命中率 ⓘ 浮窗：实测数据来源 + 实测统计表（总输入 = 缓存写入 + 缓存命中）；估算厂商无统计表 */
+function hitTipHTML(prov){
+  const hr = prov.hit_rate || {};
+  const frag = cloneTpl('tmplHitTip');
+  slot(frag, 'title').textContent = '缓存命中率 · ' + (hr.estimated ? '估算' : '实测数据');
+  slot(frag, 'source').textContent = prov.weights_note || '';
+  const stats = hr.stats;
+  if (!stats){
+    slot(frag, 'stats').remove();
+  } else {
+    const totalIn = stats.cache_write + stats.cache_hit;
+    const grp = v => v != null ? Number(v).toLocaleString('en-US') : '—';
+    const vals = {
+      requests: grp(stats.requests),
+      total_input: grp(totalIn),
+      cache_write: grp(stats.cache_write),
+      cache_hit: grp(stats.cache_hit),
+      output: grp(stats.output),
+      hit_rate: (stats.cache_hit / totalIn * 100).toFixed(1) + '%'
+    };
+    for (const k in vals)
+      frag.querySelector('tr[data-k="' + k + '"] [data-v="v"]').textContent = vals[k];
+  }
+  return fragHTML(frag);
+}
+/* 厂商标题卡：模板槽位填充；命中率胶囊整块为浮窗触发区，权重项逐条 clone、分隔点由 CSS ::before 表达 */
+function vendorHeadFrag(pname, prov, hitRate){
+  const frag = cloneTpl('tmplVhead');
+  slot(frag, 'name').textContent = pname;
+  slot(frag, 'hit').setAttribute('data-tip', regTip(hitTipHTML(prov)));
+  slot(frag, 'rate').textContent = hitRate + '%';
+  /* 来源标记：估算（琥珀）/ 实测（绿），每厂商必有 */
+  const badge = slot(frag, 'badge');
+  const estimated = !!(prov.hit_rate && prov.hit_rate.estimated);
+  badge.textContent = estimated ? '估算' : '实测';
+  badge.classList.add(estimated ? 'est' : 'mst');
+  const wbox = slot(frag, 'weights');
+  for (const k in prov.weights){
+    const item = cloneTpl('tmplWitem');
+    slot(item, 'label').textContent = COMP[k] || k;
+    slot(item, 'num').textContent = prov.weights[k];
+    wbox.appendChild(item);
+  }
+  return frag;
+}
+
 /* ---------- 订阅折算（含 hover 所需的全部细节） ---------- */
 function subDetail(mname, channels, prov){
   const out = {};
@@ -825,25 +934,20 @@ function heatColor(v){
     }
     cgR += '<col>'; /* 弹性填充列 */
 
-    const fmtW = w => Object.entries(w).map(([k, x]) => '<b>' + (COMP[k] || k) + '</b>×' + x).join(' · ');
     /* 缓存命中率 = 缓存命中 ÷（缓存命中 + 输入 + 缓存写入），按权重计算 */
     const w0 = prov.weights;
     let inW = w0.input || 0;
     for (const k in w0) if (k.indexOf('cache_write') === 0) inW += w0[k];
     const hitRate = ((w0.cache_hit || 0) / ((w0.cache_hit || 0) + inW) * 100).toFixed(1);
 
-    /* 左表头：模型+条件列合并为厂商标题区（跨两层）；权重来源 ⓘ 在缓存命中率左侧 */
-    const wnote = prov.weights_note
-      ? '<span class="inf" style="margin:0 3px 0 0" data-tip="' + regTip(infoTip('缓存命中 · 综合权重', prov.weights_note)) + '">i</span>' : '';
-    /* 参考列按实际来源命名：美国厂商 $官方 + ¥换算；中国厂商 $OpenCode + ¥官方 */
+    /* 左表头：模型+条件列合并为厂商标题区（跨两层），固定结构由 tmplHeadL 模板表达，脚本仅填槽位；
+       参考列按实际来源命名：美国厂商 $官方 + ¥换算；中国厂商 $OpenCode + ¥官方 */
     const usdOfficial = groups.some(g => g.rows.some(r => r.usdKey === 'usd'));
-    const headL = '<tr><th class="vh" colspan="2" rowspan="2">' +
-      '<div class="pwv"><div class="vn">' + pname + '<span class="hit">' + wnote + '缓存命中率 ' + hitRate + '%</span></div>' +
-      '<div class="vw">' + fmtW(prov.weights) + '</div></div></th>' +
-      '<th class="rf" colspan="2">参考</th>' +
-      '<th class="sep" rowspan="2">最优</th></tr><tr>' +
-      '<th class="rf">' + (usdOfficial ? '$ 官方' : '$ OpenCode') + '</th>' +
-      '<th class="rf">' + (provHasCny ? '¥ 官方' : '¥ 换算') + '</th></tr>';
+    const headFrag = cloneTpl('tmplHeadL');
+    slot(headFrag, 'card').appendChild(vendorHeadFrag(pname, prov, hitRate));
+    slot(headFrag, 'ref-usd').textContent = usdOfficial ? '$ 官方' : '$ OpenCode';
+    slot(headFrag, 'ref-cny').textContent = provHasCny ? '¥ 官方' : '¥ 换算';
+    const headL = fragHTML(headFrag);
     /* 右表头：第一行分组表头带 grp（每组首列即分组竖界），保证正常档竖线从表头顶到底整根一致；
        渠道区首个分组（最优右邻）除外，该处竖线由最优列 border-right 单独表达 */
     let headR = '<tr>';

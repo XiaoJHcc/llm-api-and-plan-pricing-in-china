@@ -376,6 +376,10 @@
         "output": 0.2
       },
       "weights_note": "来自个人使用 CC Switch 实测",
+      "hit_rate": {
+        "estimated": false,
+        "stats": { "cache_write": 74444000, "cache_hit": 1381493000, "output": 10455000 }
+      },
       "models": {
         "Fable 5.1": {
           "default": {
@@ -462,6 +466,7 @@
         "output": 0.2
       },
       "weights_note": "估算值，未经实测",
+      "hit_rate": { "estimated": true },
       "models": {
         "GPT 6 Astra": {
           "≤272K": {
@@ -596,6 +601,7 @@
         "output": 0.2
       },
       "weights_note": "估算值，未经实测",
+      "hit_rate": { "estimated": true },
       "models": {
         "Grok 4.6": {
           "≤200K": {
@@ -679,6 +685,7 @@
         "output": 0.2
       },
       "weights_note": "估算值，未经实测",
+      "hit_rate": { "estimated": true },
       "models": {
         "Gemini 3.7 Flash": {
           "2026年(优惠价)": {
@@ -707,6 +714,10 @@
         "output": 0.2
       },
       "weights_note": "来自个人使用 ZCode 实测",
+      "hit_rate": {
+        "estimated": false,
+        "stats": { "cache_write": 4253548, "cache_hit": 152231866, "output": 690581 }
+      },
       "models": {
         "GLM-5.3": {
           "default": {
@@ -817,6 +828,10 @@
         "output": 0.2
       },
       "weights_note": "来自个人使用 Kimi Code 实测",
+      "hit_rate": {
+        "estimated": false,
+        "stats": { "requests": 2592, "cache_write": 7280857, "cache_hit": 320746728, "output": 1960621 }
+      },
       "models": {
         "Kimi K3": {
           "default": {
@@ -877,6 +892,10 @@
         "output": 0.2
       },
       "weights_note": "来自个人使用 DeepSeek Harness 实测",
+      "hit_rate": {
+        "estimated": false,
+        "stats": { "cache_write": 1905228, "cache_hit": 261394560, "output": 1082739 }
+      },
       "models": {
         "DeepSeek V4 Pro": {
           "标准价格": {
@@ -991,6 +1010,7 @@
         "output": 0.2
       },
       "weights_note": "估算值，未经实测",
+      "hit_rate": { "estimated": true },
       "models": {
         "Qwen 3.8 Max": {
           "default": {
@@ -1245,6 +1265,7 @@
     "小米": {
       "weights": { "input": 1, "cache_hit": 30, "output": 0.2 },
       "weights_note": "估算值，未经实测",
+      "hit_rate": { "estimated": true },
       "models": {
         "MiMo-V2.5-Pro": {
           "default": {
