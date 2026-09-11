@@ -442,9 +442,9 @@ table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
       <div class="hf hf-off"><div class="hf-t">模型思考效率（未计入）</div><div class="hf-d">各模型思考努力程度、任务复杂度不同，无法量化计入</div></div>
     </div>
     <div class="hero-stats">
-      <div class="stat"><div class="stat-n" id="statModels">–</div><div class="stat-l">统计模型<span class="stat-s">参与加权综合价计算</span></div></div>
-      <div class="stat"><div class="stat-n" id="statChans">–</div><div class="stat-l">订阅渠道<span class="stat-s">官方订阅 + 第三方中转站</span></div></div>
-      <div class="stat"><div class="stat-n">1:30:0.2</div><div class="stat-l">典型权重<span class="stat-s">来自个人实测</span></div></div>
+      <div class="stat"><div class="stat-n" id="statModels">–</div><div class="stat-l">统计模型<span class="stat-s">参与加权综合价计算，并长期维护</span></div></div>
+      <div class="stat"><div class="stat-n" id="statChans">–</div><div class="stat-l">订阅渠道<span class="stat-s">官方订阅 + 第三方订阅 + 中转站</span></div></div>
+      <div class="stat"><div class="stat-n">1:30:0.2</div><div class="stat-l">典型权重<span class="stat-s">来自个人实测结论：缓存命中费用占比其实很高</span></div></div>
       <div class="stat"><div class="stat-n" id="statDate">–</div><div class="stat-l">数据更新<span class="stat-s">对照官方来源人工核对</span></div></div>
     </div>
   </section>
@@ -455,11 +455,11 @@ table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
     </div>
     <div class="charts-grid">
       <div class="chart-card">
-        <h3>各模型原价</h3>
+        <h3>原价</h3>
         <div class="chart" id="chartRef"></div>
       </div>
       <div class="chart-card">
-        <h3>各模型最低渠道价</h3>
+        <h3>渠道价</h3>
         <div class="chart" id="chartBest"></div>
       </div>
     </div>
@@ -521,8 +521,8 @@ table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
     <div class="tt" data-v="title"></div>
     <div class="tsrc" data-v="source"></div>
     <table class="tt-t" data-v="stats">
-      <tr data-k="requests"><td>请求数</td><td data-v="v"></td></tr>
-      <tr data-k="total_input"><td>总输入</td><td data-v="v"></td></tr>
+      <!-- <tr data-k="requests"><td>请求数</td><td data-v="v"></td></tr> -->
+      <!-- <tr data-k="total_input"><td>总输入</td><td data-v="v"></td></tr> -->
       <tr data-k="cache_write"><td>缓存写入</td><td data-v="v"></td></tr>
       <tr data-k="cache_hit"><td>缓存命中</td><td data-v="v"></td></tr>
       <tr data-k="output"><td>输出</td><td data-v="v"></td></tr>
@@ -706,7 +706,7 @@ function cellTip(o){
       h += '<div class="tnote">⚠ ' + (typeof n === 'string'
         ? n.replace(/\n/g, '<br>')
         : '<b>' + n.label + '</b>：' + String(n.text).replace(/\n/g, '<br>') +
-          (n.link ? ' <a href="' + n.link + '" target="_blank" rel="noopener">参考 ↗</a>' : '')) + '</div>';
+          (n.link ? ' <a href="' + n.link + '" target="_blank" rel="noopener">来源 ↗</a>' : '')) + '</div>';
     }
   }
   return h;
@@ -736,8 +736,8 @@ function hitTipHTML(prov){
     const totalIn = stats.cache_write + stats.cache_hit;
     const grp = v => v != null ? Number(v).toLocaleString('en-US') : '—';
     const vals = {
-      requests: grp(stats.requests),
-      total_input: grp(totalIn),
+      // requests: grp(stats.requests),
+      // total_input: grp(totalIn),
       cache_write: grp(stats.cache_write),
       cache_hit: grp(stats.cache_hit),
       output: grp(stats.output),
@@ -1494,7 +1494,7 @@ function heatColor(v){
     const kind = NOTE_ICON[o.kind] ? o.kind : 'info';
     return '<div class="pnote n-' + kind + '"><span class="pi">' + NOTE_ICON[kind] + '</span>' +
       '<div class="pnt"><b class="pl">' + o.label + '</b><span class="px">' + String(o.text).replace(/\n/g, '<br>') + '</span>' +
-      (o.link ? '<a class="pnl" href="' + o.link + '" target="_blank" rel="noopener">参考 ↗</a>' : '') + '</div></div>';
+      (o.link ? '<a class="pnl" href="' + o.link + '" target="_blank" rel="noopener">来源 ↗</a>' : '') + '</div></div>';
   };
   const out = [];
   for (const gname in DATA.subscriptions){

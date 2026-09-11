@@ -36,7 +36,7 @@
       "GPT 5.6 Terra",
       "GPT 5.6 Luna",
       "Grok 4.6",
-      "Gemini 3.7 Flash",
+      "Gemini 3.8 Flash",
       "GLM-5.3",
       "GLM-5.3-Flash",
       "Kimi K3",
@@ -100,8 +100,8 @@
         }
       },
       "notes": [
-        {"kind": "info", "label": "额度来源", "text": "来自网络信息（2026 年 5 月的逆向反推），仅供参考", "link": "https://zhuanlan.zhihu.com/p/2027017728410628819"},
-        {"kind": "warn", "label": "计费说明", "text": "Fable 5.1 在订阅中缓存命中仍按 $1.00 计（据说：标价 $0.25 是仅 API 优惠）"}
+        {"kind": "info", "label": "额度来源", "text": "来自网络信息（2026 年 5 月的逆向反推），可能会随机调整，仅供参考。", "link": "https://zhuanlan.zhihu.com/p/2027017728410628819"},
+        {"kind": "warn", "label": "封号", "text": "你买不到。"}
       ],
       "source": "https://claude.com/pricing"
     },
@@ -130,7 +130,8 @@
         "GPT 5.6 Luna"
       ],
       "notes": [
-        {"kind": "info", "label": "额度来源", "text": "来自社区 sub2api 计费估算，会随 OpenAI 随机调整，仅供参考"}
+        {"kind": "info", "label": "额度来源", "text": "来自社区 sub2api 计费估算，可能会随机调整，仅供参考。"},
+        {"kind": "warn", "label": "封号", "text": "你买不到。"}
       ],
       "source": "https://chatgpt.com/zh-Hans-CN/pricing/"
     },
@@ -171,8 +172,9 @@
         "Kimi K2.6"
       ],
       "notes": [
-        {"kind": "info", "label": "额度来源", "text": "来自 2026 年 8 月个人 Kimi 订阅用量反推，准确度较高。但未经官方验证仍仅供参考"},
-        {"kind": "warn", "label": "特殊限制", "text": "Andante 不含 K3。Moderato 仅 K3-256K。"}
+        {"kind": "info", "label": "额度来源", "text": "来自 2026 年 8 月个人 Kimi 订阅用量反推，准确度较高。但未经官方验证。"},
+        {"kind": "warn", "label": "特殊限制", "text": "Andante 不含 K3，Moderato 可用 K3 但仅 256K 上下文。"},
+        {"kind": "warn", "label": "缺货", "text": "暂未恢复订阅购买，仅老用户可续费。"}
       ],
       "source": "https://www.kimi.com/membership/pricing"
     },
@@ -207,7 +209,8 @@
         "DeepSeek V4 Flash"
       ],
       "notes": [
-        {"kind": "info", "label": "换算来源", "text": "积分与人民币的换算关系，来自早期 Qwen 3.6 Plus 消耗示例反推", "link": "https://www.aliyunbaike.com/tokenplan/"}
+        {"kind": "info", "label": "换算来源", "text": "积分与人民币的换算关系，来自早期 Qwen 3.6 Plus 消耗示例反推。", "link": "https://www.aliyunbaike.com/tokenplan/"},
+        {"kind": "warn", "label": "私有部署", "text": "百炼 Token Plan 模型为阿里云私有部署，模型运行速度、新模型上线显著较慢。"}
       ],
       "source": "https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model&url=3028856"
     },
@@ -238,7 +241,8 @@
         "GLM-5.3-Flash"
       ],
       "notes": [
-        {"kind": "good", "label": "特殊优惠", "text": "在 ZCode 里使用时，积分消耗为 0.67 倍"}
+        {"kind": "good", "label": "积分透明", "text": "官方明确了积分用量与消耗倍率。"},
+        {"kind": "good", "label": "特殊优惠", "text": "在 ZCode 里使用时，积分消耗为 0.67 倍（即等效额度增加 50%）。"}
       ],
       "source": "https://docs.bigmodel.cn/cn/coding-plan/overview#%E7%94%A8%E9%87%8F%E8%AF%B4%E6%98%8E"
     },
@@ -269,7 +273,9 @@
         "MiMo-V2.5-Pro",
         "MiMo-V2.5"
       ],
-      "notes": [],
+      "notes": [
+        {"kind": "good", "label": "积分透明", "text": "官方明确了积分用量与消耗倍率。"}
+      ],
       "source": "https://mimo.mi.com/docs/zh-CN/tokenplan/Token%20Plan/subscription"
     },
     "OpenCode Go": {
@@ -331,6 +337,10 @@
         "Hy4 Preview",
         "Hy3"
       ],
+      "notes": [
+        {"kind": "good", "label": "额度透明", "text": "官方明确了额度倍率。"},
+        {"kind": "warn", "label": "出尔反尔", "text": "曾经在未通告的情况下，大幅降低 DeepSeek 额度，从 $120 降至 $15。"}
+      ],
       "source": "https://opencode.ai/docs/zh-cn/go/"
     },
     "Ollama Cloud": {
@@ -363,6 +373,7 @@
         "MiniMax M2.7"
       ],
       "notes": [
+        {"kind": "good", "label": "额度透明", "text": "官方明确了额度倍率。"},
         {"kind": "good", "label": "DeepSeek 谷价", "text": "Ollama 自部署 DeepSeek 采用全球峰谷时段，谷时刚好为中国白天。"}
       ],
       "source": "https://ollama.com/blog/transparent-pricing"
@@ -371,7 +382,7 @@
   "providers": {
     "Anthropic": {
       "weights": {
-        "cache_write_5min": 1.5,
+        "cache_write_5min": 1.6,
         "cache_hit": 30,
         "output": 0.2
       },
@@ -687,8 +698,8 @@
       "weights_note": "估算值，未经实测",
       "hit_rate": { "estimated": true },
       "models": {
-        "Gemini 3.7 Flash": {
-          "2026年(优惠价)": {
+        "Gemini 3.8 Flash": {
+          "2026 年": {
             "usd": {
               "input": 0.75,
               "cache_hit": 0.075,
@@ -709,7 +720,7 @@
     },
     "智谱": {
       "weights": {
-        "input": 1,
+        "input": 0.8,
         "cache_hit": 30,
         "output": 0.2
       },
@@ -765,13 +776,6 @@
               "output": 800
             }
           },
-          "限时五折": {
-            "cny": {
-              "input": 0.4,
-              "cache_hit": 0.115,
-              "output": 1.4
-            }
-          },
           "非高峰时段": {
             "glm_coding_points": {
               "input": 115,
@@ -823,14 +827,14 @@
     },
     "月之暗面": {
       "weights": {
-        "input": 0.7,
+        "input": 0.8,
         "cache_hit": 30,
         "output": 0.2
       },
       "weights_note": "来自个人使用 Kimi Code 实测",
       "hit_rate": {
         "estimated": false,
-        "stats": { "requests": 2592, "cache_write": 7280857, "cache_hit": 320746728, "output": 1960621 }
+        "stats": { "cache_write": 46175031, "cache_hit": 1701238549, "output": 8950506 }
       },
       "models": {
         "Kimi K3": {
@@ -894,7 +898,7 @@
       "weights_note": "来自个人使用 DeepSeek Harness 实测",
       "hit_rate": {
         "estimated": false,
-        "stats": { "cache_write": 1905228, "cache_hit": 261394560, "output": 1082739 }
+        "stats": { "cache_write": 5486228, "cache_hit": 687694560, "output": 3375739 }
       },
       "models": {
         "DeepSeek V4 Pro": {
