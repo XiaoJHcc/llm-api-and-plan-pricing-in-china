@@ -932,7 +932,8 @@ function heatColor(v){
     for (let i = 0; i < 4; i++) cgL += '<col style="width:' + W.col + 'px">';
     let cgR = '';
     for (const cd of colDefs){
-      cgR += '<col style="width:' + W.col + 'px" data-ch="' + (cd.kind === 'mid' ? 'mid' : 'sub:' + cd.group) + '">';
+      cgR += '<col style="width:' + W.col + 'px" data-ch="' + (cd.kind === 'mid' ? 'mid' : 'sub:' + cd.group) +
+        '" data-chp="' + cd.key + '">';
     }
     cgR += '<col>'; /* 弹性填充列 */
 
@@ -961,7 +962,7 @@ function heatColor(v){
     for (const cd of colDefs){
       const inf = cd.note ? '<span class="inf" data-tip="' + regTip(infoTip(cd.label, cd.note)) + '">i</span>' : '';
       headR += '<th class="' + (cd.kind === 'mid' ? 'thm' : 'ths') + (cd.grp ? ' grp' : '') +
-        '" data-ch="' + (cd.kind === 'mid' ? 'mid' : 'sub:' + cd.group) + '">' + cd.label + inf + '</th>';
+        '" data-ch="' + (cd.kind === 'mid' ? 'mid' : 'sub:' + cd.group) + '" data-chp="' + cd.key + '">' + cd.label + inf + '</th>';
     }
     /* 无渠道列时第二层也不能空行（保证左右两表表头行高一致） */
     if (!colDefs.length) headR += '<th></th>';
@@ -1048,7 +1049,8 @@ function heatColor(v){
               inner = pnumHTML(cnyV, 'cny', heatColor(cnyV));
             }
           }
-          bodyR += '<td class="px' + (cd.grp ? ' grp' : '') + '" data-ch="' + (cd.kind === 'mid' ? 'mid' : 'sub:' + cd.group) + '"' + tipId + '>' + inner + '</td>';
+          bodyR += '<td class="px' + (cd.grp ? ' grp' : '') + '" data-ch="' + (cd.kind === 'mid' ? 'mid' : 'sub:' + cd.group) +
+          '" data-chp="' + cd.key + '"' + tipId + '>' + inner + '</td>';
         }
         bodyR += '<td class="fill"></td></tr>';
       });
@@ -1074,7 +1076,8 @@ function heatColor(v){
   box.addEventListener('mouseout', e => syncHover(e, false));
 })();
 
-/* ---------- 筛选（默认折叠；仅影响综合对比主表：行按 data-m、渠道列按 data-ch 显隐） ---------- */
+/* ---------- 筛选（默认折叠；仅影响综合对比主表）：行按 data-m 显隐并自动剔除空行，
+   渠道列按 data-ch 灰化/重排，且可见行中无任何数值的计划列自动整列剔除（空列） ---------- */
 (function filter(){
   /* 默认勾选（模型 + 渠道）在 llm-prices.json 的 filter_defaults 中维护；缺省或为空则全部勾选 */
   const defs = DATA.filter_defaults || {};
@@ -1189,9 +1192,48 @@ function heatColor(v){
         cels.sort((a, b) => (pos[a.dataset.ch] - pos[b.dataset.ch]));
         for (const el of cels) el.remove();
         for (const el of cels) block.insertBefore(el, ref);
-        /* 重排后重标分组竖界：首格（最优右邻）一律不带 grp，其余按 data-ch 变化处标 grp，
-           保证最优右边始终是单一正常线 */
-        cels.forEach((el, i) => el.classList.toggle('grp', i > 0 && el.dataset.ch !== cels[i - 1].dataset.ch));
+        /* 重排后按可见列重标分组竖界：首格（最优右邻）一律不带 grp，其余按 data-ch 变化处标 grp，
+           保证最优右边始终是单一正常线；被空列剔除隐藏的列跳过，避免组首竖线落在不可见列上 */
+        let lastCh = null;
+        for (const el of cels){
+          if (el.style.display === 'none') continue;
+          el.classList.toggle('grp', lastCh !== null && el.dataset.ch !== lastCh);
+          lastCh = el.dataset.ch;
+        }
+      }
+    });
+  }
+
+  /* 空列剔除：计划列在可见行中无任何数值时整列隐藏（col / 两级表头 / 各行单元格），
+     渠道组的所有计划列都被隐藏时组头一并隐藏；组头 colspan 收缩为可见计划列数 */
+  function hideEmptyCols(){
+    document.querySelectorAll('#compareBox .vt[data-p]').forEach(vt => {
+      const headTr = vt.querySelectorAll('.cscroll thead tr');
+      const planThs = Array.prototype.slice.call(headTr[headTr.length - 1].querySelectorAll('th[data-chp]'));
+      if (!planThs.length) return;
+      /* 数值只统计可见行（行显隐已在此前完成），空值单元格未渲染价格 */
+      const cellBy = {};
+      vt.querySelectorAll('.cscroll tbody tr[data-m]').forEach(tr => {
+        if (tr.style.display === 'none') return;
+        tr.querySelectorAll('td[data-chp]').forEach(td => {
+          (cellBy[td.dataset.chp] = cellBy[td.dataset.chp] || []).push(td);
+        });
+      });
+      const hide = {};
+      for (const th of planThs){
+        const k = th.dataset.chp;
+        hide[k] = !(cellBy[k] || []).some(td => td.textContent.trim() !== '');
+        th.style.display = hide[k] ? 'none' : '';
+      }
+      /* 全部单元格与列宽随计划列同步显隐（含当前隐藏的行，防止恢复时漏掉） */
+      vt.querySelectorAll('.cscroll tbody td[data-chp], .cscroll colgroup col[data-chp]').forEach(el => {
+        el.style.display = hide[el.dataset.chp] ? 'none' : '';
+      });
+      /* 组头：colspan 收缩到可见计划列数；全组隐藏则组头一并隐藏 */
+      for (const gth of headTr[0].querySelectorAll('th[data-ch]')){
+        const n = planThs.filter(th => th.dataset.ch === gth.dataset.ch && !hide[th.dataset.chp]).length;
+        gth.style.display = n ? '' : 'none';
+        gth.colSpan = n;
       }
     });
   }
@@ -1244,6 +1286,8 @@ function heatColor(v){
         if (lastVis._pair){ lastVis._pair.classList.remove('mend'); lastVis._pair.classList.add('xlast'); }
       }
     }
+    /* 空列剔除：依赖上文各行显隐结果，须在渠道重排前执行 */
+    hideEmptyCols();
     /* 渠道列：未选中不再隐藏，改为灰化（保持可见），并整组排到右侧 */
     const chOrder = [];
     for (const c of chans){ if (chVisible[c.key]) chOrder.push(c.key); }

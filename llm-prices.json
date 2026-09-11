@@ -25,7 +25,7 @@
     "mimo_credits": { "label": "MiMo Credit", "kind": "point",
       "note": "官方按每 token 计算积分消耗，此处统一标准折算为每 1M tokens 积分消耗" }
   },
-  "usd_to_cny": 6.66,
+  "usd_to_cny": 6.71,
   "updated": "2026.9.12",
   "filter_defaults": {
     "models": [
