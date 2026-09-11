@@ -8,6 +8,7 @@
 :root{
   --bg:#faf9f7; --card:#ffffff; --line:#e9e6e0;
   --grid:#e4e0d6; --grid-strong:#d3ccbd;
+  /* 主表分割线两档：浅 = --grid（普通格线）；正常 = --grid-strong（分组竖界 / 表头下界 / 模型间横线） */
   --ink:#1b1a17; --muted:#75716a; --faint:#a8a49b;
   --usd:#2376d2; --cny:#c2402a; --mid:#7a5af5; --sub:#0e9384; --point:#e8590c;
   --hover:#f5f3ee; --ref:#f4f2ee;
@@ -89,35 +90,53 @@ a{color:inherit;text-decoration:none}
 
 /* 主表 */
 #compareBox{margin:14px 0 8px}
-.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+/* 主表卡片化：与订阅方案卡片（.pc）统一的描边、圆角与投影 */
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card);
+  box-shadow:0 1px 2px rgba(27,26,23,.03),0 8px 24px -12px rgba(27,26,23,.08)}
+/* 主表拆分布局：左固定列（模型/条件/参考/最优）+ 右渠道区独立横向滚动，滚动条只占渠道区宽度；
+   两表行高由定高单元格（表头 30px、表体 56px）对齐，行显隐/hover/闪烁由 JS 经 _pair 同步 */
+.csplit{display:flex;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden;
+  box-shadow:0 1px 2px rgba(27,26,23,.03),0 8px 24px -12px rgba(27,26,23,.08)}
+.cside{flex:none;position:relative;z-index:2}
+.cscroll{flex:1;min-width:0;overflow-x:auto}
 table.cmp{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max-content;min-width:100%;font-size:15px}
 .cmp th,.cmp td{border-right:1px solid var(--grid);border-bottom:1px solid var(--grid);text-align:right;vertical-align:middle;white-space:nowrap}
+/* 模型间横线（正常档）：锚定每个模型最后一行（随筛选同步到最后可见行） */
+.cmp tbody tr.mend>td{border-bottom:1px solid var(--grid-strong)}
 .cmp tbody tr:last-child td{border-bottom:none}
-.cmp thead th{background:#f7f5f1;color:var(--muted);font-size:12.5px;font-weight:600;border-bottom:1px solid var(--grid);padding:7px 12px;height:30px}
+/* 表尾一律有线：最后一条可见行（xlast）恢复浅档底边——DOM 末行可能被隐藏，:last-child 靠不住 */
+.cmp tbody tr.xlast>td{border-bottom:1px solid var(--grid)}
+.cmp thead th{position:relative;background:#f7f5f1;color:var(--muted);font-size:12.5px;font-weight:600;border-bottom:1px solid var(--grid);padding:7px 12px;height:30px}
 /* 表体单元格统一定高 56px（列宽由 colgroup 固定）：文字内容一律装入绝对定位内层，
    写不下可换行但被内层裁剪，绝不撑高单元格 */
 .cmp tbody td{height:56px;padding:0;position:relative}
-.cmp tbody td.sk{position:sticky} /* sticky 同样是定位上下文，勿被 relative 覆盖 */
 .pw{position:absolute;inset:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;padding:0 12px;overflow:hidden;line-height:1.35;white-space:normal}
 .pw.l{justify-content:flex-start;text-align:left}
 .pw.c{justify-content:center;text-align:center}
 .pwv{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:7px 12px;overflow:hidden;text-align:left}
 .cmp thead th{text-align:center}
 .cmp thead tr:last-child th{border-bottom:1px solid var(--grid-strong)}
+/* 卡头带：首行（厂商标题 + 渠道分组）以与订阅卡片卡头一致的浅渐变呈现，形成统一的“卡片头”；层间线为浅档 */
+.cmp thead tr:first-child th{background:linear-gradient(180deg,#fdfcf9,#fbf9f5);border-bottom:1px solid var(--grid)}
+/* 跨两层的表头格（厂商标题/最优/填充列）底边即表头下界，与第二层一致用正常档 */
+.cmp thead tr:first-child th.vh,.cmp thead tr:first-child th.sep,.cmp thead tr:first-child th.fill{border-bottom:1px solid var(--grid-strong)}
 .cmp th.vh{text-align:left;vertical-align:middle}
-.vn{font-size:14px;font-weight:750;color:var(--ink)}
+.vn{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
 .vn .hit{margin-left:5px;font-size:11.5px;font-weight:600;color:var(--faint)}
 .vw{font-size:11.5px;color:var(--faint);font-weight:500;margin-top:3px;white-space:normal}
 .vw b{color:var(--muted);font-weight:600}
-.vt{margin-bottom:14px}
+.vt{margin-bottom:16px}
 .cmp th.l,.cmp td.l{text-align:left}
 .cmp td.c{text-align:center}
-.cmp tbody tr:hover>td{background:var(--hover)}
-.sk{position:sticky;z-index:3;background:var(--card)}
-thead .sk{z-index:6;background:#f7f5f1}
+.cmp tbody tr:hover>td,.cmp tbody tr.rh>td{background:var(--hover)}
 .rf{background:var(--ref)}
 thead .rf{background:#f0ede7}
-.sep{border-right:1px solid var(--grid-strong);box-shadow:7px 0 9px -7px rgba(60,50,30,.18)}
+/* 最优列右界：单一正常档竖线（渠道区首列不再带 grp，避免与 grp 贴成双线） */
+.cmp .sep{position:relative;border-right:1px solid var(--grid-strong)}
+/* 最优列右侧投影：::after 渐变条逐格满高拼接，行间无模糊缺口（box-shadow 按格模糊会呈分段感） */
+.sep::after{content:'';position:absolute;top:0;bottom:0;left:100%;width:9px;pointer-events:none;
+  background:linear-gradient(to right,rgba(60,50,30,.10),rgba(60,50,30,0))}
+/* 渠道分组竖界（正常档） */
 .grp{border-left:1px solid var(--grid-strong)}
 th.thm{color:var(--mid)}
 th.ths{color:var(--sub)}
@@ -271,13 +290,12 @@ details .body{padding:2px 16px 18px}
 .rawv{margin-bottom:16px}
 .rawv:last-child{margin-bottom:0}
 table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max-content;min-width:100%;font-size:13px}
-.raw th,.raw td{padding:7px 10px;border-right:1px solid var(--grid);border-bottom:1px solid var(--grid);text-align:right;white-space:nowrap}
+.raw th,.raw td{padding:7px 10px;border-right:1px solid var(--grid-strong);border-bottom:1px solid var(--grid-strong);text-align:right;white-space:nowrap}
 .raw thead th{background:#f7f5f1;font-size:12px;font-weight:600;color:var(--muted);text-align:center}
 .raw thead tr:last-child th{border-bottom:1px solid var(--grid-strong)}
 .raw tbody tr:last-child td{border-bottom:none}
 .raw th.cap{text-align:left;font-size:13.5px;font-weight:700;color:var(--ink);padding:9px 12px}
 .raw td.l{text-align:left}
-.raw .grp{border-left:1px solid var(--grid-strong)}
 .raw .fill{padding:0;border-right:none}
 .h-usd{color:var(--usd)} .h-cny{color:var(--cny)} .h-mid{color:var(--mid)} .h-sub{color:var(--sub)} .h-point{color:var(--point)}
 
@@ -338,7 +356,7 @@ table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
 .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .chart-card{min-width:0;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:15px 18px 13px}
 .chart-card h3{margin:0 0 10px;font-size:14.5px;font-weight:750}
-/* 每行 = 模型名 + 双面条（深色主条=最便宜条件，浅色副条=最贵条件）+ 数值；渠道/条件小字在条下对齐条头，两行定高槽位保证两图行高一致 */
+/* 每行 = 模型名 + 双面条（深色主条=最便宜条件，浅色副条=最贵条件）+ 数值；渠道/条件小字在条下同一行：主条件居左对齐条头，副条件对齐深浅条分界（主条件更宽时顺延右移紧接其后），定高槽位保证两图行高一致 */
 /* hover 聚焦：同图其余行淡出，当前行条柱加粗、文字提亮；明细经 data-tip 浮窗展示 */
 .bar-row{display:grid;grid-template-columns:150px minmax(0,1fr) 112px;gap:2px 10px;padding:3.5px 6px;margin:0 -6px;border-radius:6px;cursor:pointer;transition:opacity .15s}
 .chart:hover .bar-row:not(:hover){opacity:.38}
@@ -355,10 +373,13 @@ table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
 .bar-val{font-size:12.5px;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap;align-self:center}
 .bar-val-hi{font-size:11px;font-weight:400;color:var(--faint);transition:color .15s}
 .bar-row:hover .bar-val-hi{color:var(--muted)}
-.bar-subs{grid-column:2;min-height:30px;padding-top:3px;font-size:10.5px;line-height:15px;font-weight:400;overflow:hidden}
-.bar-sub{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-subs{grid-column:2;min-height:15px;margin-top:-1px;margin-bottom:3px;font-size:10.5px;line-height:15px;font-weight:400;overflow:hidden;display:flex}
+.bar-sub{display:block;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-gap{flex:none}
 .bar-sub.lo{color:#565249}
 #chartBest .bar-sub.lo{color:var(--sub)}
+#chartBest .bar-sub.hi{color:rgba(14,147,132,.55)}
+#chartBest .bar-row:hover .bar-sub.hi{color:rgba(14,147,132,.8)}
 .bar-sub.hi{color:var(--faint);transition:color .15s}
 .bar-row:hover .bar-sub.hi{color:#8f8a7e}
 .bar-row.best .bar-fill.lo{background:#1e7e34}
@@ -779,7 +800,7 @@ function heatColor(v){
       if (plans.length) subGroups.push({group: gname, plans: plans});
     }
     const colDefs = [];
-    midSet.forEach((chk, i) => colDefs.push({kind: 'mid', key: chk, label: CHANNELS[chk].label, grp: i === 0, note: pnotes[chk] || null}));
+    midSet.forEach(chk => colDefs.push({kind: 'mid', key: chk, label: CHANNELS[chk].label, note: pnotes[chk] || null}));
     let prevGroup = null;
     for (const sg of subGroups){
       for (const pl of sg.plans){
@@ -787,22 +808,22 @@ function heatColor(v){
         prevGroup = sg.group;
       }
     }
-    if (colDefs.length) colDefs[0].grp = true;
-
-    /* 条件列始终渲染；所有数据列同宽，保证格点跨行跨表对齐 */
-    const L = {model: 0, cond: W.model, ref: W.model + W.col, best: W.model + W.col * 3};
+    /* 渠道区首列（最优右邻）不带 grp：该竖界由最优列 border-right 单独表达 */
+    if (colDefs.length) colDefs[0].grp = false;
 
     /* 条件注明：conditionNotes 为条件名 → 说明，hover 浮窗显示 */
     const cnotes = prov.conditionNotes || {};
     const condInf = ck => (ck !== 'default' && cnotes[ck])
       ? '<span class="inf" data-tip="' + regTip(infoTip(ck, cnotes[ck])) + '">i</span>' : '';
 
-    let cg = '<col style="width:' + W.model + 'px">';
-    for (let i = 0; i < 4 + colDefs.length; i++){
-      const ch = i >= 4 ? (colDefs[i - 4].kind === 'mid' ? 'mid' : 'sub:' + colDefs[i - 4].group) : null;
-      cg += '<col style="width:' + W.col + 'px"' + (ch ? ' data-ch="' + ch + '"' : '') + '>';
+    /* 左表固定列（模型/条件/参考×2/最优），右表渠道列 + 弹性填充列；所有数据列同宽，格点跨表对齐 */
+    let cgL = '<col style="width:' + W.model + 'px">';
+    for (let i = 0; i < 4; i++) cgL += '<col style="width:' + W.col + 'px">';
+    let cgR = '';
+    for (const cd of colDefs){
+      cgR += '<col style="width:' + W.col + 'px" data-ch="' + (cd.kind === 'mid' ? 'mid' : 'sub:' + cd.group) + '">';
     }
-    cg += '<col>'; /* 弹性填充列 */
+    cgR += '<col>'; /* 弹性填充列 */
 
     const fmtW = w => Object.entries(w).map(([k, x]) => '<b>' + (COMP[k] || k) + '</b>×' + x).join(' · ');
     /* 缓存命中率 = 缓存命中 ÷（缓存命中 + 输入 + 缓存写入），按权重计算 */
@@ -811,30 +832,37 @@ function heatColor(v){
     for (const k in w0) if (k.indexOf('cache_write') === 0) inW += w0[k];
     const hitRate = ((w0.cache_hit || 0) / ((w0.cache_hit || 0) + inW) * 100).toFixed(1);
 
-    /* 左上角：模型+条件表头合并为厂商标题区；权重来源 ⓘ 在缓存命中率左侧 */
+    /* 左表头：模型+条件列合并为厂商标题区（跨两层）；权重来源 ⓘ 在缓存命中率左侧 */
     const wnote = prov.weights_note
       ? '<span class="inf" style="margin:0 3px 0 0" data-tip="' + regTip(infoTip('缓存命中 · 综合权重', prov.weights_note)) + '">i</span>' : '';
-    let head = '<tr><th class="sk vh" colspan="2" rowspan="2" style="left:0">' +
-      '<div class="pwv"><div class="vn">' + pname + '<span class="hit">' + wnote + '缓存命中率 ' + hitRate + '%</span></div>' +
-      '<div class="vw">' + fmtW(prov.weights) + '</div></div></th>' +
-      '<th class="sk rf" colspan="2" style="left:' + L.ref + 'px">参考</th>' +
-      '<th class="sk sep" rowspan="2" style="left:' + L.best + 'px">最优</th>';
-    if (midSet.length) head += '<th colspan="' + midSet.length + '" class="thm" data-ch="mid">中转站</th>';
-    for (const sg of subGroups) head += '<th colspan="' + sg.plans.length + '" class="ths" data-ch="sub:' + sg.group + '">' + sg.group + '</th>';
-    head += '<th class="fill" rowspan="2"></th></tr><tr>';
     /* 参考列按实际来源命名：美国厂商 $官方 + ¥换算；中国厂商 $OpenCode + ¥官方 */
     const usdOfficial = groups.some(g => g.rows.some(r => r.usdKey === 'usd'));
-    head += '<th class="sk rf" style="left:' + L.ref + 'px">' + (usdOfficial ? '$ 官方' : '$ OpenCode') + '</th>' +
-            '<th class="sk rf" style="left:' + (L.ref + W.col) + 'px">' + (provHasCny ? '¥ 官方' : '¥ 换算') + '</th>';
+    const headL = '<tr><th class="vh" colspan="2" rowspan="2">' +
+      '<div class="pwv"><div class="vn">' + pname + '<span class="hit">' + wnote + '缓存命中率 ' + hitRate + '%</span></div>' +
+      '<div class="vw">' + fmtW(prov.weights) + '</div></div></th>' +
+      '<th class="rf" colspan="2">参考</th>' +
+      '<th class="sep" rowspan="2">最优</th></tr><tr>' +
+      '<th class="rf">' + (usdOfficial ? '$ 官方' : '$ OpenCode') + '</th>' +
+      '<th class="rf">' + (provHasCny ? '¥ 官方' : '¥ 换算') + '</th></tr>';
+    /* 右表头：第一行分组表头带 grp（每组首列即分组竖界），保证正常档竖线从表头顶到底整根一致；
+       渠道区首个分组（最优右邻）除外，该处竖线由最优列 border-right 单独表达 */
+    let headR = '<tr>';
+    if (midSet.length) headR += '<th colspan="' + midSet.length + '" class="thm" data-ch="mid">中转站</th>';
+    subGroups.forEach((sg, si) => {
+      headR += '<th colspan="' + sg.plans.length + '" class="ths' + (!midSet.length && si === 0 ? '' : ' grp') + '" data-ch="sub:' + sg.group + '">' + sg.group + '</th>';
+    });
+    headR += '<th class="fill" rowspan="2"></th></tr><tr>';
     for (const cd of colDefs){
       const inf = cd.note ? '<span class="inf" data-tip="' + regTip(infoTip(cd.label, cd.note)) + '">i</span>' : '';
-      head += '<th class="' + (cd.kind === 'mid' ? 'thm' : 'ths') + (cd.grp ? ' grp' : '') +
+      headR += '<th class="' + (cd.kind === 'mid' ? 'thm' : 'ths') + (cd.grp ? ' grp' : '') +
         '" data-ch="' + (cd.kind === 'mid' ? 'mid' : 'sub:' + cd.group) + '">' + cd.label + inf + '</th>';
     }
-    head += '</tr>';
+    /* 无渠道列时第二层也不能空行（保证左右两表表头行高一致） */
+    if (!colDefs.length) headR += '<th></th>';
+    headR += '</tr>';
 
-    /* 表体 */
-    let body = '';
+    /* 表体：同一数据行同时写入左表（模型/条件/参考/最优）与右表（渠道列），行序一致供 _pair 配对 */
+    let bodyL = '', bodyR = '';
     for (const g of groups){
       g.rows.forEach((r, ri) => {
         const titleHtml = r.mname + (r.ck !== 'default' ? ' <span class="tc">' + r.ck + '</span>' : '');
@@ -845,9 +873,11 @@ function heatColor(v){
           if (rchans.indexOf(gk) < 0) rchans.push(gk);
         }
         ROW_INFO.push({ref: r.usd != null || r.cny != null, chans: rchans});
-        body += '<tr data-m="' + g.mname + '">';
-        if (ri === 0) body += '<td class="sk l mcell" rowspan="' + g.rows.length + '" style="left:0"><span class="pw l">' + g.mname + '</span></td>';
-        body += '<td class="sk c" style="left:' + L.cond + 'px"><span class="pw c">' + (r.ck === 'default' ? '' : '<span class="mut">' + r.ck + '</span>' + condInf(r.ck)) + '</span></td>';
+        const mendCls = ri === g.rows.length - 1 ? ' class="mend"' : '';
+        bodyL += '<tr data-m="' + g.mname + '"' + mendCls + '>';
+        bodyR += '<tr data-m="' + g.mname + '"' + mendCls + '>';
+        if (ri === 0) bodyL += '<td class="l mcell" rowspan="' + g.rows.length + '"><span class="pw l">' + g.mname + '</span></td>';
+        bodyL += '<td class="c"><span class="pw c">' + (r.ck === 'default' ? '' : '<span class="mut">' + r.ck + '</span>' + condInf(r.ck)) + '</span></td>';
 
         const usdTip = regTip(cellTip({title: titleHtml, titleSub: (CHANNELS[r.usdKey] ? CHANNELS[r.usdKey].label : '美元'),
                                        det: r.usdDet, kind: 'usd'}));
@@ -856,8 +886,8 @@ function heatColor(v){
           ? regTip(cellTip({title: titleHtml, titleSub: (CHANNELS[r.usdKey] ? CHANNELS[r.usdKey].label : '美元') + ' · 汇率换算',
                             det: r.usdDet, kind: 'usd'}))
           : regTip(cellTip({title: titleHtml, titleSub: '人民币官方', det: r.cnyDet, kind: 'cny', finalValue: r.cny}));
-        body += '<td class="sk rf px" style="left:' + L.ref + 'px" data-tip="' + usdTip + '">' + pnumHTML(r.usd, 'usd') + '</td>' +
-                '<td class="sk rf px" style="left:' + (L.ref + W.col) + 'px" data-tip="' + cnyTip + '">' + pnumHTML(r.cny, 'cny') + '</td>';
+        bodyL += '<td class="rf px" data-tip="' + usdTip + '">' + pnumHTML(r.usd, 'usd') + '</td>' +
+                 '<td class="rf px" data-tip="' + cnyTip + '">' + pnumHTML(r.cny, 'cny') + '</td>';
 
         /* 最优候选：全部渠道（中转站 + 订阅）折人民币各存一份，渠道筛选变化时在可见渠道内取最低 */
         const cands = [];
@@ -886,8 +916,8 @@ function heatColor(v){
         CHART_ROWS.push({m: g.mname, ck: r.ck, ref: r.cny, best: bestIdx});
         let best0 = null;
         for (const c of cands) if (!best0 || c.cny < best0.cny) best0 = c;
-        body += '<td class="sk sep px" style="left:' + L.best + 'px" data-best="' + bestIdx + '"' +
-          (best0 ? ' data-tip="' + best0.tipId + '"' : '') + '>' + (best0 ? best0.html : '') + '</td>';
+        bodyL += '<td class="sep px" data-best="' + bestIdx + '"' +
+          (best0 ? ' data-tip="' + best0.tipId + '"' : '') + '>' + (best0 ? best0.html : '') + '</td></tr>';
 
         for (const cd of colDefs){
           let inner = '', tipId = '';
@@ -912,14 +942,30 @@ function heatColor(v){
               inner = pnumHTML(cnyV, 'cny', heatColor(cnyV));
             }
           }
-          body += '<td class="px' + (cd.grp ? ' grp' : '') + '" data-ch="' + (cd.kind === 'mid' ? 'mid' : 'sub:' + cd.group) + '"' + tipId + '>' + inner + '</td>';
+          bodyR += '<td class="px' + (cd.grp ? ' grp' : '') + '" data-ch="' + (cd.kind === 'mid' ? 'mid' : 'sub:' + cd.group) + '"' + tipId + '>' + inner + '</td>';
         }
-        body += '<td class="fill"></td></tr>';
+        bodyR += '<td class="fill"></td></tr>';
       });
     }
-    out.push('<div class="vt" data-p="' + pname + '"><div class="scroll"><table class="cmp"><colgroup>' + cg + '</colgroup><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div></div>');
+    out.push('<div class="vt" data-p="' + pname + '"><div class="csplit">' +
+      '<div class="cside"><table class="cmp"><colgroup>' + cgL + '</colgroup><thead>' + headL + '</thead><tbody>' + bodyL + '</tbody></table></div>' +
+      '<div class="cscroll"><table class="cmp"><colgroup>' + cgR + '</colgroup><thead>' + headR + '</thead><tbody>' + bodyR + '</tbody></table></div>' +
+      '</div></div>');
   }
   box.innerHTML = out.join('');
+  /* 左右两表同一数据行配对：筛选显隐、模型间横线、闪烁定位经 _pair 同步 */
+  document.querySelectorAll('#compareBox .vt').forEach(vt => {
+    const lrs = vt.querySelectorAll('.cside tbody tr');
+    const rrs = vt.querySelectorAll('.cscroll tbody tr');
+    lrs.forEach((tr, i) => { tr._pair = rrs[i]; rrs[i]._pair = tr; });
+  });
+  /* 行 hover 同步高亮（同一数据行分布在左右两张表中） */
+  const syncHover = (e, on) => {
+    const tr = e.target.closest && e.target.closest('tbody tr');
+    if (tr && tr._pair){ tr.classList.toggle('rh', on); tr._pair.classList.toggle('rh', on); }
+  };
+  box.addEventListener('mouseover', e => syncHover(e, true));
+  box.addEventListener('mouseout', e => syncHover(e, false));
 })();
 
 /* ---------- 筛选（默认折叠；仅影响综合对比主表：行按 data-m、渠道列按 data-ch 显隐） ---------- */
@@ -1010,7 +1056,7 @@ function heatColor(v){
     sync();
   });
 
-  const rows = Array.prototype.slice.call(document.querySelectorAll('#compareBox tr[data-m]'));
+  const rows = Array.prototype.slice.call(document.querySelectorAll('#compareBox .cside tbody tr[data-m]'));
   const tables = Array.prototype.slice.call(document.querySelectorAll('#compareBox .vt[data-p]'));
   const bestCells = Array.prototype.slice.call(document.querySelectorAll('#compareBox [data-best]'));
   /* 每个模型的条件行组：空行被隐藏后，模型名单元格需移到首个可见行并同步 rowspan */
@@ -1023,13 +1069,12 @@ function heatColor(v){
   }
 
   /* 按渠道筛选把列整体重排：选中渠道靠左（保持原顺序），未选中靠右。
-     表中渠道列的 DOM 序列（colgroup / thead 两行 / tbody 每行）里，渠道单元均连续成块，
-     故抽出带 data-ch 的子节点按 chPos 稳定排序后放回原块位置，其余锚点列（模型/参考/最优/fill）不动。 */
+     右表（渠道表）的 DOM 序列（colgroup / thead 两行 / tbody 每行）里，渠道单元均连续成块，
+     故抽出带 data-ch 的子节点按 chPos 稳定排序后放回原块位置；左表（模型/参考/最优）不动。 */
   function reorderChannels(pos){
     document.querySelectorAll('#compareBox .vt[data-p]').forEach(vt => {
       const blocks = [];
-      const cg = vt.querySelector('colgroup');
-      if (cg) blocks.push(cg);
+      vt.querySelectorAll('colgroup').forEach(cg => blocks.push(cg));
       vt.querySelectorAll('thead tr, tbody tr').forEach(tr => blocks.push(tr));
       for (const block of blocks){
         const cels = Array.prototype.filter.call(block.children, el => el.hasAttribute && el.hasAttribute('data-ch'));
@@ -1038,6 +1083,9 @@ function heatColor(v){
         cels.sort((a, b) => (pos[a.dataset.ch] - pos[b.dataset.ch]));
         for (const el of cels) el.remove();
         for (const el of cels) block.insertBefore(el, ref);
+        /* 重排后重标分组竖界：首格（最优右邻）一律不带 grp，其余按 data-ch 变化处标 grp，
+           保证最优右边始终是单一正常线 */
+        cels.forEach((el, i) => el.classList.toggle('grp', i > 0 && el.dataset.ch !== cels[i - 1].dataset.ch));
       }
     });
   }
@@ -1063,17 +1111,32 @@ function heatColor(v){
       const nonEmpty = info.ref || info.chans.some(ch => chVisible[ch]);
       tr._fltShow = visible[tr.dataset.m] && nonEmpty;
       tr.style.display = tr._fltShow ? '' : 'none';
+      if (tr._pair) tr._pair.style.display = tr.style.display;
     }
     for (const mg of mgroups){
       const vis = mg.rows.filter(tr => tr._fltShow);
       if (vis.length && mg.cell.parentNode !== vis[0]) vis[0].insertBefore(mg.cell, vis[0].firstChild);
       mg.cell.rowSpan = Math.max(1, vis.length);
+      /* 模型间横线（正常档）随筛选锚定到该模型最后一条可见行 */
+      for (const tr of mg.rows){ tr.classList.remove('mend'); if (tr._pair) tr._pair.classList.remove('mend'); }
+      if (vis.length){
+        const lv = vis[vis.length - 1];
+        lv.classList.add('mend');
+        if (lv._pair) lv._pair.classList.add('mend');
+      }
     }
     for (const div of tables){
-      let any = false;
-      const trs = div.querySelectorAll('tr[data-m]');
-      for (const tr of trs) if (tr._fltShow){ any = true; break; }
+      let any = false, lastVis = null;
+      const trs = div.querySelectorAll('.cside tr[data-m]');
+      for (const tr of trs) if (tr._fltShow){ any = true; lastVis = tr; }
       div.style.display = any ? '' : 'none';
+      /* 全表最后一条可见行标 xlast：去 mend、补浅档底边，表尾一律有线且不与正常档重复 */
+      for (const tr of trs){ tr.classList.remove('xlast'); if (tr._pair) tr._pair.classList.remove('xlast'); }
+      if (lastVis){
+        lastVis.classList.remove('mend');
+        lastVis.classList.add('xlast');
+        if (lastVis._pair){ lastVis._pair.classList.remove('mend'); lastVis._pair.classList.add('xlast'); }
+      }
     }
     /* 渠道列：未选中不再隐藏，改为灰化（保持可见），并整组排到右侧 */
     const chOrder = [];
@@ -1156,9 +1219,12 @@ function heatColor(v){
     for (const tr of trs){
       if (tr.style.display === 'none') continue;
       tr.scrollIntoView({behavior: 'smooth', block: 'center'});
-      tr.classList.remove('flash');
-      void tr.offsetWidth;
-      tr.classList.add('flash');
+      for (const t of [tr, tr._pair]){
+        if (!t) continue;
+        t.classList.remove('flash');
+        void t.offsetWidth;
+        t.classList.add('flash');
+      }
       return;
     }
   }
@@ -1188,8 +1254,8 @@ function heatColor(v){
     let h = '';
     entries.forEach((e, i) => {
       const ranged = e.hi > e.lo;
-      const pctLo = Math.max(1.2, e.lo / max * 100);
-      const pctHi = Math.max(1.2, e.hi / max * 100);
+      const pctLo = e.lo / max * 100;
+      const pctHi = e.hi / max * 100;
       h += '<div class="bar-row' + (isBest && i === entries.length - 1 ? ' best' : '') + '" data-m="' + e.m + '"' +
         ' data-tip="' + regTip(condTip(e.m, e.list, isBest)) + '">' +
         '<span class="bar-name" title="' + e.m + '">' + e.m + '</span>' +
@@ -1200,10 +1266,18 @@ function heatColor(v){
           (ranged ? ' <span class="bar-val-hi">~ ' + e.hi.toFixed(2) + '</span>' : '') + '</span>' +
         '<span class="bar-subs">' +
           (e.loLabel ? '<span class="bar-sub lo">' + e.loLabel + '</span>' : '') +
-          (ranged && e.hiLabel ? '<span class="bar-sub hi">' + e.hiLabel + '</span>' : '') +
+          (ranged && e.hiLabel ?
+            '<span class="bar-gap" data-pct="' + pctLo.toFixed(2) + '"></span>' +
+            '<span class="bar-sub hi">' + e.hiLabel + '</span>' : '') +
         '</span></div>';
     });
     el.innerHTML = h;
+    /* 副条件小字对齐深浅条分界：占位宽 = 主条宽 − 主条件小字宽，主条件更宽时占位归零、副条件紧接其后 */
+    el.querySelectorAll('.bar-gap').forEach(g => {
+      const lo = g.previousElementSibling;
+      const loW = lo && lo.classList.contains('bar-sub') ? lo.offsetWidth : 0;
+      g.style.width = 'max(6px, ' + g.dataset.pct + '% - ' + loW + 'px)';
+    });
   }
   function update(visible, chVisible){
     const refEntries = [], bestEntries = [];
@@ -1454,9 +1528,9 @@ function heatColor(v){
       head += '<th colspan="' + chanCols[chk].length + '" class="h-' + ci.kind + '">' + ci.label + srcLinks(prov.sources && prov.sources[chk]) + ciNote + '</th>';
     }
     head += '<th class="fill" rowspan="2"></th></tr><tr>';
-    chans.forEach((chk, i) => {
+    chans.forEach(chk => {
       const ci = CHANNELS[chk] || {label: chk, kind: 'cny'};
-      for (const f of chanCols[chk]) head += '<th class="' + (i === 0 ? 'grp ' : '') + 'h-' + ci.kind + '">' + (COMP[f] || f) + '</th>';
+      for (const f of chanCols[chk]) head += '<th class="h-' + ci.kind + '">' + (COMP[f] || f) + '</th>';
     });
     head += '</tr>';
 
@@ -1468,11 +1542,11 @@ function heatColor(v){
         if (mi === 0) body += '<td class="l" rowspan="' + merged.length + '"><b>' + mname + '</b></td>';
         if (hasCond) body += '<td>' + (it.ck === 'default' ? '' : '<span class="mut">' + it.ck + '</span>' +
           ((it.ck !== 'default' && cnotes[it.ck]) ? '<span class="inf" data-tip="' + regTip(infoTip(it.ck, cnotes[it.ck])) + '">i</span>' : '')) + '</td>';
-        chans.forEach((chk, i) => {
+        chans.forEach(chk => {
           const ci2 = CHANNELS[chk] || {label: chk, kind: 'cny'};
           const prices = it.channels[chk];
           for (const f of chanCols[chk]){
-            body += '<td' + (i === 0 ? ' class="grp"' : '') + '>' + (prices && prices[f] != null ? priceHTML(prices[f], ci2.kind) : '') + '</td>';
+            body += '<td>' + (prices && prices[f] != null ? priceHTML(prices[f], ci2.kind) : '') + '</td>';
           }
         });
         body += '<td class="fill"></td></tr>';
