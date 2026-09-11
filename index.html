@@ -153,7 +153,7 @@ thead .fill{background:#f7f5f1}
   padding:12px 14px;font-size:12.5px;line-height:1.5;box-shadow:0 10px 30px rgba(20,16,8,.35);
   opacity:0;pointer-events:none;transition:opacity .12s;
 }
-#tip.on{opacity:1}
+#tip.on{opacity:1;pointer-events:auto}
 #tip .tt{font-weight:700;font-size:13.5px;margin-bottom:8px}
 #tip .tt .tc{color:#b3ada0;font-weight:500}
 #tip .tt small{color:#b3ada0;font-weight:500}
@@ -168,6 +168,9 @@ table.tt-t{width:100%;border-collapse:collapse}
 .tsec{padding-top:3px;color:#b3ada0;font-size:12px}
 .tsec b{color:#f4f2ec;font-weight:600}
 .tnote{margin-top:8px;color:#eec674;font-size:12px}
+.tnote a,.pf a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.tnote a:hover{color:#f4f2ec}
+.pf a:hover{color:var(--muted)}
 
 /* 折叠区 */
 .src{margin:30px 0 60px}
@@ -1309,10 +1312,14 @@ function heatColor(v){
       move(e);
     }, 110);
   });
-  document.addEventListener('mousemove', e => { if (cur && el.classList.contains('on')) move(e); });
+  document.addEventListener('mousemove', e => { if (cur && el.classList.contains('on') && !el.contains(e.target)) move(e); });
   document.addEventListener('mouseout', e => {
     const t = e.target.closest('[data-tip]');
-    if (t && t === cur && !(e.relatedTarget && t.contains(e.relatedTarget))) hide();
+    if (t && t === cur && !(e.relatedTarget && (t.contains(e.relatedTarget) || el.contains(e.relatedTarget)))) hide();
+  });
+  el.addEventListener('mouseout', e => {
+    if (e.relatedTarget && el.contains(e.relatedTarget)) return;
+    hide();
   });
   document.addEventListener('scroll', hide, true);
 })();

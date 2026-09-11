@@ -82,10 +82,10 @@
         }
       },
       "notes": [
-        "额度来自网络信息（2026 年 5 月的逆向反推），未经官方证实",
+        "<a href=\"https://zhuanlan.zhihu.com/p/2027017728410628819\" target=\"_blank\" rel=\"noopener\">额度来自网络信息（2026 年 5 月的逆向反推），未经官方证实</a>",
         "Fable 5.1 订阅计费：缓存命中按 $1.00 计（标价 $0.25）"
       ],
-      "source": "https://zhuanlan.zhihu.com/p/2027017728410628819"
+      "source": "https://claude.com/pricing"
     },
     "Kimi 订阅": {
       "currency": "CNY",
@@ -160,9 +160,9 @@
         "DeepSeek V4 Flash"
       ],
       "notes": [
-        "积分与人民币的换算关系来自早期 Qwen 3.6 Plus 消耗示例反推（官方从未明确积分价值）。"
+        "<a href=\"https://www.aliyunbaike.com/tokenplan/\" target=\"_blank\" rel=\"noopener\">积分与人民币的换算关系，来自早期 Qwen 3.6 Plus 消耗示例反推。</a>"
       ],
-      "source": "https://bailian.console.aliyun.com/cn-beijing/?tab=plan#/efm/subscription/overview"
+      "source": "https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model&url=3028856"
     },
     "GLM Coding Plan": {
       "currency": "CNY",
@@ -271,6 +271,7 @@
       "models": [
         "DeepSeek V4 Pro",
         "DeepSeek V4 Flash",
+        "DeepSeek V4.1 Flash",
         "Kimi K3",
         "Kimi K2.7 Code",
         "Kimi K2.6",
@@ -863,6 +864,7 @@
               "cache_hit": 0.006,
               "output": 1.20
             },
+            "ollama": { "input": 0.30, "cache_hit": 0.006, "output": 1.20 },
             "cny": {
               "input": 2,
               "cache_hit": 0.04,
@@ -880,6 +882,9 @@
               "cache_hit": 0.02,
               "output": 4
             }
+          },
+          "Ollama 谷时": {
+            "ollama": { "input": 0.15, "cache_hit": 0.003, "output": 0.60 }
           }
         }
       },
