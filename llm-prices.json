@@ -92,6 +92,34 @@
       ],
       "source": "https://claude.com/pricing"
     },
+    "ChatGPT 订阅": {
+      "currency": "USD",
+      "type": "money_quota",
+      "plans": {
+        "Plus": {
+          "fee": 20,
+          "quota_weekly": 70
+        },
+        "Pro 5x": {
+          "fee": 100,
+          "quota_weekly": 350
+        },
+        "Pro 20x": {
+          "fee": 200,
+          "quota_weekly": 1300
+        }
+      },
+      "models": [
+        "GPT 6 Astra",
+        "GPT 5.6 Sol",
+        "GPT 5.6 Terra",
+        "GPT 5.6 Luna"
+      ],
+      "notes": [
+        "额度来自社区 sub2api 计费估算，会随 OpenAI 随机调整，仅供参考。"
+      ],
+      "source": "https://chatgpt.com/zh-Hans-CN/pricing/"
+    },
     "Kimi 订阅": {
       "currency": "CNY",
       "type": "money_quota",
@@ -140,20 +168,17 @@
         "Lite": {
           "fee": 39,
           "quota_5h": 700,
-          "quota_weekly": 2500,
-          "quota_monthly": 10833.33
+          "quota_weekly": 2500
         },
         "Standard": {
           "fee": 139,
           "quota_5h": 3000,
-          "quota_weekly": 10000,
-          "quota_monthly": 43333.33
+          "quota_weekly": 10000
         },
         "Pro": {
           "fee": 499,
           "quota_5h": 12000,
-          "quota_weekly": 40000,
-          "quota_monthly": 173333.33
+          "quota_weekly": 40000
         }
       },
       "models": [
@@ -177,20 +202,17 @@
         "Lite": {
           "fee": 118,
           "quota_5h": 2000,
-          "quota_weekly": 10000,
-          "quota_monthly": 43333.33
+          "quota_weekly": 10000
         },
         "Pro": {
           "fee": 538,
           "quota_5h": 12000,
-          "quota_weekly": 60000,
-          "quota_monthly": 260000
+          "quota_weekly": 60000
         },
         "Max": {
           "fee": 1078,
           "quota_5h": 28000,
-          "quota_weekly": 140000,
-          "quota_monthly": 606666.67
+          "quota_weekly": 140000
         }
       },
       "models": [

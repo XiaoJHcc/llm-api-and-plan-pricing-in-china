@@ -437,6 +437,12 @@ function compact(v){
   if (v % 1e3 === 0 && v >= 1e6) return (v / 1e6) + 'M';
   return fmt(v);
 }
+/* 等效月额度：部分订阅只规定 5h 与周额度（百炼 / GLM / ChatGPT），月额度由前端按 周额度 × 52/12 推导，不落盘到数据；金额保留 2 位小数 */
+const eqMonthly = p => p.quota_monthly != null
+  ? p.quota_monthly
+  : Math.round(p.quota_weekly * (52 / 12) * 100) / 100;
+/* 积分额度显示取整，不显示小数 */
+const ptsStr = v => v == null ? '' : compact(Math.round(v)) + ' 积分';
 function fix2(s){
   const d = s.indexOf('.');
   if (d < 0) return s + '.00';
@@ -550,10 +556,10 @@ function cellTip(o){
   if (o.plan){
     const p = o.plan;
     const curKind = p.currency === 'USD' ? 'usd' : 'cny';
-    const quotaStr = p.quotaUnit === '积分' ? compact(p.quota) + ' 积分' : tprice(p.quota, curKind);
+    const quotaStr = p.quotaUnit === '积分' ? ptsStr(p.quota) : tprice(p.quota, curKind);
     h += (secs.length ? '<div class="tdiv dash"></div>' : '') +
       '<div class="tsec"><b>' + p.group + ' · ' + p.plan + '</b>　月费 ' + tprice(p.fee, curKind) +
-      ' · 月额度 ' + quotaStr + (p.quotaUnit === '积分' ? '' : ' · ' + ratioStr(p.fee, p.quota)) + '</div>';
+      ' · ' + (p.quotaDerived ? '等效月额度' : '月额度') + ' ' + quotaStr + (p.quotaUnit === '积分' ? '' : ' · ' + ratioStr(p.fee, p.quota)) + '</div>';
   }
   if (o.notes && o.notes.length){
     for (const n of o.notes) h += '<div class="tnote">⚠ ' + n.replace(/\n/g, '<br>') + '</div>';
@@ -582,9 +588,12 @@ function subDetail(mname, channels, prov){
       for (const pl in g.plans){
         const p = g.plans[pl];
         if (p.excluded_models && p.excluded_models.indexOf(mname) >= 0) continue;
+        /* 等效月额度在前端推导（周额度 × 52/12），积分额度取整 */
+        const quota = Math.round(eqMonthly(p));
         out[gname + '||' + pl] = {
-          value: det.total * p.fee / p.quota_monthly, currency: 'CNY', det: det, points: true, notes: notes,
-          plan: {group: gname, plan: pl, fee: p.fee, quota: p.quota_monthly, quotaUnit: '积分', currency: 'CNY'},
+          value: det.total * p.fee / quota, currency: 'CNY', det: det, points: true, notes: notes,
+          plan: {group: gname, plan: pl, fee: p.fee, quota: quota, quotaUnit: '积分',
+                 quotaDerived: p.quota_monthly == null, currency: 'CNY'},
         };
       }
     } else if (g.type === 'money_quota'){
@@ -603,12 +612,13 @@ function subDetail(mname, channels, prov){
       for (const pl in g.plans){
         const p = g.plans[pl];
         if (p.excluded_models && p.excluded_models.indexOf(mname) >= 0) continue;
-        /* 各模型月额度可不同（OpenCode Go）；缺省回落到套餐统一的 quota_monthly */
+        /* 各模型月额度可不同（OpenCode Go）；未规定月额度时（如 ChatGPT）回落到前端推导的等效月额度 */
         const quota = (p.quota_monthly_by_model && p.quota_monthly_by_model[mname] != null)
-          ? p.quota_monthly_by_model[mname] : p.quota_monthly;
+          ? p.quota_monthly_by_model[mname] : eqMonthly(p);
         out[gname + '||' + pl] = {
           value: det.total * p.fee / quota, currency: g.currency, det: det, notes: notes,
-          plan: {group: gname, plan: pl, fee: p.fee, quota: quota, currency: g.currency},
+          plan: {group: gname, plan: pl, fee: p.fee, quota: quota, currency: g.currency,
+                 quotaDerived: p.quota_monthly == null},
         };
       }
     }
@@ -1170,13 +1180,20 @@ function heatColor(v){
     const g = DATA.subscriptions[gname];
     const kind = g.currency === 'USD' ? 'usd' : 'cny';
     const isMoney = g.type === 'money_quota';
-    const hasWH = (Object.values(g.plans)[0] || {}).quota_weekly != null;
+    /* 各套餐可能只规定部分额度口径（ChatGPT 仅周额度），按实际出现与否决定列显隐 */
+    const has5h = Object.values(g.plans).some(p => p.quota_5h != null);
+    const hasWH = Object.values(g.plans).some(p => p.quota_weekly != null);
+    /* 官方未规定月额度的套餐（百炼 / GLM / ChatGPT）：月额度由前端按 周额度 × 52/12 推导，标注为等效 */
+    const derivedM = Object.values(g.plans).some(p => p.quota_monthly == null && p.quota_weekly != null);
+    const mInf = derivedM ? '<span class="inf" data-tip="' + regTip(infoTip('等效月额度',
+      '官方未规定月额度，按 周额度 × 52/12（每周折算到每月）在前端推导，仅供等效参考。')) + '">i</span>' : '';
     let h = '<div class="pc"><div class="ph"><span class="pn">' + gname + '</span>' +
       srcLinks(g.source) +
       '<span class="badge b-' + kind + '">' + curSym(kind) + ' ' + (typeLabel[g.type] || g.type) + '</span></div>';
-    h += '<table><thead><tr><th>套餐</th><th>月费</th>' + (hasWH ? '<th>5h 额度</th><th>周额度</th>' : '') + '<th>月额度</th>' +
+    h += '<table><thead><tr><th>套餐</th><th>月费</th>' + (has5h ? '<th>5h 额度</th>' : '') + (hasWH ? '<th>周额度</th>' : '') + '<th>' +
+      (derivedM ? '等效月额度' : '月额度') + mInf + '</th>' +
       (isMoney ? '<th>折算比' + ratioInf + '</th>' : '') + '</tr></thead><tbody>';
-    const q = v => isMoney ? tprice(v, kind) : compact(v) + ' 积分';
+    const q = v => isMoney ? tprice(v, kind) : ptsStr(v);
     for (const pname in g.plans){
       const p = g.plans[pname];
       /* 各模型额度不同（OpenCode Go）：5h/周/月额度均随模型变化，显示区间而非基准值 */
@@ -1188,11 +1205,12 @@ function heatColor(v){
         : null;
       h += '<tr><td><b>' + pname + '</b></td>' +
         '<td>' + tprice(p.fee, kind) + '</td>';
-      if (hasWH) h += '<td>' + (rng(0.2) || q(p.quota_5h)) + '</td><td>' + (rng(0.5) || q(p.quota_weekly)) + '</td>';
-      h += '<td>' + (rng(1) || q(p.quota_monthly)) + '</td>';
+      if (has5h) h += '<td>' + (rng(0.2) || q(p.quota_5h)) + '</td>';
+      if (hasWH) h += '<td>' + (rng(0.5) || q(p.quota_weekly)) + '</td>';
+      h += '<td>' + (rng(1) || q(eqMonthly(p))) + '</td>';
       if (isMoney) h += '<td>' + (qv
         ? '<span style="color:var(--faint)">1 :</span> ' + ratioNum(Math.min.apply(null, qv) / p.fee) + ' ~ ' + ratioNum(Math.max.apply(null, qv) / p.fee)
-        : ratioStr(p.fee, p.quota_monthly)) + '</td>';
+        : ratioStr(p.fee, eqMonthly(p))) + '</td>';
       h += '</tr>';
     }
     h += '</tbody></table>';
