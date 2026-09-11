@@ -430,6 +430,13 @@ function fmt(v){
   if (v == null) return '';
   return String(Number(v.toFixed(4)));
 }
+/* 长整数紧凑化：能以 M 计（≥ 百万且为整千）→ M；其余原样（积分/Credit 等大额整数专用，不用于金额；不折叠 K） */
+function compact(v){
+  if (v == null) return '';
+  if (v === 0) return '0';
+  if (v % 1e3 === 0 && v >= 1e6) return (v / 1e6) + 'M';
+  return fmt(v);
+}
 function fix2(s){
   const d = s.indexOf('.');
   if (d < 0) return s + '.00';
@@ -439,10 +446,11 @@ function fix2(s){
 function curSym(kind){ return kind === 'usd' ? '$' : (kind === 'point' ? '' : '¥'); }
 function tprice(v, kind){
   if (v == null) return '—';
-  return curSym(kind) + (kind === 'point' ? fmt(v) : fix2(fmt(v)));
+  return curSym(kind) + (kind === 'point' ? compact(v) : fix2(fmt(v)));
 }
 function priceHTML(v, kind){
   if (v == null) return '';
+  if (kind === 'point') return '<span class="np"><span class="pint">' + compact(v) + '</span></span>';
   const sym = curSym(kind);
   const s = fix2(fmt(v));
   const d = s.indexOf('.');
@@ -542,7 +550,7 @@ function cellTip(o){
   if (o.plan){
     const p = o.plan;
     const curKind = p.currency === 'USD' ? 'usd' : 'cny';
-    const quotaStr = p.quotaUnit === '积分' ? fmt(p.quota) + ' 积分' : tprice(p.quota, curKind);
+    const quotaStr = p.quotaUnit === '积分' ? compact(p.quota) + ' 积分' : tprice(p.quota, curKind);
     h += (secs.length ? '<div class="tdiv dash"></div>' : '') +
       '<div class="tsec"><b>' + p.group + ' · ' + p.plan + '</b>　月费 ' + tprice(p.fee, curKind) +
       ' · 月额度 ' + quotaStr + (p.quotaUnit === '积分' ? '' : ' · ' + ratioStr(p.fee, p.quota)) + '</div>';
@@ -1168,7 +1176,7 @@ function heatColor(v){
       '<span class="badge b-' + kind + '">' + curSym(kind) + ' ' + (typeLabel[g.type] || g.type) + '</span></div>';
     h += '<table><thead><tr><th>套餐</th><th>月费</th>' + (hasWH ? '<th>5h 额度</th><th>周额度</th>' : '') + '<th>月额度</th>' +
       (isMoney ? '<th>折算比' + ratioInf + '</th>' : '') + '</tr></thead><tbody>';
-    const q = v => isMoney ? tprice(v, kind) : fmt(v) + ' 积分';
+    const q = v => isMoney ? tprice(v, kind) : compact(v) + ' 积分';
     for (const pname in g.plans){
       const p = g.plans[pname];
       /* 各模型额度不同（OpenCode Go）：5h/周/月额度均随模型变化，显示区间而非基准值 */
@@ -1205,9 +1213,6 @@ function heatColor(v){
       h += '</tbody></table></details>';
     }
     if (g.notes) for (const n of g.notes) h += '<div class="pf">⚠ ' + n.replace(/\n/g, '<br>') + '</div>';
-    /* 积分渠道的说明与 hover 同源：渠道元数据的 note；有各模型额度表时不再重复“适用”清单 */
-    const chNote = g.points_channel && CHANNELS[g.points_channel] && CHANNELS[g.points_channel].note;
-    if (chNote) h += '<div class="pf">⚠ ' + chNote.replace(/\n/g, '<br>') + '</div>';
     if (!mrows.length) h += '<div class="pf">适用：' + g.models.join('、') + '</div>';
     h += Object.entries(g.plans).filter(([, p]) => p.excluded_models && p.excluded_models.length)
         .map(([pl, p]) => '<div class="pf">⚠ ' + pl + ' 不含：' + p.excluded_models.join('、') + '</div>').join('') +
@@ -1220,7 +1225,7 @@ function heatColor(v){
 /* ---------- 原始价格（折叠，来源求证；厂商名吸收为表内标题行） ---------- */
 (function raw(){
   const ORDER = ['input', 'cache_write', 'cache_write_5min', 'cache_write_30min', 'cache_write_1h', 'cache_hit', 'output'];
-  const CHAN_ORDER = ['usd', 'cny', 'opencode', 'ollama', 'packy_cc_sale', 'packy_codex', 'packy_grok_sale', 'packy_gemini_slb', 'glm_coding_points', 'bailian_credits'];
+  const CHAN_ORDER = ['usd', 'cny', 'opencode', 'ollama', 'packy_cc_sale', 'packy_codex', 'packy_grok_sale', 'packy_gemini_slb', 'glm_coding_points', 'bailian_credits', 'mimo_credits'];
   const out = [];
   for (const pname in DATA.providers){
     const prov = DATA.providers[pname];
