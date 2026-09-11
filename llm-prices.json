@@ -56,10 +56,23 @@
       "sub:Ollama Cloud"
     ]
   },
+  "billing_types": {
+    "floating_quota": { "label": "浮动额度",
+      "desc": "额度以标价金额计，但用量为非官方估算，仅作参考" },
+    "unified_quota": { "label": "统一额度",
+      "desc": "额度以金额计且为准确值，所有模型共用同一额度" },
+    "per_model_quota": { "label": "区分模型额度",
+      "desc": "额度以金额计且为准确值，但各模型额度不同，需逐一换算" },
+    "unified_points": { "label": "统一积分",
+      "desc": "积分计费，与各模型原价有固定等比关系" },
+    "per_model_points": { "label": "区分模型积分",
+      "desc": "积分计费，与原价不等比且各模型比例不同，折算比只能给区间" }
+  },
   "subscriptions": {
     "Claude 订阅": {
       "currency": "USD",
       "type": "money_quota",
+      "billing": "floating_quota",
       "plans": {
         "Pro": {
           "fee": 20,
@@ -87,14 +100,15 @@
         }
       },
       "notes": [
-        "<a href=\"https://zhuanlan.zhihu.com/p/2027017728410628819\" target=\"_blank\" rel=\"noopener\">额度来自网络信息（2026 年 5 月的逆向反推），未经官方证实</a>",
-        "Fable 5.1 订阅计费：缓存命中按 $1.00 计（标价 $0.25）"
+        {"kind": "info", "label": "额度来源", "text": "来自网络信息（2026 年 5 月的逆向反推），仅供参考", "link": "https://zhuanlan.zhihu.com/p/2027017728410628819"},
+        {"kind": "warn", "label": "计费说明", "text": "Fable 5.1 在订阅中缓存命中仍按 $1.00 计（据说：标价 $0.25 是仅 API 优惠）"}
       ],
       "source": "https://claude.com/pricing"
     },
     "ChatGPT 订阅": {
       "currency": "USD",
       "type": "money_quota",
+      "billing": "floating_quota",
       "plans": {
         "Plus": {
           "fee": 20,
@@ -116,13 +130,14 @@
         "GPT 5.6 Luna"
       ],
       "notes": [
-        "额度来自社区 sub2api 计费估算，会随 OpenAI 随机调整，仅供参考。"
+        {"kind": "info", "label": "额度来源", "text": "来自社区 sub2api 计费估算，会随 OpenAI 随机调整，仅供参考"}
       ],
       "source": "https://chatgpt.com/zh-Hans-CN/pricing/"
     },
     "Kimi 订阅": {
       "currency": "CNY",
       "type": "money_quota",
+      "billing": "unified_quota",
       "plans": {
         "Andante": {
           "fee": 49,
@@ -156,13 +171,15 @@
         "Kimi K2.6"
       ],
       "notes": [
-        "额度来自个人 Kimi 订阅反推（2026 年 8 月按半个月的 K3 token 消耗量与官网百分比做除法），未经官方证实"
+        {"kind": "info", "label": "额度来源", "text": "来自 2026 年 8 月个人 Kimi 订阅用量反推，仅供参考"},
+        {"kind": "warn", "label": "特殊限制", "text": "Andante 不含 K3，Moderato 仅 K3-256K。"}
       ],
       "source": "https://www.kimi.com/membership/pricing"
     },
     "百炼 Token Plan": {
       "currency": "CNY",
       "type": "points",
+      "billing": "unified_points",
       "points_channel": "bailian_credits",
       "plans": {
         "Lite": {
@@ -190,13 +207,14 @@
         "DeepSeek V4 Flash"
       ],
       "notes": [
-        "<a href=\"https://www.aliyunbaike.com/tokenplan/\" target=\"_blank\" rel=\"noopener\">积分与人民币的换算关系，来自早期 Qwen 3.6 Plus 消耗示例反推。</a>"
+        {"kind": "info", "label": "换算来源", "text": "积分与人民币的换算关系，来自早期 Qwen 3.6 Plus 消耗示例反推", "link": "https://www.aliyunbaike.com/tokenplan/"}
       ],
       "source": "https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model&url=3028856"
     },
     "GLM Coding Plan": {
       "currency": "CNY",
       "type": "points",
+      "billing": "per_model_points",
       "points_channel": "glm_coding_points",
       "plans": {
         "Lite": {
@@ -219,11 +237,15 @@
         "GLM-5.3",
         "GLM-5.3-Flash"
       ],
+      "notes": [
+        {"kind": "good", "label": "特殊优惠", "text": "在 ZCode 里使用时，积分消耗为 0.67 倍"}
+      ],
       "source": "https://docs.bigmodel.cn/cn/coding-plan/overview#%E7%94%A8%E9%87%8F%E8%AF%B4%E6%98%8E"
     },
     "MiMo Token Plan": {
       "currency": "CNY",
       "type": "points",
+      "billing": "unified_points",
       "points_channel": "mimo_credits",
       "plans": {
         "Lite": {
@@ -253,6 +275,7 @@
     "OpenCode Go": {
       "currency": "USD",
       "type": "money_quota",
+      "billing": "per_model_quota",
       "price_channel": "opencode",
       "plans": {
         "Go": {
@@ -313,6 +336,7 @@
     "Ollama Cloud": {
       "currency": "USD",
       "type": "money_quota",
+      "billing": "unified_quota",
       "price_channel": "ollama",
       "plans": {
         "Pro": {
@@ -337,6 +361,9 @@
         "GLM-5.1",
         "MiniMax M3",
         "MiniMax M2.7"
+      ],
+      "notes": [
+        {"kind": "good", "label": "DeepSeek 谷价", "text": "Ollama 自部署 DeepSeek 采用全球峰谷时段，谷时刚好为中国白天。"}
       ],
       "source": "https://ollama.com/blog/transparent-pricing"
     }

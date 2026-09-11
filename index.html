@@ -168,9 +168,8 @@ table.tt-t{width:100%;border-collapse:collapse}
 .tsec{padding-top:3px;color:#b3ada0;font-size:12px}
 .tsec b{color:#f4f2ec;font-weight:600}
 .tnote{margin-top:8px;color:#eec674;font-size:12px}
-.tnote a,.pf a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.tnote a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
 .tnote a:hover{color:#f4f2ec}
-.pf a:hover{color:var(--muted)}
 
 /* 折叠区 */
 .src{margin:30px 0 60px}
@@ -180,24 +179,89 @@ summary::before{content:'▸';margin-right:8px;color:var(--faint)}
 details[open] summary::before{content:'▾'}
 details .body{padding:2px 16px 18px}
 
-.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(620px,100%),1fr));gap:12px}
-.pc{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--card)}
-.pc .ph{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.pc .pn{font-weight:700;font-size:14px}
-.badge{display:inline-flex;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:700}
-.b-usd{background:rgba(35,118,210,.1);color:var(--usd)}
-.b-cny{background:rgba(194,64,42,.1);color:var(--cny)}
-.pc .pt{font-size:12px;color:var(--faint)}
-.pc table{width:100%;border-collapse:collapse;font-size:13px}
-.pc th{color:var(--faint);font-weight:500;font-size:12px;text-align:right;padding:4px 6px;border-bottom:1px solid var(--grid)}
-.pc td{padding:5px 6px;text-align:right;border-bottom:1px solid var(--grid);font-variant-numeric:tabular-nums}
-.pc tr:last-child td{border-bottom:none}
+/* 订阅方案卡片：独立卡头（标题 + 官网链接 + 标签）/ 卡体主表（月费居左、折算比居右，中间额度列横向滚动）/ 卡脚补充信息（结构化提示 + 适用模型） */
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(540px,100%),1fr));gap:16px}
+.pc{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 1px 2px rgba(27,26,23,.03),0 8px 24px -12px rgba(27,26,23,.08)}
+/* 卡头：标题明确，计费类型与币种以低饱和胶囊弱化呈现 */
+.pch{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:14px 18px 12px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#fdfcf9,#fbf9f5)}
+.pch .pn{font-weight:800;font-size:15px;letter-spacing:-.01em}
+.psrc{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:650;
+  color:var(--faint);border:1px solid transparent;transition:all .12s}
+.psrc:hover{color:var(--usd);border-color:var(--line);background:var(--card)}
+.pch .tags{display:inline-flex;flex-wrap:wrap;gap:5px;margin-left:auto}
+.tag{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:650;
+  border:1px solid var(--line);background:var(--ref);color:var(--muted)}
+.t-cur-usd{color:var(--usd);background:rgba(35,118,210,.07);border-color:rgba(35,118,210,.22)}
+.t-cur-cny{color:var(--cny);background:rgba(194,64,42,.07);border-color:rgba(194,64,42,.22)}
+/* 计费类型胶囊：按计费性质着色 —— 统一(青) / 浮动(橙) / 区分模型(紫)，不再区分积分与额度 */
+.t-bill-u{color:var(--sub);background:rgba(14,147,132,.07);border-color:rgba(14,147,132,.25);cursor:help}
+.t-bill-f{color:var(--point);background:rgba(232,89,12,.07);border-color:rgba(232,89,12,.25);cursor:help}
+.t-bill-m{color:var(--mid);background:rgba(122,90,245,.07);border-color:rgba(122,90,245,.25);cursor:help}
+/* 卡体：主表四边顶满卡片描边（任何方向不留无边框白边，分割线两端必须接到边界）；
+   首尾列内边距对齐卡头/卡脚；卡片等高时多余空间归入卡脚而非表格区 */
+.pcb{padding:0}
+.pc table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+.pc th{color:var(--faint);font-weight:600;font-size:11px;letter-spacing:.04em;text-align:right;padding:10px 12px 8px;
+  border-bottom:1px solid var(--grid);background:var(--card)}
+.pc td{padding:11px 12px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;background:var(--card)}
+.pc tbody tr:last-child td{border-bottom:none}
+.pc tbody tr:hover td{background:#f8f6f1}
 .pc th:first-child,.pc td:first-child{text-align:left}
-.pc .pf{margin-top:8px;font-size:12px;color:var(--faint)}
-/* 卡片内嵌折叠（如 OpenCode Go 各模型额度表）：轻量样式，无边框 */
-.pc details{border:none;background:none;margin:8px 0 0;border-radius:0}
-.pc details summary{padding:2px 0;font-size:12.5px;font-weight:600;color:var(--muted)}
-.pc details summary::before{margin-right:5px}
+/* 主表：字号仅 11px 表头 / 13px 正文两档；字重仅 400 正文 / 600 表头 / 700 强调（套餐名、月费、折算比）；
+   月费居左、折算比居右（绿色标识），折算比单元格 hover 给出推导明细 */
+.pc .plm .fee{text-align:left}
+.pc .plm .rat{color:var(--sub);text-align:right}
+.pc .plm td.fee,.pc .plm td.rat{font-weight:700}
+.pc .plm .rat[data-tip]{cursor:help}
+/* 主表三段布局：左（套餐+月费）/ 中（额度列，仅此区横向滚动，滚动条不贯穿整表）/ 右（折算比）；
+   三表以固定 line-height 保持行高一致，行 hover 由 JS 同步加 .rh */
+.ptab{display:flex;align-items:flex-start}
+.ptab .pt-side{flex:none}
+.ptab .pt-side table{width:auto}
+.ptab .pscroll{flex:1;min-width:0;overflow-x:auto;border-left:1px solid var(--grid);border-right:1px solid var(--grid)}
+.pc .plm th,.pc .plm td{white-space:nowrap;line-height:22px}
+.pc .plm tr.rh td{background:#f8f6f1}
+.pc .plm th.qa{text-align:center}
+.pc .plm td.qa{color:var(--faint);text-align:center}
+.ptab > .pt-side:first-child th:first-child,.ptab > .pt-side:first-child td:first-child{width:104px;min-width:104px;padding-left:18px}
+.ptab > .pt-side:first-child th:nth-child(2),.ptab > .pt-side:first-child td:nth-child(2){width:96px;min-width:96px}
+.ptab > .pt-side:last-child th,.ptab > .pt-side:last-child td{width:120px;min-width:120px;padding-right:18px}
+/* 卡脚：结构化补充信息 —— icon + 类型 + 正文 + 可选链接；绿/灰/黄区分信息倾向；
+   flex:1 吸收卡片等高产生的多余高度，适用模型行锚定底部保持跨卡对齐 */
+.pcf{border-top:1px solid var(--line);background:#fbf9f6;padding:12px 18px 14px;display:flex;flex-direction:column;gap:9px;flex:1}
+.pnote{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;line-height:1.55}
+.pnote .pi{flex:none;width:16px;height:16px;margin-top:2px;border-radius:5px;display:inline-flex;align-items:center;
+  justify-content:center;font-size:10px;font-weight:800;font-style:normal}
+.pnote .pnt{flex:1;min-width:0}
+.pnote .pl{font-weight:750;margin-right:2px}
+.pnote .pl::after{content:'：';font-weight:400}
+.pnote .px{color:#6d6960}
+.n-info .pi{background:#edeae3;color:#8d8880}
+.n-info .pl{color:var(--muted)}
+.n-good .pi{background:rgba(14,147,132,.13);color:var(--sub)}
+.n-good .pl{color:var(--sub)}
+.n-warn .pi{background:rgba(184,134,11,.15);color:#a07d1c}
+.n-warn .pl{color:#8a6d1f}
+/* 提示内的参考链接：明确的胶囊触发区，默认不抢眼 */
+.pnl{display:inline-flex;align-items:center;gap:2px;margin-left:8px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);font-size:11px;font-weight:600;color:var(--faint);white-space:nowrap;vertical-align:1px;transition:all .12s}
+.pnl:hover{color:var(--usd);border-color:rgba(35,118,210,.4)}
+/* 适用模型：结构化胶囊云；顶部分隔线以负边距延伸至卡片描边，两端不悬空 */
+.pmodels{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:auto -18px 0;padding:9px 18px 0;border-top:1px dashed var(--line)}
+.pmodels:first-child{border-top:none;padding-top:0}
+.pmodels .cap{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--faint);margin-right:3px}
+.mtag{padding:1px 9px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:11px;color:var(--muted);line-height:18px}
+/* 卡片内嵌折叠（如 OpenCode Go 各模型额度表）：通栏居中文字触发区，hover 浅底 */
+.pc details{border:none;background:none;margin:0;border-radius:0}
+.pc details summary{display:flex;justify-content:center;align-items:center;gap:6px;margin:0;padding:9px 0;
+  border:none;border-radius:0;background:none;font-size:12px;font-weight:600;color:var(--faint);transition:all .12s}
+.pc details summary:hover{color:var(--ink);background:var(--ref)}
+.pc details summary::before{content:none}
+/* 子表同样通栏顶边：分隔线两端接到卡片描边，仅文字以首尾列内边距对齐 */
+.pc details th:first-child,.pc details td:first-child{padding-left:18px}
+.pc details th:last-child,.pc details td:last-child{padding-right:18px}
 
 /* 价格来源链接 */
 .src-a{font-size:11px;font-weight:700;color:var(--faint);margin-left:5px;vertical-align:1px}
@@ -420,11 +484,11 @@ const FILTER_HOOKS = [];
 let FILTER_STATE = null;
 
 /* ---------- 基础工具 ---------- */
-/* 来源链接：sources 可为单个 URL 或 URL 数组 */
-function srcLinks(src){
+/* 来源链接：sources 可为单个 URL 或 URL 数组；cls/label 可定制触发区样式与文案 */
+function srcLinks(src, cls, label){
   if (!src) return '';
   const arr = Array.isArray(src) ? src : [src];
-  return arr.map(u => '<a class="src-a" href="' + u + '" target="_blank" rel="noopener" title="' + u + '">↗</a>').join('');
+  return arr.map(u => '<a class="' + (cls || 'src-a') + '" href="' + u + '" target="_blank" rel="noopener" title="' + u + '">' + (label || '↗') + '</a>').join('');
 }
 function fmt(v){
   if (v == null) return '';
@@ -562,7 +626,12 @@ function cellTip(o){
       ' · ' + (p.quotaDerived ? '等效月额度' : '月额度') + ' ' + quotaStr + (p.quotaUnit === '积分' ? '' : ' · ' + ratioStr(p.fee, p.quota)) + '</div>';
   }
   if (o.notes && o.notes.length){
-    for (const n of o.notes) h += '<div class="tnote">⚠ ' + n.replace(/\n/g, '<br>') + '</div>';
+    for (const n of o.notes){
+      h += '<div class="tnote">⚠ ' + (typeof n === 'string'
+        ? n.replace(/\n/g, '<br>')
+        : '<b>' + n.label + '</b>：' + String(n.text).replace(/\n/g, '<br>') +
+          (n.link ? ' <a href="' + n.link + '" target="_blank" rel="noopener">参考 ↗</a>' : '')) + '</div>';
+    }
   }
   return h;
 }
@@ -1170,32 +1239,120 @@ function heatColor(v){
   if (FILTER_STATE) update(FILTER_STATE.visible, FILTER_STATE.chVisible);
 })();
 
-/* ---------- 订阅方案 ---------- */
+/* ---------- 订阅方案 ----------
+   卡片三段结构：卡头（标题 + 官网链接 + 币种/计费类型胶囊，算法说明仅 hover 浮窗）；
+   卡体单张套餐表：月费居左、折算比居右为主信息（强调），5h、周、月额度居中弱化显示，
+   宽度不足时仅中间额度列横向滚动（首两列与末列吸附固定）；
+   卡脚补充信息：注释按 绿/灰/黄 倾向结构化为 icon + 类型 + 正文 + 可选链接，适用模型为胶囊。 */
 (function plans(){
-  const typeLabel = {money_quota: '额度制', points: '积分制'};
+  const BILL = DATA.billing_types || {};
+  /* 模型 → (厂商, 默认条件渠道) 索引：积分制订阅按各模型原价把积分额度折算为人民币，从而计算折算比 */
+  const ML = {};
+  for (const pname in DATA.providers){
+    const prov = DATA.providers[pname];
+    if (prov.weights == null) continue;
+    for (const m in prov.models){
+      const conds = normalizeConditions(prov.models[m]);
+      const def = conds.filter(c => c.ck === 'default')[0] || conds[0];
+      ML[m] = {prov: prov, channels: def.channels};
+    }
+  }
+  /* 折算比（月费 : 月额度）→ {lo, hi, rows, ...}；积分制按各模型分别折算，区间取性价比最低 ~ 最高 */
+  function planRatio(g, p){
+    const fee = p.fee;
+    if (g.type === 'money_quota'){
+      if (p.quota_monthly_by_model){
+        const rows = g.models.filter(m => p.quota_monthly_by_model[m] != null)
+          .map(m => ({m: m, quota: p.quota_monthly_by_model[m], r: p.quota_monthly_by_model[m] / fee}))
+          .sort((a, b) => a.r - b.r);
+        return {lo: rows[0].r, hi: rows[rows.length - 1].r, rows: rows, byModel: true};
+      }
+      const q = eqMonthly(p);
+      return {lo: q / fee, hi: q / fee, quota: q, derived: p.quota_monthly == null};
+    }
+    const q = Math.round(eqMonthly(p));
+    const rows = [];
+    for (const m of g.models){
+      if (p.excluded_models && p.excluded_models.indexOf(m) >= 0) continue;
+      const e = ML[m]; if (!e) continue;
+      const pts = e.channels[g.points_channel], cny = e.channels.cny;
+      if (!pts || !cny) continue;
+      const pd = weightDetail(pts, e.prov, null), cd = weightDetail(cny, e.prov, null);
+      if (!pd || !cd || !(pd.total > 0)) continue;
+      rows.push({m: m, val: cd.total / pd.total, r: q * cd.total / pd.total / fee});
+    }
+    if (!rows.length) return null;
+    rows.sort((a, b) => a.r - b.r);
+    return {lo: rows[0].r, hi: rows[rows.length - 1].r, rows: rows, points: true,
+            quota: q, derived: p.quota_monthly == null};
+  }
+  const ratioMain = R => '<span style="color:var(--faint)">1 :</span> ' +
+    (Math.abs(R.hi - R.lo) < 0.05 ? ratioNum(R.hi) : ratioNum(R.lo) + ' ~ ' + ratioNum(R.hi));
+  /* 折算比 hover 浮窗：各模型折算明细（次要解释信息只放这里） */
+  function ratioTip(gname, pl, p, kind, R){
+    let h = '<div class="tt">' + gname + ' · ' + pl + ' · 折算比</div>';
+    if (R.points){
+      let t = '<table class="tt-t"><tr><th>模型</th><th>积分价值</th><th>折算比</th></tr>';
+      for (const r of R.rows)
+        t += '<tr><td>' + r.m + '</td><td>¥' + r.val.toFixed(4) + ' / 积分</td><td>1 : ' + ratioNum(r.r) + '</td></tr>';
+      h += t + '</table>';
+    } else if (R.byModel){
+      let t = '<table class="tt-t"><tr><th>模型</th><th>月额度</th><th>折算比</th></tr>';
+      for (const r of R.rows)
+        t += '<tr><td>' + r.m + '</td><td>' + tprice(r.quota, kind) + '</td><td>1 : ' + ratioNum(r.r) + '</td></tr>';
+      h += t + '</table>';
+    } else {
+      h += '<table class="tt-t"><tr><td>月费</td><td>' + tprice(p.fee, kind) + '</td></tr>' +
+        '<tr><td>' + (R.derived ? '等效月额度' : '月额度') + '</td><td>' + tprice(R.quota, kind) + '</td></tr></table>';
+    }
+    return h;
+  }
   const ratioInf = '<span class="inf" data-tip="' + regTip(infoTip('折算比',
-    '1 : n = 月费 : 月额度，故实际成本 = 标价 ÷ n。')) + '">i</span>';
+    '1 : n = 月费 : 月额度，实际成本 = 标价 ÷ n')) + '">i</span>';
+  /* 补充信息条目：icon + 类型 + 正文 + 可选链接；kind = good(绿) / info(灰) / warn(黄)，兼容旧的纯字符串写法 */
+  const NOTE_ICON = {good: '✓', info: 'i', warn: '!'};
+  const noteHTML = n => {
+    const o = typeof n === 'string' ? {kind: 'info', label: '备注', text: n} : n;
+    const kind = NOTE_ICON[o.kind] ? o.kind : 'info';
+    return '<div class="pnote n-' + kind + '"><span class="pi">' + NOTE_ICON[kind] + '</span>' +
+      '<div class="pnt"><b class="pl">' + o.label + '</b><span class="px">' + String(o.text).replace(/\n/g, '<br>') + '</span>' +
+      (o.link ? '<a class="pnl" href="' + o.link + '" target="_blank" rel="noopener">参考 ↗</a>' : '') + '</div></div>';
+  };
   const out = [];
   for (const gname in DATA.subscriptions){
     const g = DATA.subscriptions[gname];
     const kind = g.currency === 'USD' ? 'usd' : 'cny';
     const isMoney = g.type === 'money_quota';
+    const bill = BILL[g.billing];
+    const tagCur = '<span class="tag t-cur-' + kind + '">' + curSym(kind) + ' ' + (kind === 'usd' ? '美元' : '人民币') + '</span>';
+    /* 计费胶囊颜色按计费性质：unified→统一 / floating→浮动 / per_model→区分模型 */
+    const billCls = g.billing && g.billing.indexOf('unified') === 0 ? 't-bill-u'
+      : g.billing && g.billing.indexOf('floating') === 0 ? 't-bill-f' : 't-bill-m';
+    const tagBill = bill
+      ? '<span class="tag ' + billCls + '" data-tip="' +
+        regTip(infoTip(bill.label + ' · 计费方式', bill.desc)) + '">' + bill.label + '</span>'
+      : '';
+    let h = '<div class="pc"><div class="pch"><span class="pn">' + gname + '</span>' +
+      srcLinks(g.source, 'psrc', '官网↗') + '<span class="tags">' + tagCur + tagBill + '</span></div>';
+
     /* 各套餐可能只规定部分额度口径（ChatGPT 仅周额度），按实际出现与否决定列显隐 */
     const has5h = Object.values(g.plans).some(p => p.quota_5h != null);
     const hasWH = Object.values(g.plans).some(p => p.quota_weekly != null);
     /* 官方未规定月额度的套餐（百炼 / GLM / ChatGPT）：月额度由前端按 周额度 × 52/12 推导，标注为等效 */
     const derivedM = Object.values(g.plans).some(p => p.quota_monthly == null && p.quota_weekly != null);
     const mInf = derivedM ? '<span class="inf" data-tip="' + regTip(infoTip('等效月额度',
-      '官方未规定月额度，按 周额度 × 52/12（每周折算到每月）在前端推导，仅供等效参考。')) + '">i</span>' : '';
-    let h = '<div class="pc"><div class="ph"><span class="pn">' + gname + '</span>' +
-      srcLinks(g.source) +
-      '<span class="badge b-' + kind + '">' + curSym(kind) + ' ' + (typeLabel[g.type] || g.type) + '</span></div>';
-    h += '<table><thead><tr><th>套餐</th><th>月费</th>' + (has5h ? '<th>5h 额度</th>' : '') + (hasWH ? '<th>周额度</th>' : '') + '<th>' +
-      (derivedM ? '等效月额度' : '月额度') + mInf + '</th>' +
-      (isMoney ? '<th>折算比' + ratioInf + '</th>' : '') + '</tr></thead><tbody>';
+      '官方未规定月额度，按 周额度 × 52/12 推导')) + '">i</span>' : '';
     const q = v => isMoney ? tprice(v, kind) : ptsStr(v);
+    /* 主表三段布局：左（套餐+月费，居左）/ 中（5h/周/月额度，弱化，仅此区横向滚动）/ 右（折算比）；
+       三表行高一致（固定 line-height），行 hover 由底部 JS 同步高亮 */
+    h += '<div class="pcb"><div class="ptab">' +
+      '<div class="pt-side"><table class="plm"><thead><tr><th>套餐</th><th class="fee">月费</th></tr></thead><tbody>';
+    const midHead = (has5h ? '<th class="qa">5h 额度</th>' : '') + (hasWH ? '<th class="qa">周额度</th>' : '') +
+      '<th class="qa">' + (derivedM ? '等效月额度' : '月额度') + mInf + '</th>';
+    let midBody = '', ratBody = '';
     for (const pname in g.plans){
       const p = g.plans[pname];
+      const R = planRatio(g, p);
       /* 各模型额度不同（OpenCode Go）：5h/周/月额度均随模型变化，显示区间而非基准值 */
       const qv = p.quota_monthly_by_model
         ? g.models.filter(m => p.quota_monthly_by_model[m] != null).map(m => p.quota_monthly_by_model[m])
@@ -1204,16 +1361,20 @@ function heatColor(v){
         ? tprice(Math.min.apply(null, qv) * f, kind) + ' ~ ' + tprice(Math.max.apply(null, qv) * f, kind)
         : null;
       h += '<tr><td><b>' + pname + '</b></td>' +
-        '<td>' + tprice(p.fee, kind) + '</td>';
-      if (has5h) h += '<td>' + (rng(0.2) || q(p.quota_5h)) + '</td>';
-      if (hasWH) h += '<td>' + (rng(0.5) || q(p.quota_weekly)) + '</td>';
-      h += '<td>' + (rng(1) || q(eqMonthly(p))) + '</td>';
-      if (isMoney) h += '<td>' + (qv
-        ? '<span style="color:var(--faint)">1 :</span> ' + ratioNum(Math.min.apply(null, qv) / p.fee) + ' ~ ' + ratioNum(Math.max.apply(null, qv) / p.fee)
-        : ratioStr(p.fee, eqMonthly(p))) + '</td>';
-      h += '</tr>';
+        '<td class="fee">' + tprice(p.fee, kind) + '</td></tr>';
+      midBody += '<tr>';
+      if (has5h) midBody += '<td class="qa">' + (rng(0.2) || q(p.quota_5h)) + '</td>';
+      if (hasWH) midBody += '<td class="qa">' + (rng(0.5) || q(p.quota_weekly)) + '</td>';
+      midBody += '<td class="qa">' + (rng(1) || q(eqMonthly(p))) + '</td></tr>';
+      ratBody += R ? '<tr><td class="rat" data-tip="' + regTip(ratioTip(gname, pname, p, kind, R)) + '">' + ratioMain(R) + '</td></tr>'
+                   : '<tr><td class="rat">—</td></tr>';
     }
-    h += '</tbody></table>';
+    h += '</tbody></table></div>' +
+      '<div class="pscroll"><table class="plm"><thead><tr>' + midHead + '</tr></thead><tbody>' + midBody + '</tbody></table></div>' +
+      '<div class="pt-side"><table class="plm"><thead><tr><th class="rat">折算比' + ratioInf + '</th></tr></thead><tbody>' +
+      ratBody + '</tbody></table></div></div>';
+
+    /* 各模型额度表（OpenCode Go 等区分模型额度订阅） */
     const mrows = [];
     for (const pl in g.plans){
       const p = g.plans[pl];
@@ -1230,14 +1391,30 @@ function heatColor(v){
           '<td>' + tprice(r.q, kind) + '</td><td>' + ratioStr(r.fee, r.q) + '</td></tr>';
       h += '</tbody></table></details>';
     }
-    if (g.notes) for (const n of g.notes) h += '<div class="pf">⚠ ' + n.replace(/\n/g, '<br>') + '</div>';
-    if (!mrows.length) h += '<div class="pf">适用：' + g.models.join('、') + '</div>';
-    h += Object.entries(g.plans).filter(([, p]) => p.excluded_models && p.excluded_models.length)
-        .map(([pl, p]) => '<div class="pf">⚠ ' + pl + ' 不含：' + p.excluded_models.join('、') + '</div>').join('') +
-      '</div></div>';
+
+    /* 卡脚：注释一律来自订阅数据 notes（绿/灰/黄结构化条目），随后是适用模型胶囊 */
+    h += '</div><div class="pcf">';
+    if (g.notes) for (const n of g.notes) h += noteHTML(n);
+    h += '<div class="pmodels"><span class="cap">适用模型</span>' +
+      g.models.map(m => '<span class="mtag">' + m + '</span>').join('') + '</div>';
+    h += '</div></div>';
     out.push(h);
   }
   document.getElementById('plansBox').innerHTML = out.join('');
+  /* 三段表行 hover 同步高亮（同一逻辑行分布在左/中/右三张表中） */
+  const pb = document.getElementById('plansBox');
+  const syncRow = (e, on) => {
+    const tr = e.target.closest && e.target.closest('.ptab tr');
+    if (!tr) return;
+    const sel = (tr.parentNode.tagName === 'THEAD' ? 'thead' : 'tbody') + ' tr';
+    const idx = Array.prototype.indexOf.call(tr.parentNode.children, tr);
+    tr.closest('.ptab').querySelectorAll('table').forEach(t => {
+      const r = t.querySelectorAll(sel)[idx];
+      if (r) r.classList.toggle('rh', on);
+    });
+  };
+  pb.addEventListener('mouseover', e => syncRow(e, true));
+  pb.addEventListener('mouseout', e => syncRow(e, false));
 })();
 
 /* ---------- 原始价格（折叠，来源求证；厂商名吸收为表内标题行） ---------- */
