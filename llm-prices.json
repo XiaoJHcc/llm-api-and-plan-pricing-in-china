@@ -18,6 +18,9 @@
     "packy_grok_sale": { "label": "grok-sale", "kind": "cny", "mid": true,
       "note": "该中转站不支持缓存命中计费，综合价按 输入×31 + 输出×0.2 折算" },
     "packy_gemini_slb": { "label": "gemini-slb", "kind": "cny", "mid": true },
+    "packy_glm_sale": { "label": "glm-sale", "kind": "cny", "mid": true },
+    "packy_bailian": { "label": "bailian", "kind": "cny", "mid": true},
+    "packy_deepseek_sale": { "label": "deepseek-sale", "kind": "cny", "mid": true},
     "glm_coding_points": { "label": "GLM 积分", "kind": "point",
       "note": "官方以抵扣系数计费（每 10000 tokens 积分消耗），此处统一标准折算为每 1M tokens 积分消耗" },
     "bailian_credits": { "label": "百炼积分", "kind": "point",
@@ -26,7 +29,7 @@
       "note": "官方按每 token 计算积分消耗，此处统一标准折算为每 1M tokens 积分消耗" }
   },
   "usd_to_cny": 6.71,
-  "updated": "2026.9.12",
+  "updated": "2026.9.13",
   "filter_defaults": {
     "models": [
       "Fable 5.1",
@@ -95,14 +98,6 @@
         "Sonnet 5",
         "Haiku 4.5"
       ],
-      "priceOverrides": {
-        "Fable 5.1": {
-          "cache_hit": 1
-        }
-      },
-      "priceOverrideNotes": {
-        "Fable 5.1": "据说 Fable 5.1 在订阅中缓存命中仍按 $1.00 计"
-      },
       "notes": [
         {"kind": "info", "label": "额度来源", "text": "来自网络信息（2026 年 5 月的逆向反推），可能会随机调整，仅供参考。", "link": "https://zhuanlan.zhihu.com/p/2027017728410628819", "hover": "额度来自网络信息，仅供估算"},
         {"kind": "warn", "label": "封号", "text": "你买不到。"}
@@ -513,6 +508,9 @@
               "cache_hit": 2,
               "output": 75
             }
+          },
+          "default": {
+            "packy_codex": { "input": 8, "cache_write_30min": 10, "cache_hit": 0.8, "output": 40 }
           }
         },
         "GPT 5.6 Sol": {
@@ -524,10 +522,10 @@
               "output": 20
             },
             "packy_codex": {
-              "input": 2.5,
-              "cache_write_30min": 3.125,
-              "cache_hit": 0.25,
-              "output": 15
+              "input": 4,
+              "cache_write_30min": 5,
+              "cache_hit": 0.4,
+              "output": 24
             }
           },
           ">272K": {
@@ -538,10 +536,10 @@
               "output": 30
             },
             "packy_codex": {
-              "input": 5,
-              "cache_write_30min": 6.25,
-              "cache_hit": 0.5,
-              "output": 22.5
+              "input": 8,
+              "cache_write_30min": 10,
+              "cache_hit": 0.8,
+              "output": 36
             }
           }
         },
@@ -554,10 +552,10 @@
               "output": 12
             },
             "packy_codex": {
-              "input": 1,
-              "cache_write_30min": 1.25,
-              "cache_hit": 0.1,
-              "output": 6
+              "input": 1.6,
+              "cache_write_30min": 2,
+              "cache_hit": 0.16,
+              "output": 9.6
             }
           },
           ">272K": {
@@ -568,10 +566,10 @@
               "output": 18
             },
             "packy_codex": {
-              "input": 2,
-              "cache_write_30min": 2.5,
-              "cache_hit": 0.2,
-              "output": 9
+              "input": 3.2,
+              "cache_write_30min": 4,
+              "cache_hit": 0.32,
+              "output": 14.4
             }
           }
         },
@@ -584,10 +582,10 @@
               "output": 1.2
             },
             "packy_codex": {
-              "input": 0.5,
-              "cache_write_30min": 0.625,
-              "cache_hit": 0.05,
-              "output": 3
+              "input": 0.8,
+              "cache_write_30min": 1,
+              "cache_hit": 0.08,
+              "output": 4.8
             },
             "opencode": {
               "input": 0.2,
@@ -604,10 +602,10 @@
               "output": 1.8
             },
             "packy_codex": {
-              "input": 1,
-              "cache_write_30min": 1.25,
-              "cache_hit": 0.1,
-              "output": 4.5
+              "input": 1.6,
+              "cache_write_30min": 2,
+              "cache_hit": 0.16,
+              "output": 7.2
             },
             "opencode": {
               "input": 0.4,
@@ -620,7 +618,8 @@
       },
       "sources": {
         "usd": "https://developers.openai.com/api/docs/pricing",
-        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6"
+        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
+        "packy_codex": "https://www.packyapi.com/pricing"
       }
     },
     "xAI": {
@@ -659,9 +658,9 @@
           },
           "default": {
             "packy_grok_sale": {
-              "input": 0.2,
-              "cache_hit": 0.05,
-              "output": 0.6
+              "input": 0.6,
+              "cache_hit": 0.15,
+              "output": 1.8
             }
           }
         },
@@ -673,9 +672,9 @@
               "output": 6
             },
             "packy_grok_sale": {
-              "input": 0.2,
-              "cache_hit": 0.05,
-              "output": 0.6
+              "input": 0.6,
+              "cache_hit": 0.15,
+              "output": 1.8
             }
           },
           ">200K": {
@@ -685,9 +684,9 @@
               "output": 12
             },
             "packy_grok_sale": {
-              "input": 0.4,
-              "cache_hit": 0.1,
-              "output": 1.2
+              "input": 1.2,
+              "cache_hit": 0.3,
+              "output": 3.6
             }
           }
         }
@@ -762,7 +761,8 @@
               "input": 690,
               "cache_hit": 170,
               "output": 2400
-            }
+            },
+            "packy_glm_sale": { "input": 4, "cache_hit": 1, "output": 14 }
           },
           "非高峰时段": {
             "glm_coding_points": {
@@ -789,7 +789,8 @@
               "input": 230,
               "cache_hit": 56,
               "output": 800
-            }
+            },
+            "packy_glm_sale": { "input": 0.4, "cache_hit": 0.115, "output": 1.4 }
           },
           "非高峰时段": {
             "glm_coding_points": {
@@ -811,7 +812,8 @@
               "input": 8,
               "cache_hit": 2,
               "output": 28
-            }
+            },
+            "packy_glm_sale": { "input": 4, "cache_hit": 1, "output": 14 }
           }
         },
         "GLM-5.1": {
@@ -834,7 +836,8 @@
         "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
         "cny": "https://bigmodel.cn/pricing",
         "glm_coding_points": "https://docs.bigmodel.cn/cn/coding-plan/overview",
-        "ollama": "https://ollama.com/pricing"
+        "ollama": "https://ollama.com/pricing",
+        "packy_glm_sale": "https://www.packyapi.com/pricing"
       },
       "conditionNotes": {
         "非高峰时段": "订阅 Coding Plan 非高峰时段内积分消耗为 50%（高峰时段为北京时间每周一至周五的 14:00～18:00）"
@@ -904,7 +907,7 @@
         "ollama": "https://ollama.com/pricing"
       }
     },
-    "DeepSeek": {
+    "深度求索": {
       "weights": {
         "input": 0.25,
         "cache_hit": 30,
@@ -963,7 +966,8 @@
               "input": 900,
               "cache_hit": 30,
               "output": 2700
-            }
+            },
+            "packy_deepseek_sale": { "input": 4.5, "cache_hit": 0.15, "output": 13.5 }
           },
           "梁文谷": {
             "opencode": {
@@ -975,7 +979,8 @@
               "input": 4.5,
               "cache_hit": 0.15,
               "output": 13.5
-            }
+            },
+            "packy_deepseek_sale": { "input": 2.25, "cache_hit": 0.075, "output": 6.75 }
           },
           "Ollama 谷时": {
             "ollama": { "input": 0.66, "cache_hit": 0.022, "output": 1.98 }
@@ -995,7 +1000,11 @@
               "input": 300,
               "cache_hit": 10,
               "output": 900
-            }
+            },
+            "packy_deepseek_sale": { "input": 1, "cache_hit": 0.02, "output": 4 }
+          },
+          "梁文谷": {
+            "packy_deepseek_sale": { "input": 0.5, "cache_hit": 0.01, "output": 2 }
           },
           "Ollama 谷时": {
             "ollama": { "input": 0.22, "cache_hit": 0.007, "output": 0.66 }
@@ -1013,7 +1022,8 @@
         "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
         "cny": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
         "bailian_credits": "https://help.aliyun.com/zh/model-studio/model-pricing",
-        "ollama": "https://ollama.com/pricing"
+        "ollama": "https://ollama.com/pricing",
+        "packy_deepseek_sale": "https://www.packyapi.com/pricing"
       },
       "conditionNotes": {
         "标准价格": "DeepSeek 高峰时段（北京时间）：周一至周五上午 9:00 ~ 12:00、下午 14:00 ~ 18:00（OpenCode 相同）。\n百炼正常时段：8:00 ~ 22:00。\nOllama 高峰时段：20:00 ~ 次日 2:00（UTC 12:00 ~ 18:00）。",
@@ -1050,7 +1060,8 @@
               "cache_write": 1500,
               "cache_hit": 100,
               "output": 3600
-            }
+            },
+            "packy_bailian": { "input": 6, "cache_hit": 0.75, "output": 18 }
           },
           "百炼夜间优惠": {
             "bailian_credits": {
@@ -1080,7 +1091,8 @@
               "cache_write": 125,
               "cache_hit": 10,
               "output": 270
-            }
+            },
+            "packy_bailian": { "input": 0.4, "cache_hit": 0.05, "output": 1.35 }
           }
         },
         "Qwen 3.7 Max": {
@@ -1102,7 +1114,8 @@
               "cache_write": 1500,
               "cache_hit": 120,
               "output": 3600
-            }
+            },
+            "packy_bailian": { "input": 6, "cache_hit": 1.2, "output": 18 }
           }
         },
         "Qwen 3.7 Plus": {
@@ -1124,7 +1137,8 @@
               "cache_write": 200,
               "cache_hit": 16,
               "output": 640
-            }
+            },
+            "packy_bailian": { "input": 1, "cache_hit": 0.2, "output": 4 }
           },
           ">256K": {
             "opencode": {
@@ -1144,7 +1158,8 @@
               "cache_write": 600,
               "cache_hit": 48,
               "output": 1920
-            }
+            },
+            "packy_bailian": { "input": 3, "cache_hit": 0.6, "output": 12 }
           }
         },
         "Qwen 3.6 Plus": {
@@ -1160,7 +1175,8 @@
               "cache_write": 2.5,
               "cache_hit": 0.2,
               "output": 12
-            }
+            },
+            "packy_bailian": { "input": 1, "cache_hit": 0.1, "output": 6 }
           },
           ">256K": {
             "opencode": {
@@ -1174,14 +1190,16 @@
               "cache_write": 10,
               "cache_hit": 0.8,
               "output": 48
-            }
+            },
+            "packy_bailian": { "input": 4, "cache_hit": 0.4, "output": 24 }
           }
         }
       },
       "sources": {
         "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
         "cny": "https://platform.qianwenai.com/pricing/api",
-        "bailian_credits": "https://help.aliyun.com/zh/model-studio/model-pricing"
+        "bailian_credits": "https://help.aliyun.com/zh/model-studio/model-pricing",
+        "packy_bailian": "https://www.packyapi.com/pricing"
       },
       "conditionNotes": {
         "百炼夜间优惠": "百炼 Token Plan 夜间时段（北京时间 22:00 ~ 次日 8:00）积分消耗为 50%。"
@@ -1270,7 +1288,8 @@
               "cache_write": 2.625,
               "cache_hit": 0.42,
               "output": 8.4
-            }
+            },
+            "packy_bailian": { "input": 1.05, "cache_hit": 0.21, "output": 4.2 }
           }
         },
         "MiniMax M2.5": {
@@ -1286,14 +1305,16 @@
               "cache_write": 2.625,
               "cache_hit": 0.21,
               "output": 8.4
-            }
+            },
+            "packy_bailian": { "input": 1.05, "cache_hit": 0.105, "output": 4.2 }
           }
         }
       },
       "sources": {
         "cny": "https://platform.minimax.cn/docs/guides/pricing-paygo",
         "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
-        "ollama": "https://ollama.com/pricing"
+        "ollama": "https://ollama.com/pricing",
+        "packy_bailian": "https://www.packyapi.com/pricing"
       }
     },
     "小米": {

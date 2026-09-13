@@ -1644,7 +1644,7 @@ function heatColor(v){
 /* ---------- 原始价格（折叠，来源求证；厂商名吸收为表内标题行） ---------- */
 (function raw(){
   const ORDER = ['input', 'cache_write', 'cache_write_5min', 'cache_write_30min', 'cache_write_1h', 'cache_hit', 'output'];
-  const CHAN_ORDER = ['usd', 'cny', 'opencode', 'ollama', 'packy_cc_sale', 'packy_codex', 'packy_grok_sale', 'packy_gemini_slb', 'glm_coding_points', 'bailian_credits', 'mimo_credits'];
+  const CHAN_ORDER = ['usd', 'cny', 'opencode', 'ollama', 'packy_cc_sale', 'packy_codex', 'packy_grok_sale', 'packy_gemini_slb', 'packy_glm_sale', 'packy_bailian', 'packy_deepseek_sale', 'glm_coding_points', 'bailian_credits', 'mimo_credits'];
   const out = [];
   for (const pname in DATA.providers){
     const prov = DATA.providers[pname];
