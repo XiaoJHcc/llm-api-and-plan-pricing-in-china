@@ -11,14 +11,26 @@
   "channels": {
     "usd": { "label": "美元官方", "kind": "usd" },
     "cny": { "label": "人民币官方", "kind": "cny" },
-    "opencode": { "label": "OpenCode", "kind": "usd" },
-    "ollama": { "label": "Ollama", "kind": "usd" },
+    "opencode": { "label": "OpenCode", "kind": "usd",
+      "source": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
+      "api": "https://models.dev/api.json" },
+    "ollama": { "label": "Ollama", "kind": "usd",
+      "source": "https://ollama.com/pricing",
+      "api": "https://ollama.com/v1/models" },
     "glm_coding_points": { "label": "GLM 积分", "kind": "point",
+      "source": "https://docs.bigmodel.cn/cn/coding-plan/overview",
       "note": "官方以抵扣系数计费（每 10000 tokens 积分消耗），此处统一标准折算为每 1M tokens 积分消耗" },
     "bailian_credits": { "label": "百炼积分", "kind": "point",
+      "source": "https://help.aliyun.com/zh/model-studio/model-pricing",
       "note": "按 1 积分 = ¥0.01 推算的经验值，未经官方证实" },
     "mimo_credits": { "label": "MiMo Credit", "kind": "point",
+      "source": "https://mimo.mi.com/docs/zh-CN/tokenplan/Token%20Plan/subscription",
       "note": "官方按每 token 计算积分消耗，此处统一标准折算为每 1M tokens 积分消耗" }
+  },
+  "api_refs": {
+    "//": "以下均为非官方来源，仅维护时供比对发现变动，实际定价仍以各渠道 source 字段指向的官方页面为准。以下仅比对美元，人民币渠道暂无公开 JSON API。",
+    "models_dev": { "label": "models.dev 全模型价目", "url": "https://models.dev/api.json" },
+    "openrouter": { "label": "OpenRouter 模型与价格", "url": "https://openrouter.ai/api/v1/models" }
   },
   "usd_to_cny": 6.71,
   "updated": "2026.9.13",
@@ -390,6 +402,7 @@
     "Packy": {
       "currency": "CNY",
       "source": "https://www.packyapi.com/pricing",
+      "api": "https://www.packyapi.com/api/pricing",
       "notes": [],
       "groups": {
         "packy_cc_sale": { "label": "cc-sale" },
@@ -628,8 +641,7 @@
         }
       },
       "sources": {
-        "usd": "https://developers.openai.com/api/docs/pricing",
-        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6"
+        "usd": "https://developers.openai.com/api/docs/pricing"
       }
     },
     "xAI": {
@@ -708,8 +720,7 @@
         }
       },
       "sources": {
-        "usd": "https://docs.x.ai/developers/pricing",
-        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6"
+        "usd": "https://docs.x.ai/developers/pricing"
       }
     },
     "Google": {
@@ -841,10 +852,7 @@
         }
       },
       "sources": {
-        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
-        "cny": "https://bigmodel.cn/pricing",
-        "glm_coding_points": "https://docs.bigmodel.cn/cn/coding-plan/overview",
-        "ollama": "https://ollama.com/pricing"
+        "cny": "https://bigmodel.cn/pricing"
       },
       "conditionNotes": {
         "非高峰时段": "订阅 Coding Plan 非高峰时段内积分消耗为 50%（高峰时段为北京时间每周一至周五的 14:00～18:00）"
@@ -909,9 +917,7 @@
         }
       },
       "sources": {
-        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
-        "cny": "https://platform.kimi.com/docs/pricing/chat",
-        "ollama": "https://ollama.com/pricing"
+        "cny": "https://platform.kimi.com/docs/pricing/chat"
       }
     },
     "深度求索": {
@@ -1026,10 +1032,7 @@
         }
       },
       "sources": {
-        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
-        "cny": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
-        "bailian_credits": "https://help.aliyun.com/zh/model-studio/model-pricing",
-        "ollama": "https://ollama.com/pricing"
+        "cny": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing"
       },
       "conditionNotes": {
         "标准价格": "DeepSeek 高峰时段（北京时间）：周一至周五上午 9:00 ~ 12:00、下午 14:00 ~ 18:00（OpenCode 相同）。\n百炼正常时段：8:00 ~ 22:00。\nOllama 高峰时段：20:00 ~ 次日 2:00（UTC 12:00 ~ 18:00）。",
@@ -1202,9 +1205,7 @@
         }
       },
       "sources": {
-        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
-        "cny": "https://platform.qianwenai.com/pricing/api",
-        "bailian_credits": "https://help.aliyun.com/zh/model-studio/model-pricing"
+        "cny": "https://platform.qianwenai.com/pricing/api"
       },
       "conditionNotes": {
         "百炼夜间优惠": "百炼 Token Plan 夜间时段（北京时间 22:00 ~ 次日 8:00）积分消耗为 50%。"
@@ -1242,7 +1243,6 @@
         }
       },
       "sources": {
-        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
         "cny": "https://cloud.tencent.com/document/product/1823/130055"
       }
     },
@@ -1316,9 +1316,7 @@
         }
       },
       "sources": {
-        "cny": "https://platform.minimax.cn/docs/guides/pricing-paygo",
-        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
-        "ollama": "https://ollama.com/pricing"
+        "cny": "https://platform.minimax.cn/docs/guides/pricing-paygo"
       }
     },
     "小米": {
@@ -1366,9 +1364,7 @@
         }
       },
       "sources": {
-        "cny": "https://mimo.mi.com/docs/zh-CN/price/pay-as-you-go",
-        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
-        "mimo_credits": "https://mimo.mi.com/docs/zh-CN/tokenplan/Token%20Plan/subscription"
+        "cny": "https://mimo.mi.com/docs/zh-CN/price/pay-as-you-go"
       }
     },
     "LongCat": {
@@ -1382,9 +1378,6 @@
             }
           }
         }
-      },
-      "sources": {
-        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6"
       }
     },
     "Meta": {
@@ -1407,9 +1400,6 @@
             }
           }
         }
-      },
-      "sources": {
-        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6"
       }
     },
     "Omen": {
@@ -1423,9 +1413,6 @@
             }
           }
         }
-      },
-      "sources": {
-        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6"
       }
     }
   }
