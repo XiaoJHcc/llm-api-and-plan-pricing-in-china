@@ -13,14 +13,6 @@
     "cny": { "label": "人民币官方", "kind": "cny" },
     "opencode": { "label": "OpenCode", "kind": "usd" },
     "ollama": { "label": "Ollama", "kind": "usd" },
-    "packy_cc_sale": { "label": "cc-sale", "kind": "cny", "mid": true },
-    "packy_codex": { "label": "codex", "kind": "cny", "mid": true },
-    "packy_grok_sale": { "label": "grok-sale", "kind": "cny", "mid": true,
-      "note": "该中转站不支持缓存命中计费，综合价按 输入×31 + 输出×0.2 折算" },
-    "packy_gemini_slb": { "label": "gemini-slb", "kind": "cny", "mid": true },
-    "packy_glm_sale": { "label": "glm-sale", "kind": "cny", "mid": true },
-    "packy_bailian": { "label": "bailian", "kind": "cny", "mid": true},
-    "packy_deepseek_sale": { "label": "deepseek-sale", "kind": "cny", "mid": true},
     "glm_coding_points": { "label": "GLM 积分", "kind": "point",
       "note": "官方以抵扣系数计费（每 10000 tokens 积分消耗），此处统一标准折算为每 1M tokens 积分消耗" },
     "bailian_credits": { "label": "百炼积分", "kind": "point",
@@ -51,7 +43,7 @@
       "MiMo-V2.5"
     ],
     "channels": [
-      "mid",
+      "reseller:Packy",
       "sub:Kimi 订阅",
       "sub:百炼 Token Plan",
       "sub:GLM Coding Plan",
@@ -70,7 +62,9 @@
     "unified_points": { "label": "统一积分",
       "desc": "积分计费，与各模型原价有固定等比关系" },
     "per_model_points": { "label": "区分模型积分",
-      "desc": "积分计费，与原价不等比且各模型比例不同，折算比只能给区间" }
+      "desc": "积分计费，与原价不等比且各模型比例不同，折算比只能给区间" },
+    "paygo": { "label": "按量计费",
+      "desc": "无月费、无额度，按实际 token 用量结算" }
   },
   "subscriptions": {
     "Claude 订阅": {
@@ -392,6 +386,23 @@
       "source": "https://ollama.com/blog/transparent-pricing"
     }
   },
+  "resellers": {
+    "Packy": {
+      "currency": "CNY",
+      "source": "https://www.packyapi.com/pricing",
+      "notes": [],
+      "groups": {
+        "packy_cc_sale": { "label": "cc-sale" },
+        "packy_codex": { "label": "codex" },
+        "packy_grok_sale": { "label": "grok-sale",
+          "note": "该中转站不支持缓存命中计费，综合价按 输入×31 + 输出×0.2 折算" },
+        "packy_gemini_slb": { "label": "gemini-slb" },
+        "packy_glm_sale": { "label": "glm-sale" },
+        "packy_bailian": { "label": "bailian" },
+        "packy_deepseek_sale": { "label": "deepseek-sale" }
+      }
+    }
+  },
   "providers": {
     "Anthropic": {
       "weights": {
@@ -618,8 +629,7 @@
       },
       "sources": {
         "usd": "https://developers.openai.com/api/docs/pricing",
-        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
-        "packy_codex": "https://www.packyapi.com/pricing"
+        "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6"
       }
     },
     "xAI": {
@@ -699,7 +709,6 @@
       },
       "sources": {
         "usd": "https://docs.x.ai/developers/pricing",
-        "packy_grok_sale": "https://www.packyapi.com/pricing",
         "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6"
       }
     },
@@ -728,8 +737,7 @@
         }
       },
       "sources": {
-        "usd": "https://ai.google.dev/gemini-api/docs/pricing",
-        "packy_gemini_slb": "https://www.packyapi.com/pricing"
+        "usd": "https://ai.google.dev/gemini-api/docs/pricing"
       }
     },
     "智谱": {
@@ -836,8 +844,7 @@
         "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
         "cny": "https://bigmodel.cn/pricing",
         "glm_coding_points": "https://docs.bigmodel.cn/cn/coding-plan/overview",
-        "ollama": "https://ollama.com/pricing",
-        "packy_glm_sale": "https://www.packyapi.com/pricing"
+        "ollama": "https://ollama.com/pricing"
       },
       "conditionNotes": {
         "非高峰时段": "订阅 Coding Plan 非高峰时段内积分消耗为 50%（高峰时段为北京时间每周一至周五的 14:00～18:00）"
@@ -1022,8 +1029,7 @@
         "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
         "cny": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
         "bailian_credits": "https://help.aliyun.com/zh/model-studio/model-pricing",
-        "ollama": "https://ollama.com/pricing",
-        "packy_deepseek_sale": "https://www.packyapi.com/pricing"
+        "ollama": "https://ollama.com/pricing"
       },
       "conditionNotes": {
         "标准价格": "DeepSeek 高峰时段（北京时间）：周一至周五上午 9:00 ~ 12:00、下午 14:00 ~ 18:00（OpenCode 相同）。\n百炼正常时段：8:00 ~ 22:00。\nOllama 高峰时段：20:00 ~ 次日 2:00（UTC 12:00 ~ 18:00）。",
@@ -1198,8 +1204,7 @@
       "sources": {
         "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
         "cny": "https://platform.qianwenai.com/pricing/api",
-        "bailian_credits": "https://help.aliyun.com/zh/model-studio/model-pricing",
-        "packy_bailian": "https://www.packyapi.com/pricing"
+        "bailian_credits": "https://help.aliyun.com/zh/model-studio/model-pricing"
       },
       "conditionNotes": {
         "百炼夜间优惠": "百炼 Token Plan 夜间时段（北京时间 22:00 ~ 次日 8:00）积分消耗为 50%。"
@@ -1313,8 +1318,7 @@
       "sources": {
         "cny": "https://platform.minimax.cn/docs/guides/pricing-paygo",
         "opencode": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
-        "ollama": "https://ollama.com/pricing",
-        "packy_bailian": "https://www.packyapi.com/pricing"
+        "ollama": "https://ollama.com/pricing"
       }
     },
     "小米": {
