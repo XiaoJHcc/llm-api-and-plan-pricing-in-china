@@ -106,7 +106,7 @@
         "Haiku 4.5"
       ],
       "notes": [
-        {"kind": "info", "label": "额度来源", "text": "来自网络信息（2026 年 5 月的逆向反推），可能会随机调整，仅供参考。", "link": "https://zhuanlan.zhihu.com/p/2027017728410628819", "hover": "额度来自网络信息，仅供估算"},
+        {"kind": "warn", "label": "额度来源", "text": "来自网络信息（2026 年 5 月的逆向反推），可能会随机调整，仅供参考。", "link": "https://zhuanlan.zhihu.com/p/2027017728410628819", "hover": "额度来自网络信息，仅供估算"},
         {"kind": "warn", "label": "封号", "text": "你买不到。"}
       ],
       "source": "https://claude.com/pricing"
@@ -136,7 +136,7 @@
         "GPT 5.6 Luna"
       ],
       "notes": [
-        {"kind": "info", "label": "额度来源", "text": "来自社区 sub2api 计费估算，可能会随机调整，仅供参考。", "hover": "额度来自网络信息，仅供估算"},
+        {"kind": "warn", "label": "额度来源", "text": "来自社区 sub2api 计费估算，可能会随机调整，仅供参考。", "hover": "额度来自网络信息，仅供估算"},
         {"kind": "warn", "label": "封号", "text": "你买不到。"}
       ],
       "source": "https://chatgpt.com/zh-Hans-CN/pricing/"
@@ -179,6 +179,7 @@
         "Kimi K2.6"
       ],
       "notes": [
+        {"kind": "good", "label": "额度一致", "text": "官方未明确额度，但可根据用量百分比反推，且据观察不会随机浮动。"},
         {"kind": "info", "label": "额度来源", "text": "来自 2026 年 8 月个人 Kimi 订阅用量反推，准确度较高。但未经官方验证。", "hover": "额度来自个人用量反推，未经官方验证"},
         {"kind": "warn", "label": "特殊限制", "text": "Andante 不含 K3，Moderato 可用 K3 但仅 256K 上下文。"},
         {"kind": "warn", "label": "缺货", "text": "暂未恢复订阅购买，仅老用户可续费。"}
@@ -252,7 +253,7 @@
       ],
       "notes": [
         {"kind": "info", "label": "换算来源", "text": "积分与人民币的换算关系，来自早期 Qwen 3.6 Plus 消耗示例反推。", "link": "https://www.aliyunbaike.com/tokenplan/"},
-        {"kind": "warn", "label": "私有部署", "text": "百炼模型为阿里云私有部署，模型运行速度较慢，新模型上线不及时。"}
+        {"kind": "warn", "label": "私有部署", "text": "百炼 Token Plan 仅包含阿里云私有部署的模型，（千问以外的）模型速度较慢，新模型上线不及时。哪怕官方下线 V4 Pro、GLM-5.2 后，你仍可在百炼体验老旧模型风味。"}
       ],
       "source": "https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model&url=3028856"
     },
@@ -398,7 +399,8 @@
       ],
       "notes": [
         {"kind": "good", "label": "额度透明", "text": "官方明确了额度倍率。"},
-        {"kind": "good", "label": "DeepSeek 谷价", "text": "Ollama 自部署 DeepSeek 采用全球峰谷时段，谷时刚好为中国白天。"}
+        {"kind": "good", "label": "DeepSeek 白天谷价", "text": "Ollama 自部署 DeepSeek 采用全球峰谷时段，谷时刚好为中国白天（2:00 ~ 20:00）。"},
+        {"kind": "info", "label": "私有部署", "text": "DeepSeek 为私有部署，新模型上线较官方延迟 1-2 天，但仍比百炼及时。"}
       ],
       "source": "https://ollama.com/blog/transparent-pricing"
     }
