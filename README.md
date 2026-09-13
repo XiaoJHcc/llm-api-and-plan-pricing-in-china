@@ -4,6 +4,10 @@
 
 汇总各家 LLM 官方 API 价格，与 Coding Plan 订阅、中转站等渠道换算价格，按编程场景实际用量比例加权，综合对比成本。
 
+**➡️ 在线访问：<https://xiaojhcc.github.io/llm-api-and-plan-pricing-in-china/>**
+
+![页面截图](screenshot.png)
+
 ---
 
 - **加权综合价** — 长上下文编程任务，结合各厂商缓存命中率加权
