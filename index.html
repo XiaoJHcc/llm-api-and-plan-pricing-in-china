@@ -343,6 +343,13 @@ table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
 .hero-kicker{font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--cny)}
 .hero-h1{position:relative;margin:18px 0 20px;font:800 44px/1.18 Georgia,"Times New Roman","Songti SC","STSong",serif;letter-spacing:.005em}
 .hero-lede{position:relative;margin:0;color:var(--muted);font-size:15.5px;max-width:660px}
+/* 综合价口径说明：红字等式 + 各段灰字注释 */
+.hero-formula{position:relative;display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 16px;margin:16px 0 0;max-width:960px}
+.hfm-item{display:flex;flex-direction:column;gap:3px}
+.hfm-t{font-size:18px;font-weight:800;color:var(--cny);letter-spacing:.01em}
+.hfm-n{font-size:11.5px;line-height:1.5;color:var(--faint);max-width:360px}
+.hfm-n b{font-weight:600;color:var(--muted)}
+.hfm-op{font-size:19px;font-weight:800;color:var(--muted);padding:0 2px}
 .hero-feats{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:36px;max-width:1120px}
 .hf{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:11px 14px}
 .hf-t{font-size:13.5px;font-weight:750}
@@ -365,6 +372,10 @@ table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
 }
 @media (max-width:760px){
   .hero-h1{font-size:31px}
+  .hero-formula{flex-direction:column;align-items:flex-start;gap:8px}
+  .hfm-op{font-size:14px;line-height:1;padding-left:2px}
+  .hfm-n{max-width:100%}
+  .hfm-t{font-size:16px}
   .hero-deco{display:none}
   .hero-feats{grid-template-columns:1fr}
 }
@@ -441,6 +452,19 @@ table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
     <div class="hero-kicker">编程场景 · 缓存命中率加权 · 订阅价格折算</div>
     <h1 class="hero-h1">大模型综合使用成本</h1>
     <p class="hero-lede">汇总各家 LLM 官方 API 价格，与 Coding Plan 订阅、中转站等渠道换算价格，按编程场景实际用量比例加权，综合对比成本。</p>
+    <div class="hero-formula">
+      <div class="hfm-item"><span class="hfm-t">综合价</span></div>
+      <span class="hfm-op">≈</span>
+      <div class="hfm-item">
+        <span class="hfm-t">一次编码任务的开销</span>
+        <span class="hfm-n"><b>上下文 256K 左右</b>的典型会话任务</span>
+      </div>
+      <span class="hfm-op">≈</span>
+      <div class="hfm-item">
+        <span class="hfm-t">符合印象的单位价格</span>
+        <span class="hfm-n">计算出的综合价刚好接近输出单价，将某些<b>低价输出、高价缓存</b>的模型<b>拉回统一标尺，暴露真实成本</b></span>
+      </div>
+    </div>
     <div class="hero-feats">
       <div class="hf"><div class="hf-t">加权综合价</div><div class="hf-d">长上下文编程任务，结合各厂商缓存命中率加权</div></div>
       <div class="hf"><div class="hf-t">订阅渠道换算</div><div class="hf-d">官方与第三方订阅，按额度或积分折算优惠单价</div></div>
