@@ -8,6 +8,12 @@
     "cache_hit": "缓存命中",
     "output": "输出"
   },
+  "weights_baseline": {
+    "//": "基准权重 1:30:0.2。输入侧分量（input / cache_write*）统一对 1 比较；高于基准标黄、低于标绿，偏离原因在厂商 weights_notes 中按分量声明（good=绿、warn=黄）",
+    "input": 1,
+    "cache_hit": 30,
+    "output": 0.2
+  },
   "channels": {
     "usd": { "label": "美元官方", "kind": "usd" },
     "cny": { "label": "人民币官方", "kind": "cny" },
@@ -431,6 +437,9 @@
         "output": 0.2
       },
       "weights_note": "来自个人使用 CC Switch 实测",
+      "weights_notes": {
+        "cache_write_5min": { "kind": "warn", "text": "Claude 缓存只有 5 分钟，极易导致缓存过期重建，实测写入占比显著高于基准。" }
+      },
       "hit_rate": {
         "estimated": false,
         "stats": { "cache_write": 74444000, "cache_hit": 1381493000, "output": 10455000 }
@@ -765,6 +774,9 @@
         "output": 0.2
       },
       "weights_note": "来自个人使用 ZCode 实测",
+      "weights_notes": {
+        "input": { "kind": "good", "text": "GLM 搭配 ZCode 缓存命中有优化，写入较少。" }
+      },
       "hit_rate": {
         "estimated": false,
         "stats": { "cache_write": 4253548, "cache_hit": 152231866, "output": 690581 }
@@ -872,6 +884,9 @@
         "output": 0.2
       },
       "weights_note": "来自个人使用 Kimi Code 实测",
+      "weights_notes": {
+        "input": { "kind": "good", "text": "Kimi 搭配 Kimi Code 缓存命中有优化，写入较少。" }
+      },
       "hit_rate": {
         "estimated": false,
         "stats": { "cache_write": 46175031, "cache_hit": 1701238549, "output": 8950506 }
@@ -939,10 +954,14 @@
     "深度求索": {
       "weights": {
         "input": 0.25,
-        "cache_hit": 30,
+        "cache_hit": 50,
         "output": 0.2
       },
-      "weights_note": "来自个人使用 DeepSeek Harness 实测",
+      "weights_note": "来自个人使用 DeepSeek Harness 实测（缓存命中权重按实际使用调高）",
+      "weights_notes": {
+        "input": { "kind": "good", "text": "DeepSeek 缓存技术先进，长时间不过期，命中率接近理论上限。" },
+        "cache_hit": { "kind": "warn", "text": "DeepSeek 需要过长的思考和尝试次数，导致完成相同任务时上下文显著拉长，该权重调高更接近实际比例。" }
+      },
       "hit_rate": {
         "estimated": false,
         "stats": { "cache_write": 5486228, "cache_hit": 687694560, "output": 3375739 }

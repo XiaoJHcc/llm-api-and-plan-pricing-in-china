@@ -134,9 +134,15 @@ table.cmp{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
 .vn .vb{padding:2px 7px;border-radius:999px;font-size:9.5px;font-weight:650;letter-spacing:.03em;white-space:nowrap}
 .vn .vb.est{background:rgba(184,134,11,.13);color:#9a6f06}
 .vn .vb.mst{background:rgba(30,126,52,.12);color:#1e7e34}
-/* 权重丸：一个事实一枚容器，同形重复成节奏；三丸等比放宽铺满格宽（两端对齐、间距不变）；丸内标签弱化、倍率强调 */
+/* 权重丸：一个事实一枚容器，同形重复成节奏；三丸等比放宽铺满格宽（两端对齐、间距不变）；丸内标签弱化、倍率强调；
+   与基准（1:30:0.2）对比着色：高于基准 = hi（琥珀）、低于基准 = lo（绿），与来源丸配色同档 */
 .vw{display:flex;gap:6px;min-width:0}
 .vw .wi{flex:1 1 auto;display:inline-flex;align-items:baseline;gap:4px;min-width:0;padding:3px 9px;border-radius:999px;background:var(--ref)}
+.vw .wi[data-tip]{cursor:help}
+.vw .wi.hi{background:rgba(184,134,11,.13)}
+.vw .wi.hi .wn{color:#9a6f06}
+.vw .wi.lo{background:rgba(30,126,52,.12)}
+.vw .wi.lo .wn{color:#1e7e34}
 .vw .wl{font-size:9.5px;font-weight:500;color:var(--faint);white-space:nowrap}
 .vw .wn{font-size:11.5px;font-weight:750;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
 .vw .wn::before{content:'×';margin-right:1px;font-size:9px;font-weight:500;color:var(--faint)}
@@ -204,6 +210,10 @@ table.tt-t{width:100%;border-collapse:collapse}
 .tsec{padding-top:3px;color:#b3ada0;font-size:12px}
 .tsec b{color:#f4f2ec;font-weight:600}
 .tnote{margin-top:8px;color:#eec674;font-size:12px}
+/* 权重偏离说明：good = 低于基准（绿）；warn 沿用默认琥珀 */
+.tnote.good{color:#8fd19e}
+.tt-t td.hi{color:#eec674}
+.tt-t td.lo{color:#8fd19e}
 .tnote a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
 .tnote a:hover{color:#f4f2ec}
 
@@ -356,11 +366,8 @@ table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
 .hf-t::before{content:'';display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:7px;background:var(--usd);vertical-align:1px}
 .hf:nth-child(2) .hf-t::before{background:var(--sub)}
 .hf:nth-child(3) .hf-t::before{background:var(--cny)}
+.hf:nth-child(4) .hf-t::before{background:var(--mid)}
 .hf-d{margin-top:3px;font-size:12px;color:var(--muted);line-height:1.55}
-.hf-off{border-style:dashed;background:var(--ref)}
-.hf-off .hf-t{color:var(--faint)}
-.hf-off .hf-t::before{background:var(--faint)}
-.hf-off .hf-d{color:var(--faint)}
 .hero-stats{position:relative;display:grid;grid-template-columns:repeat(4,1fr);margin-top:46px;border-top:1px solid var(--grid-strong)}
 .stat{padding:20px 26px 0;border-left:1px solid var(--line)}
 .stat:first-child{padding-left:0;border-left:none}
@@ -466,10 +473,10 @@ table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
       </div>
     </div>
     <div class="hero-feats">
-      <div class="hf"><div class="hf-t">加权综合价</div><div class="hf-d">长上下文编程任务，结合各厂商缓存命中率加权</div></div>
-      <div class="hf"><div class="hf-t">订阅渠道换算</div><div class="hf-d">官方与第三方订阅，按额度或积分折算优惠单价</div></div>
-      <div class="hf"><div class="hf-t">人民币折算</div><div class="hf-d">美元、积分统一折算为 ¥，自动标出最优渠道</div></div>
-      <div class="hf hf-off"><div class="hf-t">模型思考效率（未计入）</div><div class="hf-d">各模型思考努力程度、任务复杂度不同，无法量化计入</div></div>
+      <div class="hf"><div class="hf-t">加权综合价</div><div class="hf-d">按典型编程任务上下文长度，结合各厂商缓存命中率加权计算</div></div>
+      <div class="hf"><div class="hf-t">模型思考开销</div><div class="hf-d">对于过于离谱的雷霆大思考模型（DeepSeek Flash），拉高权重比例作为校正</div></div>
+      <div class="hf"><div class="hf-t">订阅渠道换算</div><div class="hf-d">包月订阅渠道，按月额度或积分用满的情况，折算成优惠单价</div></div>
+      <div class="hf"><div class="hf-t">人民币折算</div><div class="hf-d">美元、积分统一折算为人民币，自动标出最优渠道</div></div>
     </div>
     <div class="hero-stats">
       <div class="stat"><div class="stat-n" id="statModels">–</div><div class="stat-l">统计模型<span class="stat-s">参与加权综合价计算，并长期维护</span></div></div>
@@ -552,6 +559,17 @@ table.raw{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max
 <template id="tmplWitem">
   <span class="wi"><span class="wl" data-v="label"></span><span class="wn" data-v="num"></span></span>
 </template>
+<!-- 权重丸浮窗：与基准（1:30:0.2）对比 + 偏离说明（kind: good 绿 / warn 黄） -->
+<template id="tmplWeightTip">
+  <div>
+    <div class="tt" data-v="title"></div>
+    <table class="tt-t">
+      <tr><td>基准权重</td><td data-v="base"></td></tr>
+      <tr class="sum"><td>当前权重</td><td data-v="cur"></td></tr>
+    </table>
+    <div class="tnote" data-v="note"></div>
+  </div>
+</template>
 <!-- 缓存命中率 ⓘ 浮窗：来源说明 + 实测统计表（估算厂商无统计表） -->
 <template id="tmplHitTip">
   <div>
@@ -582,6 +600,9 @@ try {
 }
 const USD_CNY = DATA.usd_to_cny;
 const COMP = DATA.components || {};
+/* 基准权重（1:30:0.2）：输入侧分量（input / cache_write*）统一对 input 基准比较 */
+const WBASE = DATA.weights_baseline || {input: 1, cache_hit: 30, output: 0.2};
+function weightBase(k){ return k === 'cache_hit' ? WBASE.cache_hit : (k === 'output' ? WBASE.output : WBASE.input); }
 document.getElementById('fxChip').textContent = '汇率 ¥' + USD_CNY + ' / $';
 
 /* 列宽（px）：模型列 150；其余所有列统一 132 定宽，行高由 td.px 定为 56，保证格点跨行跨表对齐 */
@@ -794,7 +815,26 @@ function hitTipHTML(prov){
   }
   return fragHTML(frag);
 }
-/* 厂商标题卡：模板槽位填充；命中率胶囊整块为浮窗触发区，权重项逐条 clone、分隔点由 CSS ::before 表达 */
+/* 权重丸浮窗：与基准对比（高于基准黄 / 低于基准绿），偏离原因取厂商 weights_notes[k]（good 绿 / warn 黄） */
+function weightTipHTML(k, v, note){
+  const base = weightBase(k);
+  const frag = cloneTpl('tmplWeightTip');
+  slot(frag, 'title').textContent = (COMP[k] || k) + ' · 权重';
+  slot(frag, 'base').textContent = '×' + base;
+  const cur = slot(frag, 'cur');
+  cur.textContent = '×' + v;
+  if (v > base) cur.classList.add('hi');
+  else if (v < base) cur.classList.add('lo');
+  const noteEl = slot(frag, 'note');
+  if (note){
+    noteEl.textContent = (note.kind === 'good' ? '✓ ' : '⚠ ') + note.text;
+    if (note.kind === 'good') noteEl.classList.add('good');
+  } else {
+    noteEl.remove();
+  }
+  return fragHTML(frag);
+}
+/* 厂商标题卡：模板槽位填充；命中率胶囊整块为浮窗触发区，权重丸按基准对比着色、仅偏离基准者挂浮窗 */
 function vendorHeadFrag(pname, prov, hitRate){
   const frag = cloneTpl('tmplVhead');
   slot(frag, 'name').textContent = pname;
@@ -806,10 +846,18 @@ function vendorHeadFrag(pname, prov, hitRate){
   badge.textContent = estimated ? '估算' : '实测';
   badge.classList.add(estimated ? 'est' : 'mst');
   const wbox = slot(frag, 'weights');
+  const wnotes = prov.weights_notes || {};
   for (const k in prov.weights){
+    const v = prov.weights[k];
     const item = cloneTpl('tmplWitem');
     slot(item, 'label').textContent = COMP[k] || k;
-    slot(item, 'num').textContent = prov.weights[k];
+    slot(item, 'num').textContent = v;
+    const wi = item.querySelector('.wi');
+    const base = weightBase(k);
+    if (v > base) wi.classList.add('hi');
+    else if (v < base) wi.classList.add('lo');
+    else { wbox.appendChild(item); continue; } /* 与基准一致：不着色、不挂浮窗 */
+    wi.setAttribute('data-tip', regTip(weightTipHTML(k, v, wnotes[k])));
     wbox.appendChild(item);
   }
   return frag;
