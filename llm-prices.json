@@ -2,9 +2,9 @@
   "components": {
     "input": "输入",
     "cache_write": "缓存写入",
-    "cache_write_5min": "缓存写入(5min)",
-    "cache_write_30min": "缓存写入(30min)",
-    "cache_write_1h": "缓存写入(1h)",
+    "cache_write_5min": "写入(5min)",
+    "cache_write_30min": "写入(30min)",
+    "cache_write_1h": "写入(1h)",
     "cache_hit": "缓存命中",
     "output": "输出"
   },
