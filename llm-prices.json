@@ -42,7 +42,7 @@
     "openrouter": { "label": "OpenRouter 模型与价格", "url": "https://openrouter.ai/api/v1/models" }
   },
   "usd_to_cny": 6.71,
-  "updated": "2026.9.14",
+  "updated": "2026.9.22",
   "filter_defaults": {
     "models": [
       "Fable 5.1",
@@ -271,17 +271,18 @@
       "plans": {
         "Lite": {
           "fee": 39,
-          "quota_5h": 700,
           "quota_weekly": 2500
+        },
+        "Essential": {
+          "fee": 79,
+          "quota_weekly": 5625
         },
         "Standard": {
           "fee": 139,
-          "quota_5h": 3000,
           "quota_weekly": 10000
         },
         "Pro": {
           "fee": 499,
-          "quota_5h": 12000,
           "quota_weekly": 40000
         }
       },
@@ -291,7 +292,10 @@
         "Qwen 3.7 Max",
         "Qwen 3.7 Plus",
         "DeepSeek V4 Pro",
-        "DeepSeek V4 Flash"
+        "DeepSeek V4 Flash",
+        "DeepSeek V4.1 Flash",
+        "GLM-5.3",
+        "GLM-5.2"
       ],
       "notes": [
         {"kind": "info", "label": "换算来源", "text": "积分与人民币的换算关系，来自早期 Qwen 3.6 Plus 消耗示例反推。", "link": "https://www.aliyunbaike.com/tokenplan/"},
@@ -851,6 +855,11 @@
               "cache_hit": 2,
               "output": 28
             },
+            "bailian_credits": {
+              "input": 800,
+              "cache_hit": 200,
+              "output": 2800
+            },
             "glm_coding_points": {
               "input": 690,
               "cache_hit": 170,
@@ -908,6 +917,11 @@
               "input": 8,
               "cache_hit": 2,
               "output": 28
+            },
+            "bailian_credits": {
+              "input": 800,
+              "cache_hit": 200,
+              "output": 2800
             },
             "packy_glm_sale": { "input": 4, "cache_hit": 1, "output": 14 }
           }
@@ -1040,6 +1054,11 @@
               "cache_hit": 0.04,
               "output": 8
             },
+            "bailian_credits": {
+              "input": 200,
+              "cache_hit": 20,
+              "output": 800
+            },
             "ark_afp": { "input": 125, "cache_hit": 125, "output": 125 }
           },
           "梁文谷": {
@@ -1056,6 +1075,13 @@
           },
           "Ollama 谷时": {
             "ollama": { "input": 0.15, "cache_hit": 0.003, "output": 0.60 }
+          },
+          "百炼夜间优惠": {
+            "bailian_credits": {
+              "input": 100,
+              "cache_hit": 10,
+              "output": 400
+            }
           }
         },
         "DeepSeek V4 Pro": {
@@ -1073,7 +1099,7 @@
             },
             "bailian_credits": {
               "input": 900,
-              "cache_hit": 30,
+              "cache_hit": 90,
               "output": 2700
             },
             "ark_afp": { "input": 550, "cache_hit": 550, "output": 550 },
@@ -1098,7 +1124,7 @@
           "百炼夜间优惠": {
             "bailian_credits": {
               "input": 450,
-              "cache_hit": 15,
+              "cache_hit": 45,
               "output": 1350
             }
           }
@@ -1113,7 +1139,7 @@
             },
             "bailian_credits": {
               "input": 300,
-              "cache_hit": 10,
+              "cache_hit": 30,
               "output": 900
             },
             "ark_afp": { "input": 50, "cache_hit": 50, "output": 50 },
@@ -1128,7 +1154,7 @@
           "百炼夜间优惠": {
             "bailian_credits": {
               "input": 150,
-              "cache_hit": 5,
+              "cache_hit": 15,
               "output": 450
             }
           }
@@ -1177,10 +1203,10 @@
           },
           "百炼夜间优惠": {
             "bailian_credits": {
-              "input": 600,
-              "cache_write": 750,
-              "cache_hit": 50,
-              "output": 1800
+              "input": 480,
+              "cache_write": 600,
+              "cache_hit": 40,
+              "output": 1440
             }
           }
         },
@@ -1205,6 +1231,14 @@
               "output": 270
             },
             "packy_bailian": { "input": 0.4, "cache_hit": 0.05, "output": 1.35 }
+          },
+          "百炼夜间优惠": {
+            "bailian_credits": {
+              "input": 32,
+              "cache_write": 50,
+              "cache_hit": 4,
+              "output": 108
+            }
           }
         },
         "Qwen 3.7 Max": {

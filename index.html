@@ -693,7 +693,7 @@ function compact(v){
   if (v % 1e3 === 0 && v >= 1e6) return (v / 1e6) + 'M';
   return fmt(v);
 }
-/* 等效月额度：部分订阅只规定 5h 与周额度（百炼 / GLM / ChatGPT），月额度由前端按 周额度 × 52/12 推导，不落盘到数据；金额保留 2 位小数 */
+/* 等效月额度：部分订阅只规定 5h 或周额度（百炼 / GLM / ChatGPT），月额度由前端按 周额度 × 52/12 推导，不落盘到数据；金额保留 2 位小数 */
 const eqMonthly = p => p.quota_monthly != null
   ? p.quota_monthly
   : Math.round(p.quota_weekly * (52 / 12) * 100) / 100;
@@ -1715,7 +1715,7 @@ function heatColor(v){
     let h = '<div class="pc"><div class="pch"><span class="pn">' + gname + '</span>' +
       srcLinks(g.source, 'psrc', '官网↗') + '<span class="tags">' + tagCur + tagBill + '</span></div>';
 
-    /* 各套餐可能只规定部分额度口径（ChatGPT 仅周额度），按实际出现与否决定列显隐 */
+    /* 各套餐可能只规定部分额度口径（百炼 / ChatGPT 仅周额度），按实际出现与否决定列显隐 */
     const has5h = Object.values(g.plans).some(p => p.quota_5h != null);
     const hasWH = Object.values(g.plans).some(p => p.quota_weekly != null);
     /* 官方未规定月额度的套餐（百炼 / GLM / ChatGPT）：月额度由前端按 周额度 × 52/12 推导，标注为等效 */
