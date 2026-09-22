@@ -42,16 +42,14 @@
     "openrouter": { "label": "OpenRouter 模型与价格", "url": "https://openrouter.ai/api/v1/models" }
   },
   "usd_to_cny": 6.71,
-  "updated": "2026.9.22",
+  "updated": "2026.9.23",
   "filter_defaults": {
     "models": [
       "Fable 5.1",
-      "Opus 5",
+      "Opus 5.5",
       "Sonnet 5",
       "GPT 6 Astra",
       "GPT 5.6 Sol",
-      "GPT 5.6 Terra",
-      "GPT 5.6 Luna",
       "Grok 4.7",
       "Gemini 3.8 Flash",
       "GLM-5.3",
@@ -111,6 +109,7 @@
       "models": [
         "Fable 5.1",
         "Fable 5",
+        "Opus 5.5",
         "Opus 5",
         "Sonnet 5",
         "Haiku 4.5"
@@ -487,13 +486,14 @@
       "notes": [],
       "groups": {
         "packy_cc_sale": { "label": "cc-sale" },
-        "packy_codex": { "label": "codex" },
+        "packy_codex_sale": { "label": "codex-sale" },
         "packy_grok_sale": { "label": "grok-sale",
           "note": "该中转站不支持缓存命中计费，综合价按 输入×31 + 输出×0.2 折算" },
         "packy_gemini_slb": { "label": "gemini-slb" },
         "packy_glm_sale": { "label": "glm-sale" },
         "packy_bailian": { "label": "bailian" },
-        "packy_deepseek_sale": { "label": "deepseek-sale" }
+        "packy_deepseek_sale": { "label": "deepseek-sale" },
+        "packy_kimi_sale": { "label": "kimi-sale" }
       }
     }
   },
@@ -532,6 +532,17 @@
               "cache_write_1h": 20,
               "cache_hit": 1,
               "output": 50
+            }
+          }
+        },
+        "Opus 5.5": {
+          "default": {
+            "usd": {
+              "input": 4,
+              "cache_write_5min": 5,
+              "cache_write_1h": 8,
+              "cache_hit": 0.2,
+              "output": 20
             }
           }
         },
@@ -618,7 +629,7 @@
             }
           },
           "default": {
-            "packy_codex": { "input": 8, "cache_write_30min": 10, "cache_hit": 0.8, "output": 40 }
+            "packy_codex_sale": { "input": 5, "cache_write_30min": 6.25, "cache_hit": 0.5, "output": 25 }
           }
         },
         "GPT 5.6 Sol": {
@@ -629,11 +640,11 @@
               "cache_hit": 0.4,
               "output": 20
             },
-            "packy_codex": {
-              "input": 4,
-              "cache_write_30min": 5,
-              "cache_hit": 0.4,
-              "output": 24
+            "packy_codex_sale": {
+              "input": 2,
+              "cache_write_30min": 2.5,
+              "cache_hit": 0.2,
+              "output": 10
             }
           },
           ">272K": {
@@ -643,11 +654,11 @@
               "cache_hit": 0.8,
               "output": 30
             },
-            "packy_codex": {
-              "input": 8,
-              "cache_write_30min": 10,
-              "cache_hit": 0.8,
-              "output": 36
+            "packy_codex_sale": {
+              "input": 4,
+              "cache_write_30min": 5,
+              "cache_hit": 0.4,
+              "output": 15
             }
           }
         },
@@ -659,11 +670,11 @@
               "cache_hit": 0.2,
               "output": 12
             },
-            "packy_codex": {
-              "input": 1.6,
-              "cache_write_30min": 2,
-              "cache_hit": 0.16,
-              "output": 9.6
+            "packy_codex_sale": {
+              "input": 1,
+              "cache_write_30min": 1.25,
+              "cache_hit": 0.1,
+              "output": 6
             }
           },
           ">272K": {
@@ -673,11 +684,11 @@
               "cache_hit": 0.4,
               "output": 18
             },
-            "packy_codex": {
-              "input": 3.2,
-              "cache_write_30min": 4,
-              "cache_hit": 0.32,
-              "output": 14.4
+            "packy_codex_sale": {
+              "input": 2,
+              "cache_write_30min": 2.5,
+              "cache_hit": 0.2,
+              "output": 9
             }
           }
         },
@@ -688,12 +699,6 @@
               "cache_write_30min": 0.25,
               "cache_hit": 0.02,
               "output": 1.2
-            },
-            "packy_codex": {
-              "input": 0.8,
-              "cache_write_30min": 1,
-              "cache_hit": 0.08,
-              "output": 4.8
             },
             "opencode": {
               "input": 0.2,
@@ -708,12 +713,6 @@
               "cache_write_30min": 0.5,
               "cache_hit": 0.04,
               "output": 1.8
-            },
-            "packy_codex": {
-              "input": 1.6,
-              "cache_write_30min": 2,
-              "cache_hit": 0.16,
-              "output": 7.2
             },
             "opencode": {
               "input": 0.4,
@@ -748,6 +747,11 @@
               "input": 2,
               "cache_hit": 0.5,
               "output": 6
+            },
+            "packy_grok_sale": {
+              "input": 0.6,
+              "cache_hit": 0.15,
+              "output": 1.8
             }
           },
           ">200K": {
@@ -760,6 +764,11 @@
               "input": 4,
               "cache_hit": 1,
               "output": 12
+            },
+            "packy_grok_sale": {
+              "input": 1.2,
+              "cache_hit": 0.3,
+              "output": 3.6
             }
           }
         },
@@ -1011,6 +1020,7 @@
               "cache_hit": 2,
               "output": 100
             },
+            "packy_kimi_sale": { "input": 10, "cache_hit": 1, "output": 50 },
             "ark_afp": { "input": 1000, "cache_hit": 1000, "output": 1000 }
           }
         },
@@ -1110,7 +1120,7 @@
           "Ollama 谷时": {
             "ollama": { "input": 0.15, "cache_hit": 0.003, "output": 0.60 }
           },
-          "百炼夜间优惠": {
+          "百炼夜间五折": {
             "bailian_credits": {
               "input": 100,
               "cache_hit": 10,
@@ -1155,7 +1165,7 @@
           "Ollama 谷时": {
             "ollama": { "input": 0.66, "cache_hit": 0.022, "output": 1.98 }
           },
-          "百炼夜间优惠": {
+          "百炼夜间五折": {
             "bailian_credits": {
               "input": 450,
               "cache_hit": 45,
@@ -1185,7 +1195,7 @@
           "Ollama 谷时": {
             "ollama": { "input": 0.22, "cache_hit": 0.007, "output": 0.66 }
           },
-          "百炼夜间优惠": {
+          "百炼夜间五折": {
             "bailian_credits": {
               "input": 150,
               "cache_hit": 15,
@@ -1200,7 +1210,7 @@
       "conditionNotes": {
         "标准价格": "DeepSeek 高峰时段（北京时间）：周一至周五上午 9:00 ~ 12:00、下午 14:00 ~ 18:00（OpenCode 相同）。\n百炼正常时段：8:00 ~ 22:00。\nOllama 高峰时段：20:00 ~ 次日 2:00（UTC 12:00 ~ 18:00）。",
         "梁文谷": "DeepSeek 空闲时段（北京时间）：中午 12:00 ~ 14:00、晚上 18:00 ~ 次日 9:00，及周六、周日全天。（OpenCode 相同）",
-        "百炼夜间优惠": "百炼 Token Plan 夜间时段（北京时间）：每天夜间 22:00 ~ 次日 8:00。",
+        "百炼夜间五折": "北京时间 22:00 ~ 次日 8:00",
         "Ollama 谷时": "Ollama 非峰时段（北京时间）：凌晨 2:00 ~ 晚上 20:00，及周六、周日全天。刚好北京时间白天是谷时。（原始定义 UTC 18:00 ~ 次日 12:00）"
       }
     },
@@ -1235,7 +1245,7 @@
             },
             "packy_bailian": { "input": 6, "cache_hit": 0.75, "output": 18 }
           },
-          "百炼夜间优惠": {
+          "百炼夜间四折": {
             "bailian_credits": {
               "input": 480,
               "cache_write": 600,
@@ -1266,7 +1276,7 @@
             },
             "packy_bailian": { "input": 0.4, "cache_hit": 0.05, "output": 1.35 }
           },
-          "百炼夜间优惠": {
+          "百炼夜间四折": {
             "bailian_credits": {
               "input": 32,
               "cache_write": 50,
@@ -1379,7 +1389,7 @@
         "cny": "https://platform.qianwenai.com/pricing/api"
       },
       "conditionNotes": {
-        "百炼夜间优惠": "百炼 Token Plan 夜间时段（北京时间 22:00 ~ 次日 8:00）积分消耗为 50%。"
+        "百炼夜间四折": "北京时间 22:00 ~ 次日 8:00"
       }
     },
     "腾讯混元": {
