@@ -98,7 +98,7 @@
   "source": "https://www.packyapi.com/pricing",
   "api": "https://www.packyapi.com/api/pricing",
   "notes": [],                             // 卡片脚注，与订阅 notes 同构
-  "groups": { "packy_grok_sale": { "label": "grok-sale", "note": "该分组不支持缓存计费…" } }
+  "groups": { "packy_grok_sale": { "label": "grok-sale", "note": "缓存可能不生效…" } }
 }
 ```
 
@@ -204,7 +204,7 @@
 综合价 = Σ (分量单价 × 权重)          # 单位：每 1M 新增输入 token 的花费
 ```
 
-权重取厂商 `weights`；若该渠道在 `channelWeights` 里有条目，则**整体替换** `weights`（xAI 的 `packy_grok_sale: {input:31, output:0.2}` 即「输入 ×31 + 输出 ×0.2」，等价于把 30 份缓存命中并入输入，因为该分组不支持缓存计费——对应分组 `note`）。
+权重取厂商 `weights`；若该渠道在 `channelWeights` 里有条目，则**整体替换** `weights`（用于「该渠道不按缓存计费」这类情形：写成「输入 ×31 + 输出 ×0.2」等价于把 30 份缓存命中并入输入）。**当前无厂商使用**，`channelWeights` 为空即可省略。
 
 - **权重语义是 token 配比**：基准 `1 : 30 : 0.2` 意为「每 1M 新增输入 token，附带 30M 缓存命中 token、0.2M 输出 token」。基准标定目标是让综合价接近「一次 256K 上下文的典型编码任务开销」，从而与输出单价在同一量级可比。
 - **输入侧分量名因厂商而异**，`weights` 必须写自家价目里实际存在的那个 key：Anthropic 用 `cache_write_5min`、OpenAI 用 `cache_write_30min`、千问用 `cache_write`（故意按写入价计全部输入）、其余厂商用 `input`。**权重 key 找不到对应价格时按 0 计**（不报错、不回退），所以 name 写错的表现是「该分量静默消失、综合价偏低」。
@@ -276,7 +276,7 @@
 | **中转站更新**（如 Packy） | 查 Packy 的 `api` 逐分组比对价格 → 看有没有新模型被覆盖 → **排除无关渠道**：不要顺手引入本页不跟踪的渠道与模型（Packy 有 22 个分组，本页只用 8 个） |
 | **订阅更新** | 档位调价改 `plans.*.fee`；额度变更改 `quota_5h` / `quota_weekly` / `quota_monthly`，按官方口径填，官方没规定的就留空（前端会推导等效月额度）；`models` 按「官方订阅默认含自家全部模型」与该厂商在 `providers` 里的模型对齐（例外见「计费模式」） |
 
-**连不上的源先走代理，别因为连不上就跳过**：`https://api.allorigins.win/raw?url=<URL 编码后的完整地址>` 实测可取包，且能取到与官方域名完全一致的 JSON（Packy 就是这么核到的：直连 443 超时，走代理后与 `www.packyapi.com/api/pricing` 逐字节相同）。
+**连不上的源先走代理**：常见代理地址 `https://127.0.0.1:7890`，访问国外源（OpenAI、Google、Packy 等）时先走代理确保可连接。
 
 ### 定期普查
 
