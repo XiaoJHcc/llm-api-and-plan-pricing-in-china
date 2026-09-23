@@ -647,6 +647,45 @@ try {
     '<div class="loadfail">无法读取 llm-prices.json。请通过本地 HTTP 服务打开本页，例如 <code>python -m http.server</code> 后访问 http://localhost:8000</div>';
   return;
 }
+/* ---------- 限期值与常态值（候选数组） ----------
+   任何「值」位置都可以并列多个候选：[ { 常态值 }, { 限期值, "until": "2026-09-28" } ]
+   候选可带 from / until（含当日），按北京时间（UTC+8）判定：
+   - 带日期的候选命中当天 → 取它，并丢弃同级的无期限候选
+   - 没命中 → 取无期限候选
+   - 两者都没有 → 该项为空，直接删除该键
+   标量候选（fee / 额度等）用 { "value": 值, "until": … } 包裹。
+   只有数组里出现带日期的候选时才按候选数组处理，普通数组（模型名清单、notes）不受影响。 */
+const BJ_DATE = new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
+const EMPTY = Symbol('empty');
+const isDated = v => !!(v && typeof v === 'object' && !Array.isArray(v) && (v.from || v.until));
+const inPeriod = v => (!v.from || BJ_DATE >= v.from) && (!v.until || BJ_DATE <= v.until);
+function pickCandidate(arr){
+  const dated = arr.filter(isDated);
+  let pick = dated.length ? dated.filter(inPeriod)[0] : arr[0];
+  if (pick === undefined) pick = arr.filter(v => !isDated(v))[0];
+  if (pick === undefined) return EMPTY;
+  return (pick && typeof pick === 'object' && !Array.isArray(pick) && 'value' in pick) ? pick.value : pick;
+}
+function materialize(node){
+  if (Array.isArray(node)){
+    if (node.some(isDated)){
+      const v = pickCandidate(node);
+      return v === EMPTY ? EMPTY : materialize(v);
+    }
+    for (let i = 0; i < node.length; i++) node[i] = materialize(node[i]);
+    return node;
+  }
+  if (node && typeof node === 'object'){
+    for (const k in node){
+      const v = materialize(node[k]);
+      if (v === EMPTY) delete node[k]; else node[k] = v;
+      if (k === 'from' || k === 'until') delete node[k];
+    }
+  }
+  return node;
+}
+materialize(DATA);
+
 const USD_CNY = DATA.usd_to_cny;
 const COMP = DATA.components || {};
 /* 基准权重（1:30:0.2）：输入侧分量（input / cache_write*）统一对 input 基准比较 */

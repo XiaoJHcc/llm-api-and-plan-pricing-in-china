@@ -272,19 +272,19 @@
       "plans": {
         "Lite": {
           "fee": 39,
-          "quota_weekly": 2500
+          "quota_monthly": 11500
         },
         "Essential": {
           "fee": 79,
-          "quota_weekly": 5625
+          "quota_monthly": 25500
         },
         "Standard": {
           "fee": 139,
-          "quota_weekly": 10000
+          "quota_monthly": 45000
         },
         "Pro": {
           "fee": 499,
-          "quota_weekly": 40000
+          "quota_monthly": 180000
         }
       },
       "models": [
@@ -311,14 +311,14 @@
       "points_channel": "ark_afp",
       "plans": {
         "Small": {
-          "fee": 9.9,
+          "fee": [40, { "value": 9.9, "until": "2026-11-08" }],
           "quota_5h": 2000,
           "quota_weekly": 7000,
           "quota_monthly": 20000,
           "excluded_models": ["Kimi K3"]
         },
         "Medium": {
-          "fee": 49.9,
+          "fee": [200, { "value": 49.9, "until": "2026-11-08" }],
           "quota_5h": 10000,
           "quota_weekly": 35000,
           "quota_monthly": 100000
@@ -387,7 +387,7 @@
             "Qwen 3.7 Plus": 60,
             "Qwen 3.6 Plus": 60,
             "DeepSeek V4 Pro": 15,
-            "DeepSeek V4.1 Flash": 15,
+            "DeepSeek V4.1 Flash": [15, { "value": 60, "until": "2026-09-27" }],
             "DeepSeek V4 Flash": 30,
             "DeepSeek V4 Flash Vision Exp": 15,
             "MiMo-V2.6-Flash": 60,
@@ -852,18 +852,31 @@
       "hit_rate": { "estimated": true },
       "models": {
         "Gemini 3.8 Flash": {
-          "2026 年": {
-            "usd": {
-              "input": 0.75,
-              "cache_hit": 0.075,
-              "output": 3.75
-            },
-            "packy_gemini_slb": {
-              "input": 2.25,
-              "cache_hit": 0.225,
-              "output": 11.25
+          "2026 年": [
+            {
+              "usd": {
+                "input": 0.75,
+                "cache_hit": 0.075,
+                "output": 3.75
+              },
+              "packy_gemini_slb": {
+                "input": 2.25,
+                "cache_hit": 0.225,
+                "output": 11.25
+              },
+              "until": "2026-12-31"
             }
-          }
+          ],
+          "2027 年": [
+            {
+              "usd": {
+                "input": 1.5,
+                "cache_hit": 0.15,
+                "output": 7.5
+              },
+              "from": "2027-01-01"
+            }
+          ]
         }
       },
       "sources": {
@@ -1103,7 +1116,10 @@
               "cache_hit": 20,
               "output": 800
             },
-            "ark_afp": { "input": 125, "cache_hit": 125, "output": 125 }
+            "ark_afp": [
+              { "input": 250, "cache_hit": 250, "output": 250 },
+              { "input": 125, "cache_hit": 125, "output": 125, "until": "2026-09-28" }
+            ]
           },
           "梁文谷": {
             "opencode": {
@@ -1176,11 +1192,9 @@
         "DeepSeek V4 Flash": {
           "标准价格": {
             "ollama": { "input": 0.44, "cache_hit": 0.014, "output": 1.32 },
-            "cny": {
-              "input": 3,
-              "cache_hit": 0.1,
-              "output": 9
-            },
+            "cny": [
+              { "input": 3, "cache_hit": 0.1, "output": 9, "until": "2026-09-10" }
+            ],
             "bailian_credits": {
               "input": 300,
               "cache_hit": 30,
@@ -1545,44 +1559,50 @@
             }
           }
         },
-        "MiMo-V2.5-Pro": {
-          "default": {
-            "cny": {
-              "input": 3,
-              "cache_hit": 0.025,
-              "output": 6
+        "MiMo-V2.5-Pro": [
+          {
+            "default": {
+              "cny": {
+                "input": 3,
+                "cache_hit": 0.025,
+                "output": 6
+              },
+              "opencode": {
+                "input": 0.435,
+                "cache_hit": 0.003625,
+                "output": 0.87
+              },
+              "mimo_credits": {
+                "input": 300000000,
+                "cache_hit": 2500000,
+                "output": 600000000
+              }
             },
-            "opencode": {
-              "input": 0.435,
-              "cache_hit": 0.003625,
-              "output": 0.87
-            },
-            "mimo_credits": {
-              "input": 300000000,
-              "cache_hit": 2500000,
-              "output": 600000000
-            }
+            "until": "2026-10-21"
           }
-        },
-        "MiMo-V2.5": {
-          "default": {
-            "cny": {
-              "input": 1,
-              "cache_hit": 0.02,
-              "output": 2
+        ],
+        "MiMo-V2.5": [
+          {
+            "default": {
+              "cny": {
+                "input": 1,
+                "cache_hit": 0.02,
+                "output": 2
+              },
+              "opencode": {
+                "input": 0.14,
+                "cache_hit": 0.0028,
+                "output": 0.28
+              },
+              "mimo_credits": {
+                "input": 100000000,
+                "cache_hit": 2000000,
+                "output": 200000000
+              }
             },
-            "opencode": {
-              "input": 0.14,
-              "cache_hit": 0.0028,
-              "output": 0.28
-            },
-            "mimo_credits": {
-              "input": 100000000,
-              "cache_hit": 2000000,
-              "output": 200000000
-            }
+            "until": "2026-10-21"
           }
-        }
+        ]
       },
       "sources": {
         "cny": "https://mimo.mi.com/docs/zh-CN/price/pay-as-you-go"
