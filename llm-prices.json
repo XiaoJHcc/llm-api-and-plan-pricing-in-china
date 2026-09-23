@@ -15,11 +15,11 @@
     "output": 0.2
   },
   "channels": {
+    "//": "api = 该渠道自己发布的机器可读端点，与 source 同源，可直接用于定价；外部聚合（models.dev 等）放顶层 api_refs，只作比对。同一个源不要两处都放。",
     "usd": { "label": "美元官方", "kind": "usd" },
     "cny": { "label": "人民币官方", "kind": "cny" },
     "opencode": { "label": "OpenCode", "kind": "usd",
-      "source": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6",
-      "api": "https://models.dev/api.json" },
+      "source": "https://opencode.ai/docs/zh-cn/go/#%E4%BD%BF%E7%94%A8%E9%99%90%E5%88%B6" },
     "ollama": { "label": "Ollama", "kind": "usd",
       "source": "https://ollama.com/pricing",
       "api": "https://ollama.com/v1/models" },
@@ -37,7 +37,7 @@
       "note": "官方以抵扣系数计费（每 10000 tokens 积分消耗），此处统一标准折算为每 1M tokens 积分消耗。缓存命中无优惠，和输入统一计费。" }
   },
   "api_refs": {
-    "//": "以下均为非官方来源，仅维护时供比对发现变动，实际定价仍以各渠道 source 字段指向的官方页面为准。以下仅比对美元，人民币渠道暂无公开 JSON API。",
+    "//": "以下均为外部聚合来源（非定价方自建 api），仅维护时供比对发现变动，实际定价以各渠道 source 页面或其自建 api 为准。以下仅比对美元，人民币渠道暂无公开 JSON API。",
     "models_dev": { "label": "models.dev 全模型价目", "url": "https://models.dev/api.json" },
     "openrouter": { "label": "OpenRouter 模型与价格", "url": "https://openrouter.ai/api/v1/models" }
   },
