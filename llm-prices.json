@@ -49,7 +49,7 @@
       "Opus 5.5",
       "Sonnet 5",
       "GPT 6 Astra",
-      "GPT 5.6 Sol",
+      "GPT 6 Sol",
       "Grok 4.7",
       "Gemini 3.8 Flash",
       "GLM-5.3",
@@ -140,6 +140,8 @@
       },
       "models": [
         "GPT 6 Astra",
+        "GPT 6 Sol",
+        "GPT 6 Luna",
         "GPT 5.6 Sol",
         "GPT 5.6 Terra",
         "GPT 5.6 Luna"
@@ -339,13 +341,16 @@
       "models": [
         "Doubao Seed 2.0 Mini",
         "Doubao Seed 2.0 Lite",
+        "Doubao Seed 2.1 Lite",
         "DeepSeek V4 Flash",
         "GLM-5.3-Flash",
         "Doubao Seed 2.1 Turbo",
+        "Doubao Seed 2.1 Pro",
         "Doubao Seed Evolving",
         "MiniMax M3",
         "GLM-5.3",
         "Kimi K2.7 Code",
+        "Kimi K2.8 Preview",
         "DeepSeek V4 Pro",
         "DeepSeek V4.1 Flash",
         "Kimi K3"
@@ -630,6 +635,54 @@
           },
           "default": {
             "packy_codex_sale": { "input": 5, "cache_write_30min": 6.25, "cache_hit": 0.5, "output": 25 }
+          }
+        },
+        "GPT 6 Sol": {
+          "≤272K": {
+            "usd": {
+              "input": 2,
+              "cache_write_30min": 2.5,
+              "cache_hit": 0.2,
+              "output": 10
+            },
+            "packy_codex_sale": {
+              "input": 1,
+              "cache_write_30min": 1.25,
+              "cache_hit": 0.1,
+              "output": 5
+            }
+          },
+          ">272K": {
+            "usd": {
+              "input": 4,
+              "cache_write_30min": 5,
+              "cache_hit": 0.4,
+              "output": 15
+            },
+            "packy_codex_sale": {
+              "input": 2,
+              "cache_write_30min": 2.5,
+              "cache_hit": 0.2,
+              "output": 7.5
+            }
+          }
+        },
+        "GPT 6 Luna": {
+          "≤272K": {
+            "usd": {
+              "input": 0.1,
+              "cache_write_30min": 0.125,
+              "cache_hit": 0.01,
+              "output": 0.5
+            }
+          },
+          ">272K": {
+            "usd": {
+              "input": 0.2,
+              "cache_write_30min": 0.25,
+              "cache_hit": 0.02,
+              "output": 0.75
+            }
           }
         },
         "GPT 5.6 Sol": {
@@ -1043,7 +1096,11 @@
               "input": 6.5,
               "cache_hit": 1.3,
               "output": 27
-            }
+            },
+            "ark_afp": [
+              { "input": 800, "cache_hit": 800, "output": 800 },
+              { "input": 480, "cache_hit": 480, "output": 480, "until": "2026-09-30" }
+            ]
           }
         },
         "Kimi K2.7 Code": {
@@ -1613,6 +1670,15 @@
       "weights_note": "估算值，未经实测",
       "hit_rate": { "estimated": true },
       "models": {
+        "Doubao Seed 2.1 Pro": {
+          "default": {
+            "cny": {
+              "input": 6,
+              "cache_hit": 1.2,
+              "output": 30
+            }
+          }
+        },
         "Doubao Seed 2.1 Turbo": {
           "default": {
             "cny": {
@@ -1631,6 +1697,15 @@
               "output": 30
             },
             "ark_afp": { "input": 250, "cache_hit": 250, "output": 250 }
+          }
+        },
+        "Doubao Seed 2.1 Lite": {
+          "default": {
+            "cny": {
+              "input": 0.8,
+              "cache_hit": 0.16,
+              "output": 2.7
+            }
           }
         },
         "Doubao Seed 2.0 Lite": {
