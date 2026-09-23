@@ -157,30 +157,30 @@
       "type": "money_quota",
       "billing": "unified_quota",
       "plans": {
-        "Andante": {
+        "Go": {
           "fee": 49,
           "quota_5h": 32.5,
           "quota_weekly": 162.5,
           "quota_monthly": 696.43,
           "excluded_models": ["Kimi K3"]
         },
-        "Moderato": {
+        "Plus": {
           "fee": 99,
           "quota_5h": 65,
           "quota_weekly": 325,
           "quota_monthly": 1392.86
         },
-        "Allegretto": {
+        "Pro": {
           "fee": 199,
           "quota_5h": 130,
           "quota_weekly": 650,
           "quota_monthly": 2785.71
         },
-        "Allegro": {
+        "Max": {
           "fee": 699,
-          "quota_5h": 325,
-          "quota_weekly": 1625,
-          "quota_monthly": 6964.29
+          "quota_5h": 455,
+          "quota_weekly": 2275,
+          "quota_monthly": 9750.02
         }
       },
       "models": [
@@ -192,8 +192,7 @@
       "notes": [
         {"kind": "good", "label": "额度一致", "text": "官方未明确额度，但可根据用量百分比反推，且据观察不会随机浮动。"},
         {"kind": "info", "label": "额度来源", "text": "来自 2026 年 8 月个人 Kimi 订阅用量反推，准确度较高。但未经官方验证。", "hover": "额度来自个人用量反推，未经官方验证"},
-        {"kind": "warn", "label": "特殊限制", "text": "Andante 不含 K3，Moderato 可用 K3 但仅 256K 上下文。"},
-        {"kind": "warn", "label": "缺货", "text": "暂未恢复订阅购买，仅老用户可续费。"}
+        {"kind": "warn", "label": "特殊限制", "text": "Go 不含 K3，Plus 可用 K3 但仅 256K 上下文。"}
       ],
       "priceOverrideNotes": {
         "Kimi K2.8 Preview": "API 未上线，¥ 官方价为按 K2.7 Code 同价的估算值"

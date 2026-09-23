@@ -128,7 +128,7 @@
 | `fee` | 月费（币种同订阅 `currency`） |
 | `quota_5h` / `quota_weekly` / `quota_monthly` | 各口径额度，只填官方规定的；月额度缺失时前端按周额度推导「等效月额度」 |
 | `quota_monthly_by_model` | 各模型额度不同时（OpenCode Go）逐模型给出，优先级高于 `quota_monthly` |
-| `excluded_models` | 该档不适用该模型 → 该行该列不出值（如 Andante 不含 K3） |
+| `excluded_models` | 该档不适用该模型 → 该行该列不出值（如 Kimi 的 Go 档不含 K3） |
 
 `priceOverrides`（按模型覆盖标价）代码已支持但当前无数据；Kimi 用的是 `priceOverrideNotes`（只在浮窗里说明「同价估算」这类口径）。
 
