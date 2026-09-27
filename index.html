@@ -333,22 +333,29 @@ details .body{padding:2px var(--pad-x) 18px}
 .ptab > .pt-side:first-child th:first-child,.ptab > .pt-side:first-child td:first-child{width:104px;min-width:104px;padding-left:var(--pad-x)}
 .ptab > .pt-side:first-child th:nth-child(2),.ptab > .pt-side:first-child td:nth-child(2){width:96px;min-width:96px}
 .ptab > .pt-side:last-child th,.ptab > .pt-side:last-child td{width:120px;min-width:120px;padding-right:var(--pad-x)}
-/* 卡脚：结构化补充信息 —— icon + 类型 + 正文 + 可选链接；绿/灰/黄区分信息倾向；
+/* 卡脚：结构化补充信息 —— 每条注释是柔和的提示条：极淡的倾向色底，无描边；
+   正文随 绿/灰/黄 倾向着色（color-mix 派生，深浅主题自适应）；
    flex:1 吸收卡片等高产生的多余高度，适用模型行锚定底部保持跨卡对齐 */
 .pcf{border-top:1px solid var(--line);background:var(--head);padding:var(--sp-3) var(--pad-x) 14px;display:flex;flex-direction:column;gap:var(--sp-2);flex:1}
-.pnote{display:flex;gap:var(--sp-2);align-items:flex-start;font-size:var(--fs-sm);line-height:1.55}
-.pnote .pi{flex:none;width:16px;height:16px;margin-top:2px;border-radius:var(--r-sm);display:inline-flex;align-items:center;
+.pnote{display:flex;gap:var(--sp-2);align-items:flex-start;padding:var(--sp-2);border-radius:var(--r-sm);
+  background:var(--card);font-size:var(--fs-sm);line-height:1.5}
+/* 图标小方块边长 = 行高（1.5em），与首行文字等高对齐 */
+.pnote .pi{flex:none;width:1.5em;height:1.5em;border-radius:var(--r-xs);display:inline-flex;align-items:center;
   justify-content:center;font-size:var(--fs-xs);font-weight:800;font-style:normal}
 .pnote .pnt{flex:1;min-width:0}
 .pnote .pl{font-weight:750;margin-right:2px}
 .pnote .pl::after{content:'：';font-weight:400}
-.pnote .px{color:var(--muted)}
 .n-info .pi{background:var(--ref-2);color:var(--muted)}
 .n-info .pl{color:var(--muted)}
-.n-good .pi{background:color-mix(in srgb,var(--ok) 12%,transparent);color:var(--ok)}
+.n-info .px{color:var(--muted)}
+.n-good{background:color-mix(in srgb,var(--ok) 6%,transparent)}
+.n-good .pi{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
 .n-good .pl{color:var(--ok)}
-.n-warn .pi{background:color-mix(in srgb,var(--warn) 13%,transparent);color:var(--warn)}
+.n-good .px{color:color-mix(in srgb,var(--ok) 42%,var(--ink))}
+.n-warn{background:color-mix(in srgb,var(--warn) 7%,transparent)}
+.n-warn .pi{background:color-mix(in srgb,var(--warn) 17%,transparent);color:var(--warn)}
 .n-warn .pl{color:var(--warn)}
+.n-warn .px{color:color-mix(in srgb,var(--warn) 42%,var(--ink))}
 /* 提示内的参考链接：明确的胶囊触发区，默认不抢眼 */
 .pnl{display:inline-flex;align-items:center;gap:2px;margin-left:var(--sp-2);padding:var(--pad-pill);border-radius:var(--r-pill);border:1px solid var(--line);
   background:var(--card);font-size:var(--fs-xs);font-weight:600;color:var(--faint);white-space:nowrap;vertical-align:1px;transition:all .12s}

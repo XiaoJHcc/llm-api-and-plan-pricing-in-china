@@ -42,7 +42,7 @@
     "openrouter": { "label": "OpenRouter 模型与价格", "url": "https://openrouter.ai/api/v1/models" }
   },
   "usd_to_cny": 6.71,
-  "updated": "2026.9.23",
+  "updated": "2026.9.27",
   "filter_defaults": {
     "models": [
       "Fable 5.1",
@@ -268,7 +268,7 @@
     "百炼 Token Plan": {
       "currency": "CNY",
       "type": "points",
-      "billing": "unified_points",
+      "billing": "per_model_points",
       "points_channel": "bailian_credits",
       "plans": {
         "Lite": {
@@ -301,7 +301,7 @@
       ],
       "notes": [
         {"kind": "info", "label": "换算来源", "text": "积分与人民币的换算关系，来自早期 Qwen 3.6 Plus 消耗示例反推。", "link": "https://www.aliyunbaike.com/tokenplan/"},
-        {"kind": "warn", "label": "私有部署", "text": "百炼 Token Plan 仅包含阿里云私有部署的模型，（千问以外的）模型速度较慢，新模型上线不及时。哪怕官方下线 V4 Pro、GLM-5.2 后，你仍可在百炼体验老旧模型风味。"}
+        {"kind": "warn", "label": "私有部署", "text": "阿里云私有部署的 DeepSeek 模型速度显著较慢、新版本上线不及时、缓存命中计费较高，无性价比。"}
       ],
       "source": "https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model&url=3028856"
     },
@@ -356,7 +356,8 @@
       ],
       "notes": [
         {"kind": "good", "label": "积分透明", "text": "官方明确了各模型抵扣系数。"},
-        {"kind": "warn", "label": "无缓存优惠", "text": "无缓存命中优惠，所有输入统一计费。缓存命中率高的编码任务、缓存价格低的模型（例如 DeepSeek）在火山性价比严重偏低，建议反向使用（推荐 GLM 系列）。"}
+        {"kind": "warn", "label": "不适合编程任务", "text": "无缓存命中优惠，所有输入统一计费。高级别订阅的编程性价比不如原价 API，低级别订阅 5 小时限额不足以完成编程任务。"},
+        {"kind": "good", "label": "适合聊天机器人", "text": "适合聊天、翻译、生图、TTS 等短流程任务。9.9 元入门搭建聊天机器人。"}
       ],
       "source": "https://www.volcengine.com/docs/82379/2366394"
     },
@@ -441,7 +442,8 @@
       ],
       "notes": [
         {"kind": "good", "label": "额度透明", "text": "官方明确了额度倍率。"},
-        {"kind": "warn", "label": "出尔反尔", "text": "在未通告的情况下，大幅降低 DeepSeek 额度（从 $120 降至 $15）。"}
+        {"kind": "good", "label": "尝鲜", "text": "所有发布的新模型都及时上线，且有许多测试模型可抢先体验。"},
+        {"kind": "warn", "label": "出尔反尔", "text": "曾在未通告的情况下，大幅降低 DeepSeek 额度（从 $120 降至 $15）。后续的所谓永久 $60 额度建议自行判断可用性。"}
       ],
       "source": "https://opencode.ai/docs/zh-cn/go/"
     },
