@@ -23,6 +23,9 @@
     "ollama": { "label": "Ollama", "kind": "usd",
       "source": "https://ollama.com/pricing",
       "api": "https://ollama.com/v1/models" },
+    "commandcode": { "label": "Command Code", "kind": "usd",
+      "source": "https://commandcode.ai/pricing",
+      "api": "https://api.commandcode.ai/provider/v1/models" },
     "glm_coding_points": { "label": "GLM 积分", "kind": "point",
       "source": "https://docs.bigmodel.cn/cn/coding-plan/overview",
       "note": "官方以抵扣系数计费（每 10000 tokens 积分消耗），此处统一标准折算为每 1M tokens 积分消耗" },
@@ -42,7 +45,7 @@
     "openrouter": { "label": "OpenRouter 模型与价格", "url": "https://openrouter.ai/api/v1/models" }
   },
   "usd_to_cny": 6.71,
-  "updated": "2026.9.27",
+  "updated": "2026.9.29",
   "filter_defaults": {
     "models": [
       "Fable 5.1",
@@ -70,7 +73,8 @@
       "sub:百炼 Token Plan",
       "sub:火山 Agent Plan",
       "sub:OpenCode Go",
-      "sub:Ollama Cloud"
+      "sub:Ollama Cloud",
+      "sub:Command Code"
     ]
   },
   "billing_types": {
@@ -450,7 +454,7 @@
     "Ollama Cloud": {
       "currency": "USD",
       "type": "money_quota",
-      "billing": "unified_quota",
+      "billing": "per_model_quota",
       "price_channel": "ollama",
       "plans": {
         "Pro": {
@@ -482,6 +486,171 @@
         {"kind": "info", "label": "私有部署", "text": "DeepSeek 为私有部署，新模型上线较官方延迟 1-2 天，但仍比百炼及时。"}
       ],
       "source": "https://ollama.com/blog/transparent-pricing"
+    },
+    "Command Code": {
+      "currency": "USD",
+      "type": "money_quota",
+      "billing": "per_model_quota",
+      "price_channel": "commandcode",
+      "plans": {
+        "Go": {
+          "fee": 1,
+          "quota_5h": 3,
+          "quota_weekly": 6,
+          "quota_monthly": 10,
+          "excluded_models": [
+            "Sonnet 5",
+            "Haiku 4.5",
+            "GPT 6 Sol",
+            "GPT 5.6 Terra",
+            "GPT 5.6 Sol",
+            "Grok 4.7",
+            "Grok 4.6",
+            "Gemini 3.8 Flash"
+          ]
+        },
+        "GOAT": {
+          "fee": 10,
+          "quota_5h": 14,
+          "quota_weekly": 35,
+          "quota_monthly": 70,
+          "quota_monthly_by_model": {
+            "GPT 5.6 Sol": 70,
+            "GLM-5.2": 70,
+            "Hy3": 70,
+            "Kimi K2.7 Code": 60,
+            "DeepSeek V4 Flash": 60,
+            "DeepSeek V4.1 Flash": 60,
+            "LongCat-2.0": 50,
+            "MiniMax M3": 47,
+            "GLM-5.3-Flash": 40,
+            "Gemini 3.8 Flash": 40,
+            "Qwen 3.7 Max": 33,
+            "Qwen 3.7 Plus": 33,
+            "Qwen 3.6 Plus": 33,
+            "MiMo-V2.5": 30,
+            "GPT 5.6 Luna": 20,
+            "GPT 6 Luna": 20,
+            "Qwen 3.8 Max": 20,
+            "Qwen 3.8 Flash": 20,
+            "DeepSeek V4 Pro": 20,
+            "MiMo-V2.5-Pro": 20,
+            "MiMo-V2.6-Pro": 20,
+            "MiMo-V2.6-Flash": 20,
+            "GLM-5.3": 20,
+            "Kimi K3": 20,
+            "Grok 4.7": [
+              20,
+              { "value": 35, "from": "2026-09-21", "until": "2026-09-27" }
+            ],
+            "Grok 4.6": 20,
+            "Grok 4.5": 20,
+            "Hy4 Preview": 20,
+            "Muse Spark 1.3 Contributor": 20,
+            "Muse Spark 1.2 Contributor": 20,
+            "Kimi K2.6": 20,
+            "GLM-5.1": 20,
+            "MiniMax M2.7": 20,
+            "MiniMax M2.5": 20
+          },
+          "excluded_models": [
+            "Sonnet 5",
+            "Haiku 4.5",
+            "GPT 6 Sol",
+            "GPT 5.6 Terra"
+          ]
+        },
+        "Pro": {
+          "fee": 20,
+          "quota_5h": 16,
+          "quota_weekly": 40,
+          "quota_monthly": 80,
+          "quota_monthly_by_model": {
+            "GPT 5.6 Sol": 80,
+            "GLM-5.2": 80,
+            "Hy3": 80,
+            "Kimi K2.7 Code": 70,
+            "DeepSeek V4 Flash": 70,
+            "DeepSeek V4.1 Flash": 70,
+            "LongCat-2.0": 60,
+            "MiniMax M3": 57,
+            "GLM-5.3-Flash": 50,
+            "Gemini 3.8 Flash": 50,
+            "Qwen 3.7 Max": 43,
+            "Qwen 3.7 Plus": 43,
+            "Qwen 3.6 Plus": 43,
+            "MiMo-V2.5": 40,
+            "GPT 5.6 Luna": 30,
+            "GPT 6 Luna": 30,
+            "Qwen 3.8 Max": 30,
+            "Qwen 3.8 Flash": 30,
+            "DeepSeek V4 Pro": 30,
+            "MiMo-V2.5-Pro": 30,
+            "MiMo-V2.6-Pro": 30,
+            "MiMo-V2.6-Flash": 30,
+            "GLM-5.3": 30,
+            "Kimi K3": 30,
+            "Grok 4.7": [
+              30,
+              { "value": 45, "from": "2026-09-21", "until": "2026-09-27" }
+            ],
+            "Grok 4.6": 30,
+            "Grok 4.5": 30,
+            "Hy4 Preview": 30,
+            "Muse Spark 1.3 Contributor": 30,
+            "Muse Spark 1.2 Contributor": 30,
+            "Kimi K2.6": 30,
+            "GLM-5.1": 30,
+            "MiniMax M2.7": 30,
+            "MiniMax M2.5": 30,
+            "Sonnet 5": 20,
+            "Haiku 4.5": 20,
+            "GPT 6 Sol": 20,
+            "GPT 5.6 Terra": 20
+          }
+        }
+      },
+      "models": [
+        "Sonnet 5",
+        "Haiku 4.5",
+        "GPT 6 Sol",
+        "GPT 6 Luna",
+        "GPT 5.6 Sol",
+        "GPT 5.6 Terra",
+        "GPT 5.6 Luna",
+        "Grok 4.7",
+        "Grok 4.6",
+        "Grok 4.5",
+        "Gemini 3.8 Flash",
+        "GLM-5.3",
+        "GLM-5.3-Flash",
+        "GLM-5.2",
+        "GLM-5.1",
+        "Kimi K3",
+        "Kimi K2.7 Code",
+        "Kimi K2.6",
+        "DeepSeek V4.1 Flash",
+        "DeepSeek V4 Pro",
+        "DeepSeek V4 Flash",
+        "Qwen 3.8 Max",
+        "Qwen 3.8 Flash",
+        "Qwen 3.7 Max",
+        "Qwen 3.7 Plus",
+        "Qwen 3.6 Plus",
+        "Hy4 Preview",
+        "Hy3",
+        "MiniMax M3",
+        "MiniMax M2.7",
+        "MiniMax M2.5",
+        "MiMo-V2.6-Pro",
+        "MiMo-V2.6-Flash",
+        "MiMo-V2.5-Pro",
+        "MiMo-V2.5",
+        "LongCat-2.0",
+        "Muse Spark 1.3 Contributor",
+        "Muse Spark 1.2 Contributor"
+      ],
+      "source": "https://commandcode.ai/docs/resources/pricing-limits"
     }
   },
   "resellers": {
@@ -571,6 +740,7 @@
         },
         "Sonnet 5": {
           "default": {
+            "commandcode": { "input": 2, "cache_write_5min": 2.5, "cache_hit": 0.2, "output": 10 },
             "usd": {
               "input": 2,
               "cache_write_5min": 2.5,
@@ -588,6 +758,7 @@
         },
         "Haiku 4.5": {
           "default": {
+            "commandcode": { "input": 1, "cache_write_5min": 1.25, "cache_hit": 0.1, "output": 5 },
             "usd": {
               "input": 1,
               "cache_write_5min": 1.25,
@@ -640,6 +811,7 @@
         },
         "GPT 6 Sol": {
           "≤272K": {
+            "commandcode": { "input": 2, "cache_write_30min": 2.5, "cache_hit": 0.2, "output": 10 },
             "usd": {
               "input": 2,
               "cache_write_30min": 2.5,
@@ -654,6 +826,7 @@
             }
           },
           ">272K": {
+            "commandcode": { "input": 4, "cache_write_30min": 5, "cache_hit": 0.4, "output": 15 },
             "usd": {
               "input": 4,
               "cache_write_30min": 5,
@@ -670,6 +843,7 @@
         },
         "GPT 6 Luna": {
           "≤272K": {
+            "commandcode": { "input": 0.1, "cache_write_30min": 0.125, "cache_hit": 0.01, "output": 0.5 },
             "usd": {
               "input": 0.1,
               "cache_write_30min": 0.125,
@@ -678,6 +852,7 @@
             }
           },
           ">272K": {
+            "commandcode": { "input": 0.2, "cache_write_30min": 0.25, "cache_hit": 0.02, "output": 0.75 },
             "usd": {
               "input": 0.2,
               "cache_write_30min": 0.25,
@@ -688,6 +863,7 @@
         },
         "GPT 5.6 Sol": {
           "≤272K": {
+            "commandcode": { "input": 5, "cache_write_30min": 6.25, "cache_hit": 0.5, "output": 30 },
             "usd": {
               "input": 4,
               "cache_write_30min": 5,
@@ -702,6 +878,7 @@
             }
           },
           ">272K": {
+            "commandcode": { "input": 10, "cache_write_30min": 12.5, "cache_hit": 1, "output": 45 },
             "usd": {
               "input": 8,
               "cache_write_30min": 10,
@@ -718,6 +895,7 @@
         },
         "GPT 5.6 Terra": {
           "≤272K": {
+            "commandcode": { "input": 2, "cache_write_30min": 2.5, "cache_hit": 0.2, "output": 12 },
             "usd": {
               "input": 2,
               "cache_write_30min": 2.5,
@@ -726,6 +904,7 @@
             }
           },
           ">272K": {
+            "commandcode": { "input": 4, "cache_write_30min": 5, "cache_hit": 0.4, "output": 18 },
             "usd": {
               "input": 4,
               "cache_write_30min": 5,
@@ -736,6 +915,7 @@
         },
         "GPT 5.6 Luna": {
           "≤272K": {
+            "commandcode": { "input": 0.2, "cache_write_30min": 0.25, "cache_hit": 0.02, "output": 1.2 },
             "usd": {
               "input": 0.2,
               "cache_write_30min": 0.25,
@@ -750,6 +930,7 @@
             }
           },
           ">272K": {
+            "commandcode": { "input": 0.4, "cache_write_30min": 0.5, "cache_hit": 0.04, "output": 1.8 },
             "usd": {
               "input": 0.4,
               "cache_write_30min": 0.5,
@@ -780,6 +961,10 @@
       "models": {
         "Grok 4.7": {
           "≤200K": {
+            "commandcode": [
+              { "input": 2, "cache_hit": 0.5, "output": 6 },
+              { "input": 1.2, "cache_hit": 0.3, "output": 3.6, "from": "2026-09-21", "until": "2026-09-27" }
+            ],
             "usd": {
               "input": 2,
               "cache_hit": 0.5,
@@ -797,6 +982,10 @@
             }
           },
           ">200K": {
+            "commandcode": [
+              { "input": 4, "cache_hit": 1, "output": 12 },
+              { "input": 2.4, "cache_hit": 0.6, "output": 7.2, "from": "2026-09-21", "until": "2026-09-27" }
+            ],
             "usd": {
               "input": 4,
               "cache_hit": 1,
@@ -816,6 +1005,7 @@
         },
         "Grok 4.6": {
           "≤200K": {
+            "commandcode": { "input": 2, "cache_hit": 0.5, "output": 6 },
             "usd": {
               "input": 2,
               "cache_hit": 0.5,
@@ -828,6 +1018,7 @@
             }
           },
           ">200K": {
+            "commandcode": { "input": 4, "cache_hit": 1, "output": 12 },
             "usd": {
               "input": 4,
               "cache_hit": 1,
@@ -849,6 +1040,7 @@
         },
         "Grok 4.5": {
           "≤200K": {
+            "commandcode": { "input": 2, "cache_hit": 0.5, "output": 6 },
             "usd": {
               "input": 2,
               "cache_hit": 0.3,
@@ -861,6 +1053,7 @@
             }
           },
           ">200K": {
+            "commandcode": { "input": 2, "cache_hit": 0.5, "output": 6 },
             "usd": {
               "input": 4,
               "cache_hit": 0.6,
@@ -890,6 +1083,7 @@
         "Gemini 3.8 Flash": {
           "2026 年": [
             {
+              "commandcode": { "input": 1.5, "cache_hit": 0.15, "output": 7.5 },
               "usd": {
                 "input": 0.75,
                 "cache_hit": 0.075,
@@ -905,6 +1099,7 @@
           ],
           "2027 年": [
             {
+              "commandcode": { "input": 1.5, "cache_hit": 0.15, "output": 7.5 },
               "usd": {
                 "input": 1.5,
                 "cache_hit": 0.15,
@@ -936,6 +1131,7 @@
       "models": {
         "GLM-5.3": {
           "default": {
+            "commandcode": { "input": 1.4, "cache_hit": 0.26, "output": 4.4 },
             "opencode": {
               "input": 1.4,
               "cache_hit": 0.26,
@@ -970,6 +1166,7 @@
         },
         "GLM-5.3-Flash": {
           "default": {
+            "commandcode": { "input": 0.15, "cache_hit": 0.03, "output": 0.5 },
             "opencode": {
               "input": 0.15,
               "cache_hit": 0.03,
@@ -999,6 +1196,7 @@
         },
         "GLM-5.2": {
           "default": {
+            "commandcode": { "input": 1.4, "cache_hit": 0.26, "output": 4.4 },
             "opencode": {
               "input": 1.4,
               "cache_hit": 0.26,
@@ -1020,6 +1218,7 @@
         },
         "GLM-5.1": {
           "default": {
+            "commandcode": { "input": 1.4, "cache_hit": 0.26, "output": 4.4 },
             "opencode": {
               "input": 1.4,
               "cache_hit": 0.26,
@@ -1058,6 +1257,7 @@
       "models": {
         "Kimi K3": {
           "default": {
+            "commandcode": { "input": 3, "cache_hit": 0.3, "output": 15 },
             "opencode": {
               "input": 3,
               "cache_hit": 0.3,
@@ -1088,6 +1288,7 @@
         },
         "Kimi K2.7 Code": {
           "default": {
+            "commandcode": { "input": 0.95, "cache_hit": 0.19, "output": 4 },
             "opencode": {
               "input": 0.95,
               "cache_hit": 0.19,
@@ -1104,6 +1305,7 @@
         },
         "Kimi K2.6": {
           "default": {
+            "commandcode": { "input": 0.95, "cache_hit": 0.16, "output": 4 },
             "opencode": {
               "input": 0.95,
               "cache_hit": 0.16,
@@ -1140,6 +1342,7 @@
       "models": {
         "DeepSeek V4.1 Flash": {
           "标准价格": {
+            "commandcode": { "input": 0.3, "cache_hit": 0.006, "output": 1.2 },
             "opencode": {
               "input": 0.30,
               "cache_hit": 0.006,
@@ -1162,6 +1365,7 @@
             ]
           },
           "梁文谷": {
+            "commandcode": { "input": 0.15, "cache_hit": 0.003, "output": 0.6 },
             "opencode": {
               "input": 0.15,
               "cache_hit": 0.003,
@@ -1186,6 +1390,7 @@
         },
         "DeepSeek V4 Pro": {
           "标准价格": {
+            "commandcode": { "input": 1.32, "cache_hit": 0.044, "output": 3.96 },
             "opencode": {
               "input": 1.32,
               "cache_hit": 0.044,
@@ -1206,6 +1411,7 @@
             "packy_deepseek_sale": { "input": 4.5, "cache_hit": 0.15, "output": 13.5 }
           },
           "梁文谷": {
+            "commandcode": { "input": 0.66, "cache_hit": 0.022, "output": 1.98 },
             "opencode": {
               "input": 0.66,
               "cache_hit": 0.022,
@@ -1231,6 +1437,7 @@
         },
         "DeepSeek V4 Flash": {
           "标准价格": {
+            "commandcode": { "input": 0.3, "cache_hit": 0.006, "output": 1.2 },
             "ollama": { "input": 0.44, "cache_hit": 0.014, "output": 1.32 },
             "cny": [
               { "input": 3, "cache_hit": 0.1, "output": 9, "until": "2026-09-10" }
@@ -1244,6 +1451,7 @@
             "packy_deepseek_sale": { "input": 1, "cache_hit": 0.02, "output": 4 }
           },
           "梁文谷": {
+            "commandcode": { "input": 0.15, "cache_hit": 0.003, "output": 0.6 },
             "packy_deepseek_sale": { "input": 0.5, "cache_hit": 0.01, "output": 2 }
           },
           "Ollama 谷时": {
@@ -1279,6 +1487,7 @@
       "models": {
         "Qwen 3.8 Max": {
           "default": {
+            "commandcode": { "input": 2, "cache_write": 2.5, "cache_hit": 0.25, "output": 6 },
             "opencode": {
               "input": 2,
               "cache_write": 2.5,
@@ -1310,6 +1519,7 @@
         },
         "Qwen 3.8 Flash": {
           "default": {
+            "commandcode": { "input": 0.16, "cache_write": 0.16, "cache_hit": 0.016, "output": 0.47 },
             "opencode": {
               "input": 0.15,
               "cache_write": 0.2,
@@ -1341,6 +1551,7 @@
         },
         "Qwen 3.7 Max": {
           "default": {
+            "commandcode": { "input": 2.5, "cache_write": 3.13, "cache_hit": 0.5, "output": 7.5 },
             "opencode": {
               "input": 2.5,
               "cache_hit": 0.5,
@@ -1364,6 +1575,7 @@
         },
         "Qwen 3.7 Plus": {
           "≤256K": {
+            "commandcode": { "input": 0.4, "cache_write": 0.5, "cache_hit": 0.08, "output": 1.6 },
             "opencode": {
               "input": 0.4,
               "cache_write": 0.5,
@@ -1385,6 +1597,7 @@
             "packy_bailian": { "input": 1, "cache_hit": 0.2, "output": 4 }
           },
           ">256K": {
+            "commandcode": { "input": 1.2, "cache_write": 1.5, "cache_hit": 0.24, "output": 4.8 },
             "opencode": {
               "input": 1.2,
               "cache_write": 1.5,
@@ -1408,6 +1621,7 @@
         },
         "Qwen 3.6 Plus": {
           "≤256K": {
+            "commandcode": { "input": 0.5, "cache_write": 0.5, "cache_hit": 0.1, "output": 3 },
             "opencode": {
               "input": 0.5,
               "cache_write": 0.625,
@@ -1423,6 +1637,7 @@
             "packy_bailian": { "input": 1, "cache_hit": 0.1, "output": 6 }
           },
           ">256K": {
+            "commandcode": { "input": 2, "cache_write": 2, "cache_hit": 0.2, "output": 6 },
             "opencode": {
               "input": 2.0,
               "cache_write": 2.5,
@@ -1450,6 +1665,7 @@
       "models": {
         "Hy4 Preview": {
           "default": {
+            "commandcode": { "input": 0.834, "cache_hit": 0.042, "output": 2.501 },
             "opencode": {
               "input": 0.834,
               "cache_hit": 0.042,
@@ -1464,6 +1680,7 @@
         },
         "Hy3": {
           "default": {
+            "commandcode": { "input": 0.14, "cache_hit": 0.035, "output": 0.58 },
             "opencode": {
               "input": 0.14,
               "cache_hit": 0.035,
@@ -1488,6 +1705,7 @@
       "models": {
         "MiniMax M3": {
           "≤512K": {
+            "commandcode": { "input": 0.3, "cache_hit": 0.06, "output": 1.2 },
             "cny": {
               "input": 2.1,
               "cache_hit": 0.42,
@@ -1502,6 +1720,7 @@
             "ark_afp": { "input": 250, "cache_hit": 250, "output": 250 }
           },
           ">512K": {
+            "commandcode": { "input": 0.3, "cache_hit": 0.06, "output": 1.2 },
             "cny": {
               "input": 4.2,
               "cache_hit": 0.84,
@@ -1518,6 +1737,7 @@
         },
         "MiniMax M2.7": {
           "default": {
+            "commandcode": { "input": 0.3, "cache_hit": 0.06, "output": 1.2 },
             "opencode": {
               "input": 0.3,
               "cache_hit": 0.06,
@@ -1536,6 +1756,7 @@
         },
         "MiniMax M2.5": {
           "default": {
+            "commandcode": { "input": 0.3, "cache_hit": 0.03, "output": 1.2 },
             "opencode": {
               "input": 0.3,
               "cache_hit": 0.06,
@@ -1563,6 +1784,7 @@
       "models": {
         "MiMo-V2.6-Pro": {
           "default": {
+            "commandcode": { "input": 0.435, "cache_hit": 0.0036, "output": 0.87 },
             "cny": {
               "input": 3,
               "cache_hit": 0.025,
@@ -1582,6 +1804,7 @@
         },
         "MiMo-V2.6-Flash": {
           "default": {
+            "commandcode": { "input": 0.14, "cache_hit": 0.0028, "output": 0.28 },
             "cny": {
               "input": 1,
               "cache_hit": 0.02,
@@ -1602,6 +1825,7 @@
         "MiMo-V2.5-Pro": [
           {
             "default": {
+              "commandcode": { "input": 0.435, "cache_hit": 0.0036, "output": 0.87 },
               "cny": {
                 "input": 3,
                 "cache_hit": 0.025,
@@ -1624,6 +1848,7 @@
         "MiMo-V2.5": [
           {
             "default": {
+              "commandcode": { "input": 0.14, "cache_hit": 0.0028, "output": 0.28 },
               "cny": {
                 "input": 1,
                 "cache_hit": 0.02,
@@ -1752,6 +1977,7 @@
       "models": {
         "LongCat-2.0": {
           "default": {
+            "commandcode": { "input": 0.3, "cache_hit": 0.006, "output": 1.2 },
             "opencode": {
               "input": 0.3,
               "cache_hit": 0.006,
@@ -1765,6 +1991,7 @@
       "models": {
         "Muse Spark 1.3 Contributor": {
           "default": {
+            "commandcode": { "input": 0.1, "cache_hit": 0.002, "output": 0.2 },
             "opencode": {
               "input": 0.1,
               "cache_hit": 0.002,
@@ -1774,6 +2001,7 @@
         },
         "Muse Spark 1.2 Contributor": {
           "default": {
+            "commandcode": { "input": 0.1, "cache_hit": 0.002, "output": 0.2 },
             "opencode": {
               "input": 0.1,
               "cache_hit": 0.002,
