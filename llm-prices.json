@@ -138,9 +138,9 @@
           "fee": 100,
           "quota_weekly": 350
         },
-        "Pro 20x": {
+        "Pro 10x": {
           "fee": 200,
-          "quota_weekly": 1300
+          "quota_weekly": 700
         }
       },
       "models": [
@@ -775,6 +775,9 @@
         "GPT 6 Astra",
         "Qwen 3.7 Flash",
         "DeepSeek V4 Flash Vision Exp"
+      ],
+      "notes": [
+        {"kind": "warn", "label": "不支持 API 调用", "text": "仅在 Command Code 中使用，如果需要在其他软件中使用，需要自行使用特殊手段反代。"}
       ],
       "source": "https://commandcode.ai/docs/resources/pricing-limits"
     }

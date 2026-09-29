@@ -263,6 +263,8 @@ table.tt-t{width:100%;border-collapse:collapse}
 .tnote.good{color:var(--tip-good)}
 .tt-t td.hi{color:var(--tip-warn)}
 .tt-t td.lo{color:var(--tip-good)}
+/* 筛选联动：浮窗里未勾选模型的行灰化 */
+.tt-t tr.off td{color:var(--tip-muted)}
 .tnote a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
 .tnote a:hover{color:var(--tip-ink)}
 
@@ -306,7 +308,7 @@ details .body{padding:2px var(--pad-x) 18px}
 .pc .rsl .mc{border-left:1px solid var(--grid);border-right:1px solid var(--grid)}
 .pc .rsl td.mc{overflow:hidden}
 .pmods{display:flex;gap:var(--sp-1);align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;height:22px}
-.pmods .more{flex:none;border-style:dashed;color:var(--faint)}
+.pmods .more,.pmodels .more{flex:none;border-style:dashed;color:var(--faint)}
 .pc table{width:100%;border-collapse:separate;border-spacing:0;font-size:var(--fs-md)}
 .pc th{color:var(--faint);font-weight:600;font-size:var(--fs-xs);letter-spacing:.04em;text-align:right;padding:10px var(--sp-3) var(--sp-2);
   border-bottom:1px solid var(--grid);background:var(--card)}
@@ -360,25 +362,52 @@ details .body{padding:2px var(--pad-x) 18px}
 .pnl{display:inline-flex;align-items:center;gap:2px;margin-left:var(--sp-2);padding:var(--pad-pill);border-radius:var(--r-pill);border:1px solid var(--line);
   background:var(--card);font-size:var(--fs-xs);font-weight:600;color:var(--faint);white-space:nowrap;vertical-align:1px;transition:all .12s}
 .pnl:hover{color:var(--usd);border-color:color-mix(in srgb,var(--usd) 40%,transparent)}
-/* 适用模型：结构化胶囊云；顶部分隔线以负边距延伸至卡片描边，两端不悬空 */
-.pmodels{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:auto calc(-1 * var(--pad-x)) 0;padding:9px var(--pad-x) 0;border-top:1px dashed var(--line)}
+/* 适用模型：单行胶囊云，放不下的由 JS 收起为「更多 N 个模型」；顶部分隔线以负边距延伸至卡片描边，两端不悬空 */
+.pmodels{display:flex;flex-wrap:nowrap;gap:6px;align-items:center;margin:auto calc(-1 * var(--pad-x)) 0;padding:9px var(--pad-x) 0;border-top:1px dashed var(--line);overflow:hidden}
 .pmodels:first-child{border-top:none;padding-top:0}
-.pmodels .cap{font-size:var(--fs-xs);font-weight:700;letter-spacing:.08em;color:var(--faint);margin-right:3px}
+.pmodels .cap{flex:none;font-size:var(--fs-xs);font-weight:700;letter-spacing:.08em;color:var(--faint);margin-right:3px}
+.pmodels .mtag{flex:none}
 .mtag{padding:var(--pad-pill);border-radius:var(--r-pill);border:1px solid var(--line);background:var(--card);font-size:var(--fs-xs);color:var(--muted);line-height:18px}
-/* 卡片内嵌折叠（如 OpenCode Go 各模型额度表）：通栏居中文字触发区，hover 浅底 */
-.pc details{border:none;background:none;margin:0;border-radius:0}
-.pc details summary{display:flex;justify-content:center;align-items:center;gap:6px;margin:0;padding:9px 0;
-  border:none;border-radius:0;background:none;font-size:var(--fs-xs);font-weight:600;color:var(--faint);transition:all .12s}
-.pc details summary:hover{color:var(--ink);background:var(--ref)}
-.pc details summary::before{content:none}
-/* 子表同样通栏顶边：分隔线两端接到卡片描边，仅文字以首尾列内边距对齐 */
-.pc details th:first-child,.pc details td:first-child{padding-left:var(--pad-x)}
-.pc details th:last-child,.pc details td:last-child{padding-right:var(--pad-x)}
-.pc details table.det th{white-space:nowrap}
-.pc details table.det td.px,.pc details table.det th.px{width:100%;text-align:left}
-.pc details table.det .seg{display:inline-block;white-space:nowrap}
-.pc details table.det .seg+.seg{margin-left:9px}
-.pc details table.det td.rat,.pc details table.det td.qa{white-space:nowrap;text-align:center}
+/* 各模型额度抽屉：触发条是主表下方的独立底栏（--head 底 + 顶部分隔线，三段表竖线在此终结，不悬空），
+   展开后成为凹槽面板（--head 底 + 顶部内阴影）的栏头；统计信息做成实体计数胶囊，箭头用 SVG 图标；
+   多档位以分段胶囊切换子表；子表字号对齐主表中间额度列（--fs-sm），行更紧凑 */
+.pc details.mq{border:none;background:none;margin:0;border-radius:0;border-top:1px solid var(--line)}
+.pc details.mq summary{display:flex;justify-content:center;align-items:center;gap:var(--sp-2);margin:0;padding:8px var(--pad-x);
+  border:none;border-radius:0;background:var(--head);font-size:var(--fs-xs);color:var(--muted);transition:all .12s}
+.pc details.mq summary:hover{background:var(--ref-2);color:var(--ink)}
+.pc details.mq summary::before{content:none}
+.mqs-t{font-weight:700;letter-spacing:.04em}
+.mqc{padding:1px 8px;border-radius:var(--r-pill);background:var(--ref-2);color:var(--muted);font-weight:650;
+  font-variant-numeric:tabular-nums;transition:background .12s}
+.pc details.mq summary:hover .mqc{background:var(--grid)}
+.mqs-i{width:11px;height:11px;color:var(--faint);flex:none;transition:transform .15s}
+.pc details.mq[open] summary .mqs-i{transform:rotate(180deg)}
+.mqb{background:var(--head);border-top:1px solid var(--line);
+  box-shadow:inset 0 3px 6px -4px color-mix(in srgb,var(--ink) 22%,transparent);padding:var(--sp-3) 0 var(--sp-2)}
+/* 档位胶囊：中性墨块为选中态，未选中为描边胶囊 */
+.mqt{display:flex;flex-wrap:wrap;gap:var(--sp-1);margin:0 var(--pad-x) var(--sp-2)}
+.mqtb{appearance:none;border:1px solid var(--line);border-radius:var(--r-pill);background:var(--card);
+  padding:3px 12px;font:inherit;font-size:var(--fs-xs);font-weight:650;color:var(--muted);cursor:pointer;transition:all .12s}
+.mqtb:hover{color:var(--ink);border-color:var(--grid-strong)}
+.mqtb.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+/* 子表与主表同构的三段布局（.ptab）：模型列定宽居左 / 中段（额度 + 订阅单价）横向滚动 / 折算比 120px 定宽居右；
+   行高由 .plm 固定 line-height 保证三表同步，行 hover 由主表同一 syncRow JS 联动，竖线来自 .pscroll 边框；
+   字号 --fs-sm 对齐主表中间额度列，单元格透明底融入凹槽面板 */
+.mq .plm{font-size:var(--fs-sm)}
+.mq .plm th{background:none}
+.mq .plm td{background:none}
+/* 首列不套主表 104px 定宽（模型名更长）：按内容定宽，.plm 的 nowrap 保证不折行 */
+.mq .ptab > .pt-side:first-child th:first-child,.mq .ptab > .pt-side:first-child td:first-child{width:auto;min-width:0}
+.mq .ptab > .pt-side:first-child td{font-weight:700}
+.mq .plm th.qa,.mq .plm td.qa{width:76px;padding-left:var(--sp-2);padding-right:var(--sp-2)}
+.mq .plm td.qa{color:var(--muted)}
+.mq .plm td.qm{color:var(--ink);font-weight:600}
+.mq .plm th.px,.mq .plm td.px{text-align:left}
+.mq .plm .seg{display:inline-block;white-space:nowrap}
+.mq .plm .seg+.seg{margin-left:var(--sp-2)}
+.mq tbody tr:hover td,.mq .plm tr.rh td{background:var(--ref-2)}
+/* 筛选联动：未勾选模型的行靠后并灰化 */
+.mq .plm tr.off td{color:var(--faint)}
 
 /* 价格来源链接 */
 .src-a{font-size:var(--fs-xs);font-weight:700;color:var(--faint);margin-left:5px;vertical-align:1px}
@@ -1789,17 +1818,25 @@ function heatColor(v){
   const ratioSingle = R => ratioNum(R.lo) === ratioNum(R.hi);
   const ratioMain = R => '<span style="color:var(--faint)">1 :</span> ' +
     (ratioSingle(R) ? ratioNum(R.hi) : ratioNum(R.lo) + ' ~ ' + ratioNum(R.hi));
-  /* 折算比 hover 浮窗：一律逐模型列出（各模型单价不同，逐模型才是全貌） */
+  /* 折算比 hover 浮窗：一律逐模型列出（各模型单价不同，逐模型才是全貌）；
+     筛选联动：勾选模型的行在前（组内保持折算比降序），未勾选靠后并灰化；
+     未进筛选器的模型（无权重厂商）不算 off，保持原位 */
   function ratioTip(gname, pl, kind, R){
+    const vis = FILTER_STATE && FILTER_STATE.visible;
+    const off = m => !!(vis && vis[m] === false);
+    const rows = vis ? R.rows.slice().sort((a, b) => off(a.m) - off(b.m)) : R.rows;
     let h = '<div class="tt">' + gname + ' · ' + pl + ' · 折算比</div>';
     const cols = R.points ? '<th>模型</th><th>积分价值</th><th>折算比</th>'
                           : '<th>模型</th><th>月额度</th><th>折算比</th>';
     let t = '<table class="tt-t"><tr>' + cols + '</tr>';
-    for (const r of R.rows)
-      t += '<tr><td>' + r.m + '</td><td>' + (R.points ? '¥' + r.val.toFixed(4) + ' / 积分' : tprice(r.quota, kind)) +
+    for (const r of rows)
+      t += '<tr' + (off(r.m) ? ' class="off"' : '') + '><td>' + r.m + '</td><td>' +
+        (R.points ? '¥' + r.val.toFixed(4) + ' / 积分' : tprice(r.quota, kind)) +
         '</td><td>1 : ' + ratioNum(r.r) + '</td></tr>';
     return h + t + '</table>';
   }
+  /* 随筛选重建的动态浮窗：{id, build}，筛选 sync 时原地改写 TIPS[id]（浮窗内容在 hover 时才读取） */
+  const DYN_TIPS = [];
   const ratioInf = '<span class="inf" data-tip="' + regTip(infoTip('折算比',
     '1 : n = 折算成本 : 官方原价')) + '">i</span>';
   /* 补充信息条目：icon + 类型 + 正文 + 可选链接；kind = good(绿) / info(灰) / warn(黄)，兼容旧的纯字符串写法 */
@@ -1863,8 +1900,11 @@ function heatColor(v){
       if (has5h) midBody += '<td class="qa">' + (rng(wRatio(p, 'quota_5h')) || q(p.quota_5h)) + '</td>';
       if (hasWH) midBody += '<td class="qa">' + (rng(wRatio(p, 'quota_weekly')) || q(p.quota_weekly)) + '</td>';
       midBody += '<td class="qa">' + (rng(1) || q(eqMonthly(p))) + '</td></tr>';
-      ratBody += R ? '<tr><td class="rat" data-tip="' + regTip(ratioTip(gname, pname, kind, R)) + '">' + ratioMain(R) + '</td></tr>'
-                   : '<tr><td class="rat">—</td></tr>';
+      if (R){
+        const tipId = regTip(ratioTip(gname, pname, kind, R));
+        DYN_TIPS.push({id: tipId, build: () => ratioTip(gname, pname, kind, R)});
+        ratBody += '<tr><td class="rat" data-tip="' + tipId + '">' + ratioMain(R) + '</td></tr>';
+      } else ratBody += '<tr><td class="rat">—</td></tr>';
     }
     h += '</tbody></table></div>' +
       '<div class="pscroll"><table class="plm"><thead><tr>' + midHead + '</tr></thead><tbody>' + midBody + '</tbody></table></div>' +
@@ -1914,37 +1954,85 @@ function heatColor(v){
     };
     if (mrows.length){
       const multi = mplans.length > 1;
-      /* 行序：按套餐的数据顺序（Go → GOAT → Pro → Max 10× → Max 20×）→ 月额度 → 模型名 */
+      /* 每个订阅档位一张子表，档位胶囊切换；行序按套餐数据顺序（Go → GOAT → …）→ 月额度 → 模型名 */
       const planIdx = {};
       mplans.forEach((pl, i) => { planIdx[pl] = i; });
-      mrows.sort((a, b) => (multi ? planIdx[a.pl] - planIdx[b.pl] : 0) || a.q - b.q || (a.m < b.m ? -1 : 1));
+      mrows.sort((a, b) => planIdx[a.pl] - planIdx[b.pl] || a.q - b.q || (a.m < b.m ? -1 : 1));
       const nModels = new Set(mrows.map(r => r.m)).size;
-      h += '<details><summary>各模型额度（' + nModels + ' 个模型' +
-        (multi ? ' · ' + mplans.join(' / ') + ' 分档' : '') + '）</summary>' +
-        '<table class="det"><thead><tr>' + (multi ? '<th>套餐</th>' : '') +
-        '<th>模型</th><th class="px">订阅单价</th><th>5h 额度</th><th>周额度</th><th>月额度</th><th>折算比</th></tr></thead><tbody>';
-      for (const r of mrows)
-        h += '<tr>' + (multi ? '<td class="qa">' + r.pl + '</td>' : '') + '<td>' + r.m + '</td>' +
-          '<td class="px">' + priceCell(r.pr, r.off, r.m) + '</td>' +
-          '<td class="qa">' + (r.w5 != null ? tprice(r.q * r.w5, kind) : '—') + '</td>' +
-          '<td class="qa">' + (r.ww != null ? tprice(r.q * r.ww, kind) : '—') + '</td>' +
-          '<td class="qa">' + tprice(r.q, kind) + '</td><td class="rat">' +
-          (r.r != null ? ratioShow(r.r) : '—') +
-          '</td></tr>';
-      h += '</tbody></table></details>';
+      h += '<details class="mq"><summary>' +
+        '<span class="mqs-t">各模型额度</span>' +
+        '<span class="mqc">' + nModels + ' 个模型</span>' +
+        (multi ? '<span class="mqc">' + mplans.length + ' 档</span>' : '') +
+        '<svg class="mqs-i" viewBox="0 0 12 12" aria-hidden="true">' +
+        '<path d="M2.5 4.25 6 7.75l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</summary><div class="mqb">';
+      if (multi)
+        h += '<div class="mqt">' + mplans.map((pl, i) =>
+          '<button type="button" class="mqtb' + (i ? '' : ' on') + '" data-i="' + i + '">' + pl + '</button>').join('') + '</div>';
+      mplans.forEach((pl, i) => {
+        /* 与主表同构：左（模型）/ 中（5h·周·月额度 + 订阅单价，横向滚动）/ 右（折算比）三张表，
+           行高由 .plm 固定 line-height 保证同步；订阅单价排在中段末尾，默认视口优先露出额度列 */
+        let lbody = '', mbody = '', rbody = '';
+        for (const r of mrows) if (r.pl === pl){
+          lbody += '<tr data-m="' + r.m + '"><td>' + r.m + '</td></tr>';
+          mbody += '<tr data-m="' + r.m + '">' +
+            '<td class="qa">' + (r.w5 != null ? tprice(r.q * r.w5, kind) : '—') + '</td>' +
+            '<td class="qa">' + (r.ww != null ? tprice(r.q * r.ww, kind) : '—') + '</td>' +
+            '<td class="qa qm">' + tprice(r.q, kind) + '</td>' +
+            '<td class="px">' + priceCell(r.pr, r.off, r.m) + '</td></tr>';
+          rbody += '<tr data-m="' + r.m + '"><td class="rat">' + (r.r != null ? ratioShow(r.r) : '—') + '</td></tr>';
+        }
+        h += '<div class="mqp"' + (multi && i ? ' hidden' : '') + '><div class="ptab">' +
+          '<div class="pt-side"><table class="plm"><thead><tr><th>模型</th></tr></thead><tbody>' + lbody + '</tbody></table></div>' +
+          '<div class="pscroll"><table class="plm"><thead><tr>' +
+          '<th class="qa">5h 额度</th><th class="qa">周额度</th><th class="qa">月额度</th><th class="px">订阅单价</th>' +
+          '</tr></thead><tbody>' + mbody + '</tbody></table></div>' +
+          '<div class="pt-side"><table class="plm"><thead><tr><th class="rat">折算比</th></tr></thead><tbody>' + rbody + '</tbody></table></div>' +
+          '</div></div>';
+      });
+      h += '</div></details>';
     }
 
     /* 卡脚：注释一律来自订阅数据 notes（绿/灰/黄结构化条目），随后是适用模型胶囊 */
     h += '</div><div class="pcf">';
     if (g.notes) for (const n of g.notes) h += noteHTML(n);
     h += '<div class="pmodels"><span class="cap">适用模型</span>' +
-      g.models.map(m => '<span class="mtag">' + m + '</span>').join('') + '</div>';
+      g.models.map(m => '<span class="mtag">' + m + '</span>').join('') +
+      '<span class="mtag more" style="display:none"></span></div>';
     h += '</div></div>';
     out.push(h);
   }
-  document.getElementById('plansBox').innerHTML = out.join('');
-  /* 三段表行 hover 同步高亮（同一逻辑行分布在左/中/右三张表中） */
   const pb = document.getElementById('plansBox');
+  pb.innerHTML = out.join('');
+  /* 胶囊云单行裁剪（订阅卡脚「适用模型」/ 中转站行「覆盖模型」）：
+     放不下的标签从末尾收起为「更多 N 个模型」，全量见 hover 浮窗 */
+  const fitModelLines = root => {
+    root.querySelectorAll('.pmodels,.pmods').forEach(d => {
+      const more = d.querySelector('.more');
+      if (!more) return;
+      const tags = Array.from(d.querySelectorAll('.mtag:not(.more)'));
+      tags.forEach(t => { t.style.display = ''; });
+      more.style.display = 'none';
+      let hidden = 0;
+      while (d.scrollWidth > d.clientWidth && hidden < tags.length){
+        tags[tags.length - 1 - hidden].style.display = 'none';
+        hidden++;
+        more.style.display = '';
+        more.textContent = '更多 ' + hidden + ' 个模型';
+      }
+    });
+  };
+  fitModelLines(pb);
+  window.addEventListener('resize', () => fitModelLines(pb));
+  /* 各模型额度：档位胶囊切换子表 */
+  pb.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('.mqtb');
+    if (!b) return;
+    const box = b.closest('.mqb'), i = +b.dataset.i;
+    box.querySelectorAll('.mqtb').forEach((x, j) => x.classList.toggle('on', j === i));
+    box.querySelectorAll('.mqp').forEach((x, j) => { x.hidden = j !== i; });
+  });
+  /* 三段表行 hover 同步高亮（同一逻辑行分布在左/中/右三张表中） */
   const syncRow = (e, on) => {
     const tr = e.target.closest && e.target.closest('.ptab tr');
     if (!tr) return;
@@ -2009,17 +2097,27 @@ function heatColor(v){
         const rs = rows.filter(x => x.r != null).map(x => x.r);
         const e = {lo: rs.length ? Math.min.apply(null, rs) : null,
                    hi: rs.length ? Math.max.apply(null, rs) : null};
-        /* 整行共享浮窗：全部支持模型的综合价与折算比（按折算比从高到低），分组注释附末尾 */
+        /* 整行共享浮窗：全部支持模型的综合价与折算比（按折算比从高到低），分组注释附末尾；
+           筛选联动：勾选模型的行在前，未勾选靠后并灰化 */
         let tip = '';
         if (rows.length){
-          let t = '<div class="tt">' + rname + ' · ' + g.label + '</div>' +
-            '<table class="tt-t"><tr><th>模型</th><th>综合价</th><th>折算比</th></tr>';
-          rows.slice().sort((a, b) => (b.r == null ? -1 : b.r) - (a.r == null ? -1 : a.r) || a.v - b.v)
-            .forEach(x => { t += '<tr><td>' + x.m + '</td><td>' + tprice(x.v, kind) + '</td><td>' +
-              (x.r != null ? '1 : ' + ratioNum(x.r) : '—') + '</td></tr>'; });
-          t += '</table>';
-          if (g.note) t += '<div class="tnote">⚠ ' + String(g.note).replace(/\n/g, '<br>') + '</div>';
-          tip = ' data-tip="' + regTip(t) + '"';
+          const build = () => {
+            const vis = FILTER_STATE && FILTER_STATE.visible;
+            const off = m => !!(vis && vis[m] === false);
+            let t = '<div class="tt">' + rname + ' · ' + g.label + '</div>' +
+              '<table class="tt-t"><tr><th>模型</th><th>综合价</th><th>折算比</th></tr>';
+            rows.slice().sort((a, b) => (off(a.m) - off(b.m)) ||
+                (b.r == null ? -1 : b.r) - (a.r == null ? -1 : a.r) || a.v - b.v)
+              .forEach(x => { t += '<tr' + (off(x.m) ? ' class="off"' : '') + '><td>' + x.m + '</td><td>' +
+                tprice(x.v, kind) + '</td><td>' +
+                (x.r != null ? '1 : ' + ratioNum(x.r) : '—') + '</td></tr>'; });
+            t += '</table>';
+            if (g.note) t += '<div class="tnote">⚠ ' + String(g.note).replace(/\n/g, '<br>') + '</div>';
+            return t;
+          };
+          const tipId = regTip(build());
+          DYN_TIPS.push({id: tipId, build: build});
+          tip = ' data-tip="' + tipId + '"';
         }
         rowsH += '<tr><td' + tip + '><b>' + g.label + '</b></td>' +
           '<td class="qa mc"' + tip + '><div class="pmods">' +
@@ -2042,24 +2140,25 @@ function heatColor(v){
     const rb = document.getElementById('resellersBox');
     rb.innerHTML = rout.join('');
     /* 覆盖模型按实际宽度裁剪：放不下的标签收起为「更多 N 个模型」（全量见行 hover 浮窗） */
-    const fitModels = () => {
-      rb.querySelectorAll('.pmods').forEach(d => {
-        const more = d.querySelector('.more');
-        const tags = Array.from(d.querySelectorAll('.mtag:not(.more)'));
-        tags.forEach(t => { t.style.display = ''; });
-        more.style.display = 'none';
-        let hidden = 0;
-        while (d.scrollWidth > d.clientWidth && hidden < tags.length){
-          tags[tags.length - 1 - hidden].style.display = 'none';
-          hidden++;
-          more.style.display = '';
-          more.textContent = '更多 ' + hidden + ' 个模型';
-        }
-      });
-    };
-    fitModels();
-    window.addEventListener('resize', fitModels);
+    fitModelLines(rb);
+    window.addEventListener('resize', () => fitModelLines(rb));
   }
+
+  /* 筛选联动：勾选模型优先显示 —— 动态浮窗（订阅 / 中转站折算比）原地重建，
+     各模型额度表的三张 tbody 以同一稳定排序把未勾选行移后并灰化（行序一致，hover 联动索引不错位） */
+  const mdlOrder = vis => {
+    for (const t of DYN_TIPS) TIPS[t.id] = t.build();
+    pb.querySelectorAll('.mqp tbody').forEach(tb => {
+      const trs = Array.prototype.slice.call(tb.children);
+      trs.sort((a, b) => (vis[a.dataset.m] === false) - (vis[b.dataset.m] === false));
+      for (const tr of trs){
+        tr.classList.toggle('off', vis[tr.dataset.m] === false);
+        tb.appendChild(tr);
+      }
+    });
+  };
+  FILTER_HOOKS.push(mdlOrder);
+  if (FILTER_STATE) mdlOrder(FILTER_STATE.visible);
 })();
 
 /* ---------- 原始价格（折叠，来源求证；厂商名吸收为表内标题行） ---------- */
