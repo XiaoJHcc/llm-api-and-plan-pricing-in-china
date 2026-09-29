@@ -15,7 +15,7 @@
     "output": 0.2
   },
   "channels": {
-    "//": "api = 该渠道自己发布的机器可读端点，与 source 同源，可直接用于定价；外部聚合（models.dev 等）放顶层 api_refs，只作比对。同一个源不要两处都放。",
+    "//": "api = 该渠道自己发布的机器可读端点，与 source 同源，用于监测变动（是否含价格因渠道而异，ollama/commandcode 端点仅含模型列表）；外部聚合（models.dev 等）放顶层 api_refs，只作比对。同一个源不要两处都放。",
     "usd": { "label": "美元官方", "kind": "usd" },
     "cny": { "label": "人民币官方", "kind": "cny" },
     "opencode": { "label": "OpenCode", "kind": "usd",
@@ -24,7 +24,7 @@
       "source": "https://ollama.com/pricing",
       "api": "https://ollama.com/v1/models" },
     "commandcode": { "label": "Command Code", "kind": "usd",
-      "source": "https://commandcode.ai/pricing",
+      "source": "https://commandcode.ai/docs/resources/pricing-limits",
       "api": "https://api.commandcode.ai/provider/v1/models" },
     "glm_coding_points": { "label": "GLM 积分", "kind": "point",
       "source": "https://docs.bigmodel.cn/cn/coding-plan/overview",
@@ -50,7 +50,7 @@
     "models": [
       "Fable 5.1",
       "Opus 5.5",
-      "Sonnet 5",
+      "Sonnet 5.5",
       "GPT 6 Astra",
       "GPT 6 Sol",
       "Grok 4.7",
@@ -115,6 +115,7 @@
         "Fable 5",
         "Opus 5.5",
         "Opus 5",
+        "Sonnet 5.5",
         "Sonnet 5",
         "Haiku 4.5"
       ],
@@ -161,47 +162,35 @@
       "type": "money_quota",
       "billing": "unified_quota",
       "plans": {
-        "Go": {
-          "fee": 49,
-          "quota_5h": 32.5,
-          "quota_weekly": 162.5,
-          "quota_monthly": 696.43,
-          "excluded_models": ["Kimi K3"]
-        },
         "Plus": {
           "fee": 99,
           "quota_5h": 65,
-          "quota_weekly": 325,
           "quota_monthly": 1392.86
         },
         "Pro": {
           "fee": 199,
           "quota_5h": 130,
-          "quota_weekly": 650,
           "quota_monthly": 2785.71
         },
         "Max": {
           "fee": 699,
           "quota_5h": 455,
-          "quota_weekly": 2275,
           "quota_monthly": 9750.02
         }
       },
       "models": [
         "Kimi K3",
-        "Kimi K2.8 Preview",
-        "Kimi K2.7 Code",
-        "Kimi K2.6"
+        "Kimi K2.8 Preview"
       ],
       "notes": [
         {"kind": "good", "label": "额度一致", "text": "官方未明确额度，但可根据用量百分比反推，且据观察不会随机浮动。"},
         {"kind": "info", "label": "额度来源", "text": "来自 2026 年 8 月个人 Kimi 订阅用量反推，准确度较高。但未经官方验证。", "hover": "额度来自个人用量反推，未经官方验证"},
-        {"kind": "warn", "label": "特殊限制", "text": "Go 不含 K3，Plus 可用 K3 但仅 256K 上下文。"}
+        {"kind": "warn", "label": "特殊限制", "text": "Plus 可用 K3 但仅 256K 上下文。"}
       ],
       "priceOverrideNotes": {
         "Kimi K2.8 Preview": "API 未上线，¥ 官方价为按 K2.7 Code 同价的估算值"
       },
-      "source": "https://www.kimi.com/membership/pricing"
+      "source": "https://www.kimi.com/help/membership/membership-pricing"
     },
     "GLM Coding Plan": {
       "currency": "CNY",
@@ -383,20 +372,16 @@
             "GLM-5.3-Flash": 60,
             "GLM-5.3": 15,
             "GLM-5.2": 60,
-            "GLM-5.1": 60,
             "Kimi K3": 15,
             "Kimi K2.7 Code": 60,
             "Kimi K2.6": 60,
             "MiniMax M3": 60,
             "MiniMax M2.7": 60,
-            "MiniMax M2.5": 60,
             "Qwen 3.8 Max": 15,
             "Qwen 3.8 Flash": 30,
-            "Qwen 3.7 Max": 30,
             "Qwen 3.7 Plus": 60,
-            "Qwen 3.6 Plus": 60,
             "DeepSeek V4 Pro": 15,
-            "DeepSeek V4.1 Flash": [15, { "value": 60, "until": "2026-09-27" }],
+            "DeepSeek V4.1 Flash": 60,
             "DeepSeek V4 Flash": 30,
             "DeepSeek V4 Flash Vision Exp": 15,
             "MiMo-V2.6-Flash": 60,
@@ -407,7 +392,25 @@
             "Muse Spark 1.3 Contributor": 60,
             "Muse Spark 1.2 Contributor": 60,
             "Hy4 Preview": 30,
-            "Hy3": 60
+            "Hy3": 60,
+            "GPT 6 Luna": 15
+          }
+        },
+        "Go Plus": {
+          "fee": 40,
+          "quota_5h": 48,
+          "quota_weekly": 120,
+          "quota_monthly": 240,
+          "quota_monthly_by_model": {
+            "GLM-5.3-Flash": 180, "GLM-5.3": 120, "GLM-5.2": 180, "Kimi K3": 60,
+            "Kimi K2.7 Code": 180, "Kimi K2.6": 240, "LongCat-2.0": 240,
+            "MiMo-V2.6-Flash": 120, "MiMo-V2.6-Pro": 60, "MiMo-V2.5": 120, "MiMo-V2.5-Pro": 60,
+            "MiniMax M3": 180, "MiniMax M2.7": 240,
+            "Muse Spark 1.3 Contributor": 120, "Muse Spark 1.2 Contributor": 120,
+            "Qwen 3.8 Max": 60, "Qwen 3.8 Flash": 90, "Qwen 3.7 Plus": 180,
+            "DeepSeek V4.1 Flash": 120, "DeepSeek V4 Pro": 60, "DeepSeek V4 Flash": 120,
+            "DeepSeek V4 Flash Vision Exp": 60, "Hy4 Preview": 120, "Hy3": 240,
+            "Grok 4.7": 60, "Grok 4.6": 60, "GPT 6 Luna": 60, "GPT 5.6 Luna": 60
           }
         }
       },
@@ -418,18 +421,14 @@
         "GLM-5.3-Flash",
         "GLM-5.3",
         "GLM-5.2",
-        "GLM-5.1",
         "Kimi K3",
         "Kimi K2.7 Code",
         "Kimi K2.6",
         "MiniMax M3",
         "MiniMax M2.7",
-        "MiniMax M2.5",
         "Qwen 3.8 Max",
         "Qwen 3.8 Flash",
-        "Qwen 3.7 Max",
         "Qwen 3.7 Plus",
-        "Qwen 3.6 Plus",
         "DeepSeek V4 Pro",
         "DeepSeek V4.1 Flash",
         "DeepSeek V4 Flash",
@@ -442,7 +441,10 @@
         "Muse Spark 1.3 Contributor",
         "Muse Spark 1.2 Contributor",
         "Hy4 Preview",
-        "Hy3"
+        "Hy3",
+        "GPT 6 Luna",
+        "LongCat 2.5 Preview Free",
+        "Space Bunny Free"
       ],
       "notes": [
         {"kind": "good", "label": "额度透明", "text": "官方明确了额度倍率。"},
@@ -468,7 +470,6 @@
       },
       "models": [
         "DeepSeek V4 Pro",
-        "DeepSeek V4 Flash",
         "DeepSeek V4.1 Flash",
         "Kimi K3",
         "Kimi K2.7 Code",
@@ -476,7 +477,6 @@
         "GLM-5.3",
         "GLM-5.3-Flash",
         "GLM-5.2",
-        "GLM-5.1",
         "MiniMax M3",
         "MiniMax M2.7"
       ],
@@ -506,8 +506,22 @@
             "GPT 5.6 Sol",
             "Grok 4.7",
             "Grok 4.6",
-            "Gemini 3.8 Flash"
-          ]
+            "Gemini 3.8 Flash",
+            "Sonnet 5.5",
+            "GPT 6 Astra"
+          ],
+          "quota_monthly_by_model": {
+            "GPT 6 Luna": 6, "GPT 5.6 Luna": 6, "Grok 4.5": 6,
+            "GLM-5.3": 10, "GLM-5.3-Flash": 10, "GLM-5.2": 10, "GLM-5.1": 6,
+            "Kimi K3": 8, "Kimi K2.7 Code": 9, "Kimi K2.6": 6,
+            "DeepSeek V4.1 Flash": 10, "DeepSeek V4 Pro": 6, "DeepSeek V4 Flash": 6,
+            "DeepSeek V4 Flash Vision Exp": 6,
+            "Qwen 3.8 Max": 7, "Qwen 3.8 Flash": 6, "Qwen 3.7 Max": 10, "Qwen 3.7 Plus": 10,
+            "Qwen 3.6 Plus": 10, "Qwen 3.7 Flash": 6, "Hy4 Preview": 6, "Hy3": 10,
+            "MiniMax M3": 8, "MiniMax M2.7": 6, "MiniMax M2.5": 6,
+            "MiMo-V2.6-Pro": 6, "MiMo-V2.6-Flash": 6, "MiMo-V2.5-Pro": 6, "MiMo-V2.5": 6,
+            "LongCat-2.0": 10, "Muse Spark 1.3 Contributor": 6, "Muse Spark 1.2 Contributor": 6
+          }
         },
         "GOAT": {
           "fee": 10,
@@ -551,13 +565,17 @@
             "Kimi K2.6": 20,
             "GLM-5.1": 20,
             "MiniMax M2.7": 20,
-            "MiniMax M2.5": 20
+            "MiniMax M2.5": 20,
+            "Sonnet 5.5": 10,
+            "Qwen 3.7 Flash": 20,
+            "DeepSeek V4 Flash Vision Exp": 20
           },
           "excluded_models": [
             "Sonnet 5",
             "Haiku 4.5",
             "GPT 6 Sol",
-            "GPT 5.6 Terra"
+            "GPT 5.6 Terra",
+            "GPT 6 Astra"
           ]
         },
         "Pro": {
@@ -606,8 +624,12 @@
             "Sonnet 5": 20,
             "Haiku 4.5": 20,
             "GPT 6 Sol": 20,
-            "GPT 5.6 Terra": 20
-          }
+            "GPT 5.6 Terra": 20,
+            "Sonnet 5.5": 20,
+            "Qwen 3.7 Flash": 30,
+            "DeepSeek V4 Flash Vision Exp": 30
+          },
+          "excluded_models": ["GPT 6 Astra"]
         },
         "Max 10×": {
           "fee": 100,
@@ -652,7 +674,11 @@
             "Sonnet 5": 100,
             "Haiku 4.5": 100,
             "GPT 6 Sol": 100,
-            "GPT 5.6 Terra": 100
+            "GPT 5.6 Terra": 100,
+            "Sonnet 5.5": 100,
+            "GPT 6 Astra": 100,
+            "Qwen 3.7 Flash": 150,
+            "DeepSeek V4 Flash Vision Exp": 150
           }
         },
         "Max 20×": {
@@ -698,7 +724,11 @@
             "Sonnet 5": 200,
             "Haiku 4.5": 200,
             "GPT 6 Sol": 200,
-            "GPT 5.6 Terra": 200
+            "GPT 5.6 Terra": 200,
+            "Sonnet 5.5": 200,
+            "GPT 6 Astra": 200,
+            "Qwen 3.7 Flash": 300,
+            "DeepSeek V4 Flash Vision Exp": 300
           }
         }
       },
@@ -740,7 +770,11 @@
         "MiMo-V2.5",
         "LongCat-2.0",
         "Muse Spark 1.3 Contributor",
-        "Muse Spark 1.2 Contributor"
+        "Muse Spark 1.2 Contributor",
+        "Sonnet 5.5",
+        "GPT 6 Astra",
+        "Qwen 3.7 Flash",
+        "DeepSeek V4 Flash Vision Exp"
       ],
       "source": "https://commandcode.ai/docs/resources/pricing-limits"
     }
@@ -810,7 +844,8 @@
               "cache_write_1h": 8,
               "cache_hit": 0.2,
               "output": 20
-            }
+            },
+            "packy_cc_sale": { "input": 3.2, "cache_write_5min": 4, "cache_hit": 0.16, "output": 16 }
           }
         },
         "Opus 5": {
@@ -848,6 +883,12 @@
             }
           }
         },
+        "Sonnet 5.5": {
+          "default": {
+            "commandcode": { "input": 2, "cache_write_5min": 2.5, "cache_hit": 0.2, "output": 10 },
+            "usd": { "input": 2, "cache_write_5min": 2.5, "cache_write_1h": 4, "cache_hit": 0.2, "output": 10 }
+          }
+        },
         "Haiku 4.5": {
           "default": {
             "commandcode": { "input": 1, "cache_write_5min": 1.25, "cache_hit": 0.1, "output": 5 },
@@ -882,6 +923,7 @@
       "models": {
         "GPT 6 Astra": {
           "≤272K": {
+            "commandcode": { "input": 10, "cache_write_30min": 12.5, "cache_hit": 1, "output": 50 },
             "usd": {
               "input": 10,
               "cache_write_30min": 12.5,
@@ -890,6 +932,7 @@
             }
           },
           ">272K": {
+            "commandcode": { "input": 20, "cache_write_30min": 25, "cache_hit": 2, "output": 75 },
             "usd": {
               "input": 20,
               "cache_write_30min": 25,
@@ -941,7 +984,8 @@
               "cache_write_30min": 0.125,
               "cache_hit": 0.01,
               "output": 0.5
-            }
+            },
+            "opencode": { "input": 0.1, "cache_write_30min": 0.125, "cache_hit": 0.01, "output": 0.5 }
           },
           ">272K": {
             "commandcode": { "input": 0.2, "cache_write_30min": 0.25, "cache_hit": 0.02, "output": 0.75 },
@@ -950,7 +994,8 @@
               "cache_write_30min": 0.25,
               "cache_hit": 0.02,
               "output": 0.75
-            }
+            },
+            "opencode": { "input": 0.2, "cache_write_30min": 0.25, "cache_hit": 0.02, "output": 0.75 }
           }
         },
         "GPT 5.6 Sol": {
@@ -1107,7 +1152,8 @@
               "input": 2,
               "cache_hit": 0.5,
               "output": 6
-            }
+            },
+            "packy_grok_sale": { "input": 0.6, "cache_hit": 0.15, "output": 1.8 }
           },
           ">200K": {
             "commandcode": { "input": 4, "cache_hit": 1, "output": 12 },
@@ -1120,14 +1166,8 @@
               "input": 4,
               "cache_hit": 1,
               "output": 12
-            }
-          },
-          "default": {
-            "packy_grok_sale": {
-              "input": 0.6,
-              "cache_hit": 0.15,
-              "output": 1.8
-            }
+            },
+            "packy_grok_sale": { "input": 1.2, "cache_hit": 0.3, "output": 3.6 }
           }
         },
         "Grok 4.5": {
@@ -1324,24 +1364,15 @@
           }
         },
         "GLM-5.1": {
-          "default": {
+          "≤32K": {
             "commandcode": { "input": 1.4, "cache_hit": 0.26, "output": 4.4 },
-            "opencode": {
-              "input": 1.4,
-              "cache_hit": 0.26,
-              "output": 4.4
-            },
-            "ollama": { "input": 1, "cache_hit": 0.2, "output": 3.2 },
-            "usd": {
-              "input": 1.4,
-              "cache_hit": 0.26,
-              "output": 4.4
-            },
-            "cny": {
-              "input": 8,
-              "cache_hit": 2,
-              "output": 28
-            }
+            "usd": { "input": 1.4, "cache_hit": 0.26, "output": 4.4 },
+            "cny": { "input": 6, "cache_hit": 1.3, "output": 24 }
+          },
+          ">32K": {
+            "commandcode": { "input": 1.4, "cache_hit": 0.26, "output": 4.4 },
+            "usd": { "input": 1.4, "cache_hit": 0.26, "output": 4.4 },
+            "cny": { "input": 8, "cache_hit": 2, "output": 28 }
           }
         }
       },
@@ -1379,11 +1410,15 @@
             "ollama": { "input": 3, "cache_hit": 0.3, "output": 15 },
             "usd": {
               "input": 3,
+              "cache_write_5min": 3,
+              "cache_write_1h": 6,
               "cache_hit": 0.3,
               "output": 15
             },
             "cny": {
               "input": 20,
+              "cache_write_5min": 20,
+              "cache_write_1h": 40,
               "cache_hit": 2,
               "output": 100
             },
@@ -1400,7 +1435,7 @@
             },
             "ark_afp": [
               { "input": 800, "cache_hit": 800, "output": 800 },
-              { "input": 480, "cache_hit": 480, "output": 480, "until": "2026-09-30" }
+              { "input": 480, "cache_hit": 480, "output": 480, "from": "2026-09-17", "until": "2026-09-30" }
             ]
           }
         },
@@ -1496,7 +1531,8 @@
             "ark_afp": [
               { "input": 250, "cache_hit": 250, "output": 250 },
               { "input": 125, "cache_hit": 125, "output": 125, "until": "2026-09-28" }
-            ]
+            ],
+            "packy_deepseek_sale": { "input": 1, "cache_hit": 0.02, "output": 4 }
           },
           "梁文谷": {
             "commandcode": { "input": 0.15, "cache_hit": 0.003, "output": 0.6 },
@@ -1514,7 +1550,8 @@
               "input": 1,
               "cache_hit": 0.02,
               "output": 4
-            }
+            },
+            "packy_deepseek_sale": { "input": 0.5, "cache_hit": 0.01, "output": 2 }
           },
           "Ollama 谷时": {
             "ollama": { "input": 0.15, "cache_hit": 0.003, "output": 0.60 }
@@ -1587,7 +1624,7 @@
         "DeepSeek V4 Flash": {
           "标准价格": {
             "commandcode": { "input": 0.3, "cache_hit": 0.006, "output": 1.2 },
-            "ollama": { "input": 0.44, "cache_hit": 0.014, "output": 1.32 },
+            "opencode": { "input": 0.3, "cache_hit": 0.006, "output": 1.2 },
             "cny": [
               { "input": 3, "cache_hit": 0.1, "output": 9, "until": "2026-09-10" }
             ],
@@ -1601,10 +1638,8 @@
           },
           "梁文谷": {
             "commandcode": { "input": 0.15, "cache_hit": 0.003, "output": 0.6 },
+            "opencode": { "input": 0.15, "cache_hit": 0.003, "output": 0.6 },
             "packy_deepseek_sale": { "input": 0.5, "cache_hit": 0.01, "output": 2 }
-          },
-          "Ollama 谷时": {
-            "ollama": { "input": 0.22, "cache_hit": 0.007, "output": 0.66 }
           },
           "百炼夜间五折": {
             "bailian_credits": {
@@ -1612,6 +1647,16 @@
               "cache_hit": 15,
               "output": 450
             }
+          }
+        },
+        "DeepSeek V4 Flash Vision Exp": {
+          "标准价格": {
+            "commandcode": { "input": 0.3, "cache_hit": 0.006, "output": 1.2 },
+            "opencode": { "input": 0.3, "cache_hit": 0.006, "output": 1.2 }
+          },
+          "梁文谷": {
+            "commandcode": { "input": 0.15, "cache_hit": 0.003, "output": 0.6 },
+            "opencode": { "input": 0.15, "cache_hit": 0.003, "output": 0.6 }
           }
         }
       },
@@ -1682,7 +1727,7 @@
         },
         "Qwen 3.8 Flash": {
           "default": {
-            "commandcode": { "input": 0.16, "cache_hit": 0.016, "output": 0.47 },
+            "commandcode": { "input": 0.16, "cache_hit": 0.02, "output": 0.47 },
             "opencode": {
               "input": 0.15,
               "cache_write": 0.2,
@@ -1721,12 +1766,6 @@
         "Qwen 3.7 Max": {
           "default": {
             "commandcode": { "input": 2.5, "cache_write": 3.13, "cache_hit": 0.5, "output": 7.5 },
-            "opencode": {
-              "input": 2.5,
-              "cache_hit": 0.5,
-              "output": 7.5,
-              "cache_write": 3.125
-            },
             "usd": {
               "input": 2.5,
               "cache_write": 3.125,
@@ -1806,15 +1845,26 @@
             "packy_bailian": { "input": 3, "cache_hit": 0.6, "output": 12 }
           }
         },
+        "Qwen 3.7 Flash": {
+          "≤32K": {
+            "commandcode": { "input": 0.03, "cache_write": 0.038, "cache_hit": 0.006, "output": 0.13 },
+            "usd": { "input": 0.03, "cache_write": 0.038, "cache_hit": 0.006, "output": 0.13 },
+            "cny": { "input": 0.2, "cache_write": 0.25, "cache_hit": 0.04, "output": 0.8 }
+          },
+          "≤256K": {
+            "commandcode": { "input": 0.1, "cache_write": 0.125, "cache_hit": 0.02, "output": 0.4 },
+            "usd": { "input": 0.1, "cache_write": 0.125, "cache_hit": 0.02, "output": 0.4 },
+            "cny": { "input": 0.6, "cache_write": 0.75, "cache_hit": 0.12, "output": 2.4 }
+          },
+          ">256K": {
+            "commandcode": { "input": 0.2, "cache_write": 0.25, "cache_hit": 0.04, "output": 0.8 },
+            "usd": { "input": 0.2, "cache_write": 0.25, "cache_hit": 0.04, "output": 0.8 },
+            "cny": { "input": 1.2, "cache_write": 1.5, "cache_hit": 0.24, "output": 4.8 }
+          }
+        },
         "Qwen 3.6 Plus": {
           "≤256K": {
             "commandcode": { "input": 0.5, "cache_hit": 0.1, "output": 3 },
-            "opencode": {
-              "input": 0.5,
-              "cache_write": 0.625,
-              "cache_hit": 0.05,
-              "output": 3.0
-            },
             "usd": {
               "input": 0.5,
               "cache_write": 0.625,
@@ -1831,12 +1881,6 @@
           },
           ">256K": {
             "commandcode": { "input": 2, "cache_hit": 0.2, "output": 6 },
-            "opencode": {
-              "input": 2.0,
-              "cache_write": 2.5,
-              "cache_hit": 0.2,
-              "output": 6.0
-            },
             "usd": {
               "input": 2,
               "cache_write": 2.5,
@@ -1869,7 +1913,7 @@
             "opencode": {
               "input": 0.834,
               "cache_hit": 0.042,
-              "output": 2.5
+              "output": 2.501
             },
             "usd": {
               "input": 0.834,
@@ -1984,12 +2028,6 @@
         "MiniMax M2.5": {
           "default": {
             "commandcode": { "input": 0.3, "cache_hit": 0.03, "output": 1.2 },
-            "opencode": {
-              "input": 0.3,
-              "cache_hit": 0.06,
-              "output": 1.2,
-              "cache_write": 0.375
-            },
             "usd": {
               "input": 0.3,
               "cache_write": 0.375,
@@ -2275,6 +2313,11 @@
               "output": 1.2
             }
           }
+        },
+        "LongCat 2.5 Preview Free": {
+          "default": {
+            "opencode": { "input": 0, "cache_hit": 0, "output": 0 }
+          }
         }
       }
     },
@@ -2302,15 +2345,11 @@
         }
       }
     },
-    "Omen": {
+    "Space Bunny": {
       "models": {
-        "Omen Alpha": {
+        "Space Bunny Free": {
           "default": {
-            "opencode": {
-              "input": 0.2,
-              "cache_hit": 0.04,
-              "output": 0.66
-            }
+            "opencode": { "input": 0, "cache_hit": 0, "output": 0 }
           }
         }
       }
