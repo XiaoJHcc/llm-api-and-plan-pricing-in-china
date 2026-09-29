@@ -794,10 +794,16 @@ const ratioShow = r => '<span style="color:var(--faint)">1 :</span> ' + ratioNum
 
 /* ---------- 权重计价 ----------
    返回 {rows:[{key,label,price,w,sub}], total, w}，供数值与 hover 面板共用。
-   权重键必须在价格数据中存在，不做任何回退。 */
-function weightDetail(prices, prov, chk){
+   权重优先级：模型+渠道覆盖（modelChannelWeights，用于「该模型在该渠道的输入侧落在另一个分量上」）
+   → 渠道覆盖（channelWeights）→ 厂商 weights。
+   权重键必须在价格数据中存在 —— 某个键缺价就是该分量按 0 计，这里不做回退，
+   所以录入时输入侧必须落在该价目里真实存在的分量上（不能算成 0）。 */
+function weightDetail(prices, prov, chk, mname){
   if (prices == null || prov == null) return null;
-  const w = (chk != null && prov.channelWeights && prov.channelWeights[chk]) || prov.weights;
+  const mw = (mname != null && prov.modelChannelWeights && prov.modelChannelWeights[mname]) || null;
+  const w = (chk != null && prov.channelWeights && prov.channelWeights[chk])
+    || (chk != null && mw && mw[chk])
+    || prov.weights;
   if (w == null) return null;
   const rows = [];
   let total = 0;
@@ -839,20 +845,19 @@ function provHasCny(prov){
   }
   return v;
 }
-/* 参考（官方）综合价折人民币：人民币价目优先，整家没有人民币价目时用美元价 × 汇率（与主表参考列同规则） */
-function refCnyOf(channels, prov){
-  const cd = channels.cny ? weightDetail(channels.cny, prov, 'cny') : null;
+/* 参考（官方）综合价折人民币：人民币价目优先，整家没有人民币价目时用官方美元价 × 汇率（与主表参考列同规则） */
+function refCnyOf(channels, prov, mname){
+  const cd = channels.cny ? weightDetail(channels.cny, prov, 'cny', mname) : null;
   if (cd) return cd.total;
   if (provHasCny(prov)) return null;
-  const uk = channels.usd ? 'usd' : (channels.opencode ? 'opencode' : null);
-  const ud = uk ? weightDetail(channels[uk], prov, uk) : null;
+  const ud = channels.usd ? weightDetail(channels.usd, prov, 'usd', mname) : null;
   return ud ? ud.total * USD_CNY : null;
 }
-/* 订阅消耗所依据的标价渠道：price_channel 优先；缺省美元订阅 usd→opencode、人民币订阅 cny。
+/* 订阅消耗所依据的标价渠道：price_channel 优先；缺省美元订阅 usd、人民币订阅 cny。
    该渠道价目可按模型被 priceOverrides 覆盖 —— 主表订阅格与订阅卡共用这一处，避免口径分叉 */
 function subPriceOf(g, mname, channels){
   const key = g.price_channel ? (CHANNELS[g.price_channel] ? g.price_channel : null)
-    : g.currency === 'USD' ? (CHANNELS.usd ? 'usd' : (CHANNELS.opencode ? 'opencode' : null))
+    : g.currency === 'USD' ? (CHANNELS.usd ? 'usd' : null)
                            : (CHANNELS.cny ? 'cny' : null);
   if (!key || !channels[key]) return null;
   const ov = (g.priceOverrides && g.priceOverrides[mname]) || {};
@@ -1006,7 +1011,7 @@ function subDetail(mname, channels, prov){
          积分渠道由订阅组的 points_channel 声明（GLM 积分 / 百炼积分）。 */
       const pts = channels[g.points_channel];
       if (!pts) continue;
-      const det = weightDetail(pts, prov, null);
+      const det = weightDetail(pts, prov, g.points_channel, mname);
       /* 渠道 note 补充积分换算口径（百炼 1积分=¥0.01 等），订阅备注不注入价格表 */
       const chNote = CHANNELS[g.points_channel] && CHANNELS[g.points_channel].note;
       const notes = chNote ? [chNote] : null;
@@ -1025,7 +1030,7 @@ function subDetail(mname, channels, prov){
       /* 标价渠道与价格覆盖由 subPriceOf 统一解析（与订阅卡片同源） */
       const sp = subPriceOf(g, mname, channels);
       if (!sp) continue;
-      const det = weightDetail(sp.pr, prov, null);
+      const det = weightDetail(sp.pr, prov, sp.key, mname);
       const kind = g.currency === 'USD' ? 'usd' : 'cny';
       /* 价格表订阅列浮窗：注入特价覆盖说明（priceOverrideNotes）与额度可靠性简句（notes 中 hover 字段）；
          订阅自身完整备注只在订阅卡片脚注就地展示 */
@@ -1033,7 +1038,7 @@ function subDetail(mname, channels, prov){
       const hov = (g.notes || []).filter(n => n.hover).map(n => n.hover);
       const notes = (hov.length || pon) ? hov.concat(pon ? [pon] : []) : null;
       /* 折算比 = 官方标价（折人民币）÷ 折算后价 —— 与卡片、中转站卡同口径 */
-      const ref = refCnyOf(channels, prov);
+      const ref = refCnyOf(channels, prov, mname);
       for (const pl in g.plans){
         const p = g.plans[pl];
         if (p.excluded_models && p.excluded_models.indexOf(mname) >= 0) continue;
@@ -1063,7 +1068,7 @@ const HEAT = (() => {
     for (const mname in prov.models){
       for (const {channels} of normalizeConditions(prov.models[mname])){
         for (const chk in channels) if (isReseller(chk)){
-          const det = weightDetail(channels[chk], prov, chk);
+          const det = weightDetail(channels[chk], prov, chk, mname);
           if (det && det.total > 0) vals.push(det.total);
         }
         const subs = subDetail(mname, channels, prov);
@@ -1101,9 +1106,10 @@ function heatColor(v){
     for (const mname in prov.models){
       const g = {mname: mname, rows: []};
       for (const {ck, channels} of normalizeConditions(prov.models[mname])){
-        const usdKey = channels.usd ? 'usd' : (channels.opencode ? 'opencode' : null);
-        const usdDet = usdKey ? weightDetail(channels[usdKey], prov, usdKey) : null;
-        const cnyDet = channels.cny ? weightDetail(channels.cny, prov, 'cny') : null;
+        /* 美元参考列只认官方美元价目（usd 渠道）：厂商没发布就留空，不拿第三方渠道价充当官方价 */
+        const usdKey = channels.usd ? 'usd' : null;
+        const usdDet = usdKey ? weightDetail(channels[usdKey], prov, usdKey, mname) : null;
+        const cnyDet = channels.cny ? weightDetail(channels.cny, prov, 'cny', mname) : null;
         const usd = usdDet ? usdDet.total : null;
         let cny = cnyDet ? cnyDet.total : null;
         let cnyDerived = false;
@@ -1111,7 +1117,7 @@ function heatColor(v){
 
         const rsls = {};
         for (const chk in channels) if (isReseller(chk)){
-          const det = weightDetail(channels[chk], prov, chk);
+          const det = weightDetail(channels[chk], prov, chk, mname);
           rsls[chk] = {det: det, value: det ? det.total : null};
           const rname = CHANNELS[chk].reseller;
           let rg = null;
@@ -1175,11 +1181,10 @@ function heatColor(v){
     const hitRate = ((w0.cache_hit || 0) / ((w0.cache_hit || 0) + inW) * 100).toFixed(1);
 
     /* 左表头：模型+条件列合并为厂商标题区（跨两层），固定结构由 tmplHeadL 模板表达，脚本仅填槽位；
-       参考列按实际来源命名：美国厂商 $官方 + ¥换算；中国厂商 $OpenCode + ¥官方 */
-    const usdOfficial = groups.some(g => g.rows.some(r => r.usdKey === 'usd'));
+       参考列：美元列只认厂商自己发布的美元价目（usd 渠道），没发布该格留空；人民币价目缺失的厂商折汇率并标注 ¥ 换算 */
     const headFrag = cloneTpl('tmplHeadL');
     slot(headFrag, 'card').appendChild(vendorHeadFrag(pname, prov, hitRate));
-    slot(headFrag, 'ref-usd').textContent = usdOfficial ? '$ 官方' : '$ OpenCode';
+    slot(headFrag, 'ref-usd').textContent = '$ 官方';
     slot(headFrag, 'ref-cny').textContent = provHasCny ? '¥ 官方' : '¥ 换算';
     const headL = fragHTML(headFrag);
     /* 右表头：第一行分组表头带 grp（每组首列即分组竖界），保证正常档竖线从表头顶到底整根一致；
@@ -1725,7 +1730,7 @@ function heatColor(v){
     const e = ML[m];
     if (!e) return null;
     const sp = subPriceOf(g, m, e.channels);
-    return sp ? {pr: sp.pr, ch: e.channels, prov: e.prov} : null;
+    return sp ? {pr: sp.pr, key: sp.key, ch: e.channels, prov: e.prov} : null;
   }
   /* 官方参考价（分量价）：只取与订阅同币种的官方价目 —— 美元订阅看 `usd`、人民币订阅看 `cny`；
      不做任何汇率折算，也没有容差，因此「同官方价」= 逐分量严格相等。
@@ -1745,7 +1750,7 @@ function heatColor(v){
       if (!sp) continue;
       const quota = (p.quota_monthly_by_model && p.quota_monthly_by_model[m] != null)
         ? p.quota_monthly_by_model[m] : eqMonthly(p);
-      const sd = weightDetail(sp.pr, sp.prov, null), ref = refCnyOf(sp.ch, sp.prov);
+      const sd = weightDetail(sp.pr, sp.prov, sp.key, m), ref = refCnyOf(sp.ch, sp.prov, m);
       if (!sd || !(sd.total > 0) || ref == null || !(quota > 0)) continue;
       const valCny = (g.currency === 'USD' ? sd.total * USD_CNY : sd.total) * p.fee / quota;
       if (!(valCny > 0)) continue;
@@ -1771,7 +1776,7 @@ function heatColor(v){
       const e = ML[m]; if (!e) continue;
       const pts = e.channels[g.points_channel], cny = e.channels.cny;
       if (!pts || !cny) continue;
-      const pd = weightDetail(pts, e.prov, null), cd = weightDetail(cny, e.prov, null);
+      const pd = weightDetail(pts, e.prov, g.points_channel, m), cd = weightDetail(cny, e.prov, 'cny', m);
       if (!pd || !cd || !(pd.total > 0)) continue;
       rows.push({m: m, val: cd.total / pd.total, r: q * cd.total / pd.total / fee});
     }
@@ -1796,7 +1801,7 @@ function heatColor(v){
     return h + t + '</table>';
   }
   const ratioInf = '<span class="inf" data-tip="' + regTip(infoTip('折算比',
-    '1 : n = 官方标价 ÷ 折算后价')) + '">i</span>';
+    '1 : n = 折算成本 : 官方原价')) + '">i</span>';
   /* 补充信息条目：icon + 类型 + 正文 + 可选链接；kind = good(绿) / info(灰) / warn(黄)，兼容旧的纯字符串写法 */
   const NOTE_ICON = {good: '✓', info: 'i', warn: '!'};
   const noteHTML = n => {
@@ -1839,22 +1844,24 @@ function heatColor(v){
       '<th class="qa">' + (derivedM ? '等效月额度' : '月额度') + mInf + '</th>';
     let midBody = '', ratBody = '';
     const planR = {};
+    /* 5h / 周额度占月额度的比例（该档官方值相除，不写死百分比）：GOAT / Pro 是 20% / 50%，Max 是 30% / 60% */
+    const wRatio = (p, k) => (p[k] != null && p.quota_monthly) ? p[k] / p.quota_monthly : null;
     for (const pname in g.plans){
       const p = g.plans[pname];
       const R = planRatio(g, p);
       planR[pname] = R;
-      /* 各模型额度不同（OpenCode Go）：5h/周/月额度均随模型变化，显示区间而非基准值 */
+      /* 各模型额度不同（OpenCode Go / Command Code）：5h/周/月额度均随模型变化，显示区间而非基准值 */
       const qv = p.quota_monthly_by_model
         ? g.models.filter(m => p.quota_monthly_by_model[m] != null).map(m => p.quota_monthly_by_model[m])
         : null;
-      const rng = f => qv
+      const rng = f => (qv && f != null)
         ? tprice(Math.min.apply(null, qv) * f, kind) + ' ~ ' + tprice(Math.max.apply(null, qv) * f, kind)
         : null;
       h += '<tr><td><b>' + pname + '</b></td>' +
         '<td class="fee">' + tprice(p.fee, kind) + '</td></tr>';
       midBody += '<tr>';
-      if (has5h) midBody += '<td class="qa">' + (rng(0.2) || q(p.quota_5h)) + '</td>';
-      if (hasWH) midBody += '<td class="qa">' + (rng(0.5) || q(p.quota_weekly)) + '</td>';
+      if (has5h) midBody += '<td class="qa">' + (rng(wRatio(p, 'quota_5h')) || q(p.quota_5h)) + '</td>';
+      if (hasWH) midBody += '<td class="qa">' + (rng(wRatio(p, 'quota_weekly')) || q(p.quota_weekly)) + '</td>';
       midBody += '<td class="qa">' + (rng(1) || q(eqMonthly(p))) + '</td></tr>';
       ratBody += R ? '<tr><td class="rat" data-tip="' + regTip(ratioTip(gname, pname, kind, R)) + '">' + ratioMain(R) + '</td></tr>'
                    : '<tr><td class="rat">—</td></tr>';
@@ -1879,6 +1886,7 @@ function heatColor(v){
         if (g.models.indexOf(m) < 0) continue;
         const sp = subPrice(m, g), off = sp ? refPxOf(sp.ch, toUsd) : null;
         mrows.push({m: m, q: p.quota_monthly_by_model[m], fee: p.fee, pl: pl,
+                    w5: wRatio(p, 'quota_5h'), ww: wRatio(p, 'quota_weekly'),
                     r: rmap[m] != null ? rmap[m] : null,
                     pr: sp ? sp.pr : null, off: off});
       }
@@ -1906,7 +1914,10 @@ function heatColor(v){
     };
     if (mrows.length){
       const multi = mplans.length > 1;
-      mrows.sort((a, b) => (multi ? (a.pl < b.pl ? -1 : (a.pl > b.pl ? 1 : 0)) : 0) || a.q - b.q || (a.m < b.m ? -1 : 1));
+      /* 行序：按套餐的数据顺序（Go → GOAT → Pro → Max 10× → Max 20×）→ 月额度 → 模型名 */
+      const planIdx = {};
+      mplans.forEach((pl, i) => { planIdx[pl] = i; });
+      mrows.sort((a, b) => (multi ? planIdx[a.pl] - planIdx[b.pl] : 0) || a.q - b.q || (a.m < b.m ? -1 : 1));
       const nModels = new Set(mrows.map(r => r.m)).size;
       h += '<details><summary>各模型额度（' + nModels + ' 个模型' +
         (multi ? ' · ' + mplans.join(' / ') + ' 分档' : '') + '）</summary>' +
@@ -1915,7 +1926,8 @@ function heatColor(v){
       for (const r of mrows)
         h += '<tr>' + (multi ? '<td class="qa">' + r.pl + '</td>' : '') + '<td>' + r.m + '</td>' +
           '<td class="px">' + priceCell(r.pr, r.off, r.m) + '</td>' +
-          '<td class="qa">' + tprice(r.q / 5, kind) + '</td><td class="qa">' + tprice(r.q / 2, kind) + '</td>' +
+          '<td class="qa">' + (r.w5 != null ? tprice(r.q * r.w5, kind) : '—') + '</td>' +
+          '<td class="qa">' + (r.ww != null ? tprice(r.q * r.ww, kind) : '—') + '</td>' +
           '<td class="qa">' + tprice(r.q, kind) + '</td><td class="rat">' +
           (r.r != null ? ratioShow(r.r) : '—') +
           '</td></tr>';
@@ -1963,10 +1975,10 @@ function heatColor(v){
         for (const m in prov.models){
           for (const {channels} of normalizeConditions(prov.models[m])){
             if (channels[gk] == null) continue;
-            const det = weightDetail(channels[gk], prov, gk);
+            const det = weightDetail(channels[gk], prov, gk, m);
             if (det && det.total > 0){
-              const off = channels.usd ? weightDetail(channels.usd, prov, 'usd')
-                        : channels.cny ? weightDetail(channels.cny, prov, 'cny') : null;
+              const off = channels.usd ? weightDetail(channels.usd, prov, 'usd', m)
+                        : channels.cny ? weightDetail(channels.cny, prov, 'cny', m) : null;
               const offCny = off ? off.total * (channels.usd ? USD_CNY : 1) : null;
               rows.push({m: m, v: det.total, r: offCny && det.total > 0 ? offCny / det.total : null});
             }
@@ -1977,7 +1989,7 @@ function heatColor(v){
       return rows;
     };
     const rslRatioInf = '<span class="inf" data-tip="' + regTip(infoTip('折算比',
-      '1 : n = 官方标价 ÷ 分组综合价')) + '">i</span>';
+      '1 : n = 折算成本 : 官方原价')) + '">i</span>';
     const rout = [];
     for (const rname of rnames){
       const r = RSL[rname];
