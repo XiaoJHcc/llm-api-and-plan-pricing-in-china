@@ -45,7 +45,7 @@
     "openrouter": { "label": "OpenRouter 模型与价格", "url": "https://openrouter.ai/api/v1/models" }
   },
   "usd_to_cny": 6.71,
-  "updated": "2026.9.29",
+  "updated": "2026.9.30",
   "filter_defaults": {
     "models": [
       "Fable 5.1",
@@ -71,7 +71,6 @@
       "sub:GLM Coding Plan",
       "sub:MiMo Token Plan",
       "sub:百炼 Token Plan",
-      "sub:火山 Agent Plan",
       "sub:OpenCode Go",
       "sub:Ollama Cloud"
     ]
@@ -1437,7 +1436,7 @@
             },
             "ark_afp": [
               { "input": 800, "cache_hit": 800, "output": 800 },
-              { "input": 480, "cache_hit": 480, "output": 480, "from": "2026-09-17", "until": "2026-09-30" }
+              { "input": 480, "cache_hit": 480, "output": 480, "from": "2026-09-17", "until": "2026-10-14" }
             ]
           }
         },
@@ -1532,7 +1531,7 @@
             },
             "ark_afp": [
               { "input": 250, "cache_hit": 250, "output": 250 },
-              { "input": 125, "cache_hit": 125, "output": 125, "until": "2026-09-28" }
+              { "input": 125, "cache_hit": 125, "output": 125, "from": "2026-09-15", "until": "2026-10-30" }
             ],
             "packy_deepseek_sale": { "input": 1, "cache_hit": 0.02, "output": 4 }
           },
@@ -2179,7 +2178,8 @@
               "input": 6,
               "cache_hit": 1.2,
               "output": 30
-            }
+            },
+            "ark_afp": { "input": 250, "cache_hit": 250, "output": 250 }
           }
         },
         "Doubao Seed 2.1 Turbo": {
@@ -2213,7 +2213,8 @@
               "input": 0.8,
               "cache_hit": 0.16,
               "output": 2.7
-            }
+            },
+            "ark_afp": { "input": 50, "cache_hit": 50, "output": 50 }
           }
         },
         "Doubao Seed 2.0 Lite": {
