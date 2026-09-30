@@ -21,6 +21,7 @@
   --ink:#1b1a17; --muted:#75716a; --faint:#a8a49b;
   --shadow-card:0 1px 2px rgba(27,26,23,.03),0 8px 24px -12px rgba(27,26,23,.08);
   --shadow-sep:linear-gradient(to right,rgba(60,50,30,.10),rgba(60,50,30,0));
+  --shadow-inset:inset 0 3px 6px -4px rgba(27,26,23,.20);  /* 凹槽面板顶部内阴影（各模型额度抽屉） */
   /* 语义色（浅色底上的深色文本；soft 色用 color-mix 派生，随主题自动适配） */
   --usd:#2376d2; --cny:#c2402a; --mid:#7a5af5; --sub:#0e9384; --point:#e8590c;
   --ok:#1e7e34; --warn:#9a6f06;
@@ -51,6 +52,7 @@
     --ink:#e8e6e0; --muted:#a29e93; --faint:#787369;
     --shadow-card:0 1px 2px rgba(0,0,0,.35),0 8px 24px -12px rgba(0,0,0,.55);
     --shadow-sep:linear-gradient(to right,rgba(0,0,0,.45),rgba(0,0,0,0));
+    --shadow-inset:inset 0 3px 6px -4px rgba(0,0,0,.5);
     --usd:#5ea3e8; --cny:#e0694f; --mid:#a08cf7; --sub:#38c0b1; --point:#f0843a;
     --ok:#4fbf6b; --warn:#d9a62e;
     --flash:#584722;
@@ -383,7 +385,7 @@ details .body{padding:2px var(--pad-x) 18px}
 .mqs-i{width:11px;height:11px;color:var(--faint);flex:none;transition:transform .15s}
 .pc details.mq[open] summary .mqs-i{transform:rotate(180deg)}
 .mqb{background:var(--head);border-top:1px solid var(--line);
-  box-shadow:inset 0 3px 6px -4px color-mix(in srgb,var(--ink) 22%,transparent);padding:var(--sp-3) 0 var(--sp-2)}
+  box-shadow:var(--shadow-inset);padding:var(--sp-3) 0 var(--sp-2)}
 /* 档位胶囊：中性墨块为选中态，未选中为描边胶囊 */
 .mqt{display:flex;flex-wrap:wrap;gap:var(--sp-1);margin:0 var(--pad-x) var(--sp-2)}
 .mqtb{appearance:none;border:1px solid var(--line);border-radius:var(--r-pill);background:var(--card);
@@ -1291,6 +1293,7 @@ function heatColor(v){
         for (const c of cands) c.tipId = regTip(c.tip);
         const bestIdx = BEST_ROWS.length;
         BEST_ROWS.push(cands);
+        r.bestIdx = bestIdx;
         CHART_ROWS.push({m: g.mname, ck: r.ck, ref: r.cny, best: bestIdx});
         let best0 = null;
         for (const c of cands) if (!best0 || c.cny < best0.cny) best0 = c;
@@ -1326,7 +1329,13 @@ function heatColor(v){
         bodyR += '<td class="fill"></td></tr>';
       });
     }
-    out.push('<div class="vt" data-p="' + pname + '"><div class="csplit">' +
+    /* 渠道价 = 该渠道在本厂商表全部模型 × 条件下最低的综合价（折人民币），供筛选按价格升序排列渠道列 */
+    const chanLow = {};
+    for (const gr of groups) for (const r of gr.rows){
+      for (const c of BEST_ROWS[r.bestIdx]) if (chanLow[c.ch] == null || c.cny < chanLow[c.ch]) chanLow[c.ch] = c.cny;
+    }
+    out.push('<div class="vt" data-p="' + pname + '" data-chanlow="' +
+      encodeURIComponent(JSON.stringify(chanLow)) + '"><div class="csplit">' +
       '<div class="cside"><table class="cmp"><colgroup>' + cgL + '</colgroup><thead>' + headL + '</thead><tbody>' + bodyL + '</tbody></table></div>' +
       '<div class="cscroll"><table class="cmp"><colgroup>' + cgR + '</colgroup><thead>' + headR + '</thead><tbody>' + bodyR + '</tbody></table></div>' +
       '</div></div>');
@@ -1439,6 +1448,8 @@ function heatColor(v){
 
   const rows = Array.prototype.slice.call(document.querySelectorAll('#compareBox .cside tbody tr[data-m]'));
   const tables = Array.prototype.slice.call(document.querySelectorAll('#compareBox .vt[data-p]'));
+  /* 各厂商表的渠道价（compare() 挂载）：渠道 key → 该表内最低综合价，重排序时按最低者取用 */
+  for (const div of tables) div._chanLow = JSON.parse(decodeURIComponent(div.dataset.chanlow || '%7B%7D'));
   const bestCells = Array.prototype.slice.call(document.querySelectorAll('#compareBox [data-best]'));
   /* 每个模型的条件行组：空行被隐藏后，模型名单元格需移到首个可见行并同步 rowspan */
   const mgroups = [];
@@ -1449,11 +1460,19 @@ function heatColor(v){
     curMg.rows.push(tr);
   }
 
-  /* 按渠道筛选把列整体重排：选中渠道靠左（保持原顺序），未选中靠右。
+  /* 按渠道筛选把列整体重排：选中渠道靠左，未选中靠右，两侧各按渠道价（**该厂商表内**最低的综合价）
+     从低到高排，同价按 key 定序保证稳定。渠道价逐表计算，故各厂商表的渠道列序可以不同。
      右表（渠道表）的 DOM 序列（colgroup / thead 两行 / tbody 每行）里，渠道单元均连续成块，
-     故抽出带 data-ch 的子节点按 chPos 稳定排序后放回原块位置；左表（模型/参考/最优）不动。 */
-  function reorderChannels(pos){
+     故抽出带 data-ch 的子节点按该表的位置表稳定排序后放回原块位置；左表（模型/参考/最优）不动。 */
+  function reorderChannels(){
     document.querySelectorAll('#compareBox .vt[data-p]').forEach(vt => {
+      const cl = vt._chanLow || {};
+      const lowOf = k => (cl[k] == null ? Infinity : cl[k]);
+      const byLow = (a, b) => lowOf(a) - lowOf(b) || a.localeCompare(b);
+      const on = chans.filter(c => chVisible[c.key]).map(c => c.key).sort(byLow);
+      const off = chans.filter(c => !chVisible[c.key]).map(c => c.key).sort(byLow);
+      const pos = {};
+      on.concat(off).forEach((k, i) => { pos[k] = i; });
       const blocks = [];
       vt.querySelectorAll('colgroup').forEach(cg => blocks.push(cg));
       vt.querySelectorAll('thead tr, tbody tr').forEach(tr => blocks.push(tr));
@@ -1461,7 +1480,9 @@ function heatColor(v){
         const cels = Array.prototype.filter.call(block.children, el => el.hasAttribute && el.hasAttribute('data-ch'));
         if (cels.length < 2) continue;
         const ref = cels[cels.length - 1].nextElementSibling;
-        cels.sort((a, b) => (pos[a.dataset.ch] - pos[b.dataset.ch]));
+        /* 本表没有价目的渠道（不在 _chanLow 里）排到末位，不与有价渠道争序 */
+        cels.sort((a, b) => (pos[a.dataset.ch] == null ? Infinity : pos[a.dataset.ch]) -
+                            (pos[b.dataset.ch] == null ? Infinity : pos[b.dataset.ch]));
         for (const el of cels) el.remove();
         for (const el of cels) block.insertBefore(el, ref);
         /* 重排后按可见列重标分组竖界：首格（最优右邻）一律不带 grp，其余按 data-ch 变化处标 grp，
@@ -1560,17 +1581,12 @@ function heatColor(v){
     }
     /* 空列剔除：依赖上文各行显隐结果，须在渠道重排前执行 */
     hideEmptyCols();
-    /* 渠道列：未选中不再隐藏，改为灰化（保持可见），并整组排到右侧 */
-    const chOrder = [];
-    for (const c of chans){ if (chVisible[c.key]) chOrder.push(c.key); }
-    for (const c of chans){ if (!chVisible[c.key]) chOrder.push(c.key); }
-    const chPos = {};
-    chOrder.forEach((k, i) => { chPos[k] = i; });
+    /* 渠道列：未选中不再隐藏，改为灰化（保持可见）；列序由 reorderChannels 逐表算（各表渠道价不同） */
     for (const key in chEls){
       const off = !chVisible[key];
       for (const el of chEls[key]) el.classList.toggle('off', off);
     }
-    reorderChannels(chPos);
+    reorderChannels();
     /* 最优：在可见渠道内重算最低 */
     for (const td of bestCells){
       const cands = BEST_ROWS[+td.dataset.best];
