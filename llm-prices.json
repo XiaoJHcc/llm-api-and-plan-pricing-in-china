@@ -446,7 +446,7 @@
         "Space Bunny Free"
       ],
       "notes": [
-        {"kind": "crit", "label": "降智", "text": "DeepSeek V4.1 Flash 与官方版本智力严重不符，疑似经过过度量化（2026.9.30 实测）。"},
+        {"kind": "crit", "label": "降智", "text": "DeepSeek V4.1 Flash 与官方版本相比降智严重，出现各种幻觉、事实性错误、睁眼说瞎话，疑似经过过度量化。", "link": "https://weibo.com/1880890480/RktVmzUA5"},
         {"kind": "warn", "label": "出尔反尔", "text": "曾在未通告的情况下，大幅降低 DeepSeek 额度（从 $120 降至 $15），后续恢复的所谓永久 $60 未必可靠。"},
         {"kind": "good", "label": "额度透明", "text": "官方明确了额度倍率。"},
         {"kind": "good", "label": "尝鲜", "text": "新发布的模型与官方同步上线，且有许多测试模型可抢先体验。"}
