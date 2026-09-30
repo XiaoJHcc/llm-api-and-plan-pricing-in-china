@@ -342,14 +342,16 @@ details .body{padding:2px var(--pad-x) 18px}
    flex:1 吸收卡片等高产生的多余高度，适用模型行锚定底部保持跨卡对齐 */
 .pcf{border-top:1px solid var(--line);background:var(--head);padding:var(--sp-3) var(--pad-x) 14px;display:flex;flex-direction:column;gap:var(--sp-2);flex:1}
 .pnote{display:flex;gap:var(--sp-2);align-items:flex-start;padding:var(--sp-2);border-radius:var(--r-sm);
-  background:var(--card);font-size:var(--fs-sm);line-height:1.5}
-/* 图标小方块边长 = 行高（1.5em），与首行文字等高对齐 */
+  background:color-mix(in srgb,var(--ink) 4%,transparent);font-size:var(--fs-sm);line-height:1.5}
+/* 图标小方块边长 = 行高：自身不设字号，1.5em 按 .pnote 的 --fs-sm 解析，恰等于一个行盒（1.5 × 13px）；
+   图标字符装在内层 i 里缩到 --fs-xs，单行时图标块与文字行盒同高、中心重合 */
 .pnote .pi{flex:none;width:1.5em;height:1.5em;border-radius:var(--r-xs);display:inline-flex;align-items:center;
-  justify-content:center;font-size:var(--fs-xs);font-weight:800;font-style:normal}
+  justify-content:center;font-weight:800}
+.pnote .pi i{font-style:normal;font-size:var(--fs-xs);line-height:1}
 .pnote .pnt{flex:1;min-width:0}
 .pnote .pl{font-weight:750;margin-right:2px}
 .pnote .pl::after{content:'：';font-weight:400}
-.n-info .pi{background:var(--ref-2);color:var(--muted)}
+.n-info .pi{background:color-mix(in srgb,var(--muted) 15%,transparent);color:var(--muted)}
 .n-info .pl{color:var(--muted)}
 .n-info .px{color:var(--muted)}
 .n-good{background:color-mix(in srgb,var(--ok) 6%,transparent)}
@@ -1864,7 +1866,7 @@ function heatColor(v){
   const noteHTML = n => {
     const o = typeof n === 'string' ? {kind: 'info', label: '备注', text: n} : n;
     const kind = NOTE_ICON[o.kind] ? o.kind : 'info';
-    return '<div class="pnote n-' + kind + '"><span class="pi">' + NOTE_ICON[kind] + '</span>' +
+    return '<div class="pnote n-' + kind + '"><span class="pi"><i>' + NOTE_ICON[kind] + '</i></span>' +
       '<div class="pnt"><b class="pl">' + o.label + '</b><span class="px">' + String(o.text).replace(/\n/g, '<br>') + '</span>' +
       (o.link ? '<a class="pnl" href="' + o.link + '" target="_blank" rel="noopener">来源 ↗</a>' : '') + '</div></div>';
   };
