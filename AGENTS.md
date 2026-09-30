@@ -51,6 +51,7 @@
   "models": { "模型名": { "条件名": { "渠道key": { "分量key": 单价 } } } },
   "sources": { "usd": "https://…" },                                  // 渠道 key → 该厂商定价页，覆盖渠道级 source
   "conditionNotes": { "梁文谷": "空闲时段说明…" },                      // 条件名 → 说明；`default` = 无条件，不显示标签
+  "channelNotes": { "opencode": "降智说明…" },                          // 渠道 key → 该厂商此渠道的特有说明（原始数据表列头 ⓘ，与渠道级 note 合并显示）
   "channelWeights": { "packy_grok_sale": { "input": 31, "output": 0.2 } },   // 整体替换 weights
   "modelChannelWeights": { "Qwen 3.8 Flash": { "commandcode": { … } } } }    // 同上，优先级更高
 ```
@@ -78,7 +79,7 @@
 
 // notes 条目（订阅 / 中转站通用；旧的纯字符串写法等价 info）
 { "kind": "good", "label": "…", "text": "…", "link": "…", "hover": "…" }
-// kind：good 绿 ✓ / info 灰 i / warn 黄 !；text 是给人看的直白评价（可吐槽），hover 只在主表浮窗出现
+// kind：good 绿 ✓ / info 灰 i / warn 黄 ! / crit 红 ✕（严重问题，如降智）；text 是给人看的直白评价（可吐槽），hover 只在主表浮窗出现
 ```
 
 ### 限期值（候选数组）
@@ -116,5 +117,5 @@
 - **改任何价格都同步更新顶层 `updated` 日期。**
 - **自主边界**：模型新增与价格数值 → agent 自主；实测权重与一切注释 → 用户本人填；
 - **先请示**：缺失的模型 / 订阅档位、新的计价维度（Batch / 优先档 / 区域加价）。
-- **不增加任何解释性文字**：所有的 `notes` / `weights_note` / `weights_notes` / `conditionNotes` 将会在前端展示，**不是你的笔记本，注意 UI 卫生**，增删改一律先问用户。用户批准前**不得私自增加任何**面板可见的解释文字。
+- **不增加任何解释性文字**：所有的 `notes` / `weights_note` / `weights_notes` / `conditionNotes` / `channelNotes` 将会在前端展示，**不是你的笔记本，注意 UI 卫生**，增删改一律先问用户。用户批准前**不得私自增加任何**面板可见的解释文字。
 - **不变量**：展示文案不写进 HTML（厂商名 / 条件名 / 渠道名 / 备注全部来自 JSON）；不引入构建工具、依赖、CDN、外链字体；新增订阅 / 中转站渠道 key 用英文小写下划线，且必须出现在 `providers` 里。
