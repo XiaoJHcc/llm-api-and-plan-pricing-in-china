@@ -52,7 +52,7 @@
       "Opus 5.5",
       "Sonnet 5.5",
       "GPT 6 Astra",
-      "GPT 6 Sol",
+      "GPT 6.1 Sol",
       "Grok 4.7",
       "Gemini 3.8 Flash",
       "GLM-5.3",
@@ -143,6 +143,7 @@
       },
       "models": [
         "GPT 6 Astra",
+        "GPT 6.1 Sol",
         "GPT 6 Sol",
         "GPT 6 Luna",
         "GPT 5.6 Sol",
@@ -503,6 +504,7 @@
           "excluded_models": [
             "Sonnet 5",
             "Haiku 4.5",
+            "GPT 6.1 Sol",
             "GPT 6 Sol",
             "GPT 5.6 Terra",
             "GPT 5.6 Sol",
@@ -575,6 +577,7 @@
           "excluded_models": [
             "Sonnet 5",
             "Haiku 4.5",
+            "GPT 6.1 Sol",
             "GPT 6 Sol",
             "GPT 5.6 Terra",
             "GPT 6 Astra"
@@ -631,7 +634,7 @@
             "Qwen 3.7 Flash": 30,
             "DeepSeek V4 Flash Vision Exp": 30
           },
-          "excluded_models": ["GPT 6 Astra"]
+          "excluded_models": ["GPT 6 Astra", "GPT 6.1 Sol"]
         },
         "Max 10×": {
           "fee": 100,
@@ -676,6 +679,7 @@
             "Sonnet 5": 100,
             "Haiku 4.5": 100,
             "GPT 6 Sol": 100,
+            "GPT 6.1 Sol": 100,
             "GPT 5.6 Terra": 100,
             "Sonnet 5.5": 100,
             "GPT 6 Astra": 100,
@@ -726,6 +730,7 @@
             "Sonnet 5": 200,
             "Haiku 4.5": 200,
             "GPT 6 Sol": 200,
+            "GPT 6.1 Sol": 200,
             "GPT 5.6 Terra": 200,
             "Sonnet 5.5": 200,
             "GPT 6 Astra": 200,
@@ -737,6 +742,7 @@
       "models": [
         "Sonnet 5",
         "Haiku 4.5",
+        "GPT 6.1 Sol",
         "GPT 6 Sol",
         "GPT 6 Luna",
         "GPT 5.6 Sol",
@@ -947,6 +953,26 @@
           },
           "default": {
             "packy_codex_sale": { "input": 5, "cache_write_30min": 6.25, "cache_hit": 0.5, "output": 25 }
+          }
+        },
+        "GPT 6.1 Sol": {
+          "≤272K": {
+            "commandcode": { "input": 2, "cache_write_30min": 2.5, "cache_hit": 0.1, "output": 10 },
+            "usd": {
+              "input": 2,
+              "cache_write_30min": 2.5,
+              "cache_hit": 0.1,
+              "output": 10
+            }
+          },
+          ">272K": {
+            "commandcode": { "input": 4, "cache_write_30min": 5, "cache_hit": 0.2, "output": 15 },
+            "usd": {
+              "input": 4,
+              "cache_write_30min": 5,
+              "cache_hit": 0.2,
+              "output": 15
+            }
           }
         },
         "GPT 6 Sol": {
