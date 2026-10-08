@@ -78,6 +78,8 @@
   "billing_types": {
     "floating_quota": { "label": "浮动额度",
       "desc": "额度以标价金额计，但用量为非官方估算，仅作参考" },
+    "per_model_floating_quota": { "label": "区分模型浮动额度",
+      "desc": "额度以标价金额计，各模型额度不同，但用量为非官方实测估算，仅作参考" },
     "unified_quota": { "label": "统一额度",
       "desc": "额度以金额计且为准确值，所有模型共用同一额度" },
     "per_model_quota": { "label": "区分模型额度",
@@ -93,19 +95,22 @@
     "Claude 订阅": {
       "currency": "USD",
       "type": "money_quota",
-      "billing": "floating_quota",
+      "billing": "per_model_floating_quota",
       "plans": {
         "Pro": {
           "fee": 20,
-          "quota_monthly": 165
+          "quota_5h_by_model": { "Fable 5.1": 30.3, "Opus 5.5": 143.1, "Sonnet 5.5": 152.3 },
+          "quota_weekly_by_model": { "Fable 5.1": 57.3, "Opus 5.5": 271.1, "Sonnet 5.5": 288.4 }
         },
         "Max 5x": {
           "fee": 100,
-          "quota_monthly": 1375
+          "quota_5h_by_model": { "Fable 5.1": 151.1, "Opus 5.5": 695.7, "Sonnet 5.5": 761.3 },
+          "quota_weekly_by_model": { "Fable 5.1": 286.1, "Opus 5.5": 1317.6, "Sonnet 5.5": 1441.9 }
         },
         "Max 20x": {
           "fee": 200,
-          "quota_monthly": 2750
+          "quota_5h_by_model": { "Fable 5.1": 302, "Opus 5.5": 1424.8, "Sonnet 5.5": 1522.3 },
+          "quota_weekly_by_model": { "Fable 5.1": 572, "Opus 5.5": 2698.6, "Sonnet 5.5": 2883.4 }
         }
       },
       "models": [
@@ -119,7 +124,7 @@
         "Haiku 4.5"
       ],
       "notes": [
-        {"kind": "warn", "label": "额度来源", "text": "来自网络信息（2026 年 5 月的逆向反推），可能会随机调整，仅供参考。", "link": "https://zhuanlan.zhihu.com/p/2027017728410628819", "hover": "额度来自网络信息，仅供估算"},
+        {"kind": "warn", "label": "额度来源", "text": "SemiAnalysis 2026-10-05 限额实测（±5%），各模型额度不同，部分为外推；第三方数据，非官方公布。", "link": "https://newsletter.semianalysis.com/p/anthropic-subscriptions-offer-5x", "hover": "额度来自 SemiAnalysis 限额实测，非官方公布"},
         {"kind": "warn", "label": "封号", "text": "你买不到。"}
       ],
       "source": "https://claude.com/pricing"
@@ -127,19 +132,23 @@
     "ChatGPT 订阅": {
       "currency": "USD",
       "type": "money_quota",
-      "billing": "floating_quota",
+      "billing": "per_model_floating_quota",
       "plans": {
         "Plus": {
           "fee": 20,
-          "quota_weekly": 70
+          "quota_weekly_by_model": { "GPT 6.1 Sol": 48.6 }
         },
-        "Pro 5x": {
+        "Pro 100": {
           "fee": 100,
-          "quota_weekly": 350
+          "quota_weekly_by_model": { "GPT 6 Astra": 333.5, "GPT 6.1 Sol": 242.8 }
         },
-        "Pro 10x": {
+        "Pro 200": {
           "fee": 200,
-          "quota_weekly": 700
+          "quota_weekly_by_model": { "GPT 6 Astra": 667, "GPT 6.1 Sol": 479.6 }
+        },
+        "Pro 500": {
+          "fee": 500,
+          "quota_weekly_by_model": { "GPT 6 Astra": 1601, "GPT 6.1 Sol": 1199 }
         }
       },
       "models": [
@@ -152,10 +161,25 @@
         "GPT 5.6 Luna"
       ],
       "notes": [
-        {"kind": "warn", "label": "额度来源", "text": "来自社区 sub2api 计费估算，可能会随机调整，仅供参考。", "hover": "额度来自网络信息，仅供估算"},
+        {"kind": "warn", "label": "额度来源", "text": "SemiAnalysis 2026-10-05 限额实测（±5%），各模型额度不同，部分为外推；第三方数据，非官方公布。9/29 前购买的 $200 套餐额度只保留到 10/29。", "link": "https://newsletter.semianalysis.com/p/anthropic-subscriptions-offer-5x", "hover": "额度来自 SemiAnalysis 限额实测，非官方公布"},
         {"kind": "warn", "label": "封号", "text": "你买不到。"}
       ],
       "source": "https://chatgpt.com/zh-Hans-CN/pricing/"
+    },
+    "Grok 订阅": {
+      "currency": "USD",
+      "type": "money_quota",
+      "billing": "floating_quota",
+      "plans": {
+        "SuperGrok Heavy": {
+          "fee": 300,
+          "quota_weekly_by_model": { "Grok 4.7": 1342 }
+        }
+      },
+      "models": [
+        "Grok 4.7"
+      ],
+      "source": "https://x.ai/pricing"
     },
     "Kimi 订阅": {
       "currency": "CNY",

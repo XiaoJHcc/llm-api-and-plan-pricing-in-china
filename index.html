@@ -781,10 +781,14 @@ function compact(v){
   if (v % 1e3 === 0 && v >= 1e6) return (v / 1e6) + 'M';
   return fmt(v);
 }
-/* 等效月额度：部分订阅只规定 5h 或周额度（百炼 / GLM / ChatGPT），月额度由前端按 周额度 × 52/12 推导，不落盘到数据；金额保留 2 位小数 */
-const eqMonthly = p => p.quota_monthly != null
-  ? p.quota_monthly
-  : Math.round(p.quota_weekly * (52 / 12) * 100) / 100;
+/* 等效月额度：部分订阅只规定 5h 或周额度（GLM），月额度由前端按 周额度 × 52/12 推导，不落盘到数据；金额保留 2 位小数 */
+const eqMonthly = (p, m) => {
+  if (p.quota_monthly_by_model && m != null && p.quota_monthly_by_model[m] != null) return p.quota_monthly_by_model[m];
+  if (p.quota_monthly != null) return p.quota_monthly;
+  const w = (p.quota_weekly_by_model && m != null && p.quota_weekly_by_model[m] != null)
+    ? p.quota_weekly_by_model[m] : p.quota_weekly;
+  return w != null ? Math.round(w * (52 / 12) * 100) / 100 : null;
+};
 /* 积分额度显示取整，不显示小数 */
 const ptsStr = v => v == null ? '' : compact(Math.round(v)) + ' 积分';
 function fix2(s){
@@ -1079,15 +1083,15 @@ function subDetail(mname, channels, prov){
       for (const pl in g.plans){
         const p = g.plans[pl];
         if (p.excluded_models && p.excluded_models.indexOf(mname) >= 0) continue;
-        /* 各模型月额度可不同（OpenCode Go）；未规定月额度时（如 ChatGPT）回落到前端推导的等效月额度 */
-        const quota = (p.quota_monthly_by_model && p.quota_monthly_by_model[mname] != null)
-          ? p.quota_monthly_by_model[mname] : eqMonthly(p);
+        /* 各模型月额度可不同（OpenCode Go / Claude / ChatGPT / Grok）；无分模型值则回落该档月额度，两者皆无时该档不出价 */
+        const quota = eqMonthly(p, mname);
+        if (quota == null) continue;
         const value = det.total * p.fee / quota;
         const valCny = g.currency === 'USD' ? value * USD_CNY : value;
         out[gname + '||' + pl] = {
           value: value, currency: g.currency, det: det, notes: notes,
           plan: {group: gname, plan: pl, fee: p.fee, quota: quota, currency: g.currency,
-                 quotaDerived: p.quota_monthly == null,
+                 quotaDerived: p.quota_monthly == null && !p.quota_monthly_by_model,
                  ratio: (ref != null && valCny > 0) ? ref / valCny : null},
         };
       }
@@ -1799,8 +1803,7 @@ function heatColor(v){
       if (p.excluded_models && p.excluded_models.indexOf(m) >= 0) continue;
       const sp = subPrice(m, g);
       if (!sp) continue;
-      const quota = (p.quota_monthly_by_model && p.quota_monthly_by_model[m] != null)
-        ? p.quota_monthly_by_model[m] : eqMonthly(p);
+      const quota = eqMonthly(p, m);
       const sd = weightDetail(sp.pr, sp.prov, sp.key, m), ref = refCnyOf(sp.ch, sp.prov, m);
       if (!sd || !(sd.total > 0) || ref == null || !(quota > 0)) continue;
       const valCny = (g.currency === 'USD' ? sd.total * USD_CNY : sd.total) * p.fee / quota;
@@ -1887,11 +1890,12 @@ function heatColor(v){
     let h = '<div class="pc"><div class="pch"><span class="pn">' + gname + '</span>' +
       srcLinks(g.source, 'psrc', '官网↗') + '<span class="tags">' + tagCur + tagBill + '</span></div>';
 
-    /* 各套餐可能只规定部分额度口径（百炼 / ChatGPT 仅周额度），按实际出现与否决定列显隐 */
-    const has5h = Object.values(g.plans).some(p => p.quota_5h != null);
-    const hasWH = Object.values(g.plans).some(p => p.quota_weekly != null);
-    /* 官方未规定月额度的套餐（百炼 / GLM / ChatGPT）：月额度由前端按 周额度 × 52/12 推导，标注为等效 */
-    const derivedM = Object.values(g.plans).some(p => p.quota_monthly == null && p.quota_weekly != null);
+    /* 各套餐可能只规定部分额度口径（GLM），按实际出现与否决定列显隐 */
+    const has5h = Object.values(g.plans).some(p => p.quota_5h != null || p.quota_5h_by_model != null);
+    const hasWH = Object.values(g.plans).some(p => p.quota_weekly != null || p.quota_weekly_by_model != null);
+    /* 官方未规定月额度的套餐（GLM）：月额度由前端按 周额度 × 52/12 推导，标注为等效 */
+    const derivedM = Object.values(g.plans).some(p => p.quota_monthly == null && !p.quota_monthly_by_model &&
+      (p.quota_weekly != null || p.quota_weekly_by_model != null));
     const mInf = derivedM ? '<span class="inf" data-tip="' + regTip(infoTip('等效月额度',
       '官方未规定月额度，按 周额度 × 52/12 推导')) + '">i</span>' : '';
     const q = v => isMoney ? tprice(v, kind) : ptsStr(v);
@@ -1905,23 +1909,47 @@ function heatColor(v){
     const planR = {};
     /* 5h / 周额度占月额度的比例（该档官方值相除，不写死百分比）：GOAT / Pro 是 20% / 50%，Max 是 30% / 60% */
     const wRatio = (p, k) => (p[k] != null && p.quota_monthly) ? p[k] / p.quota_monthly : null;
+    /* 分模型额度区间：单值显示单值，多值显示 min ~ max；空 map 返回 null */
+    const rangeOf = map => {
+      if (!map) return null;
+      const vs = g.models.filter(m => map[m] != null).map(m => map[m]);
+      if (!vs.length) return null;
+      const lo = Math.min.apply(null, vs), hi = Math.max.apply(null, vs);
+      return lo === hi ? tprice(lo, kind) : tprice(lo, kind) + ' ~ ' + tprice(hi, kind);
+    };
+    /* 该档位覆盖到的模型（任一 by_model 字段里出现即算）：月额度一律由 eqMonthly 就地解析 */
+    const covered = p => {
+      const s = new Set(Object.keys(p.quota_monthly_by_model || {})
+        .concat(Object.keys(p.quota_5h_by_model || {}), Object.keys(p.quota_weekly_by_model || {})));
+      return g.models.filter(m => s.has(m));
+    };
+    const monthMap = p => {
+      const o = {};
+      for (const m of covered(p)) if (eqMonthly(p, m) != null) o[m] = eqMonthly(p, m);
+      return o;
+    };
+    /* 没有分模型 5h/周数据时，把分模型月额度按该档的标量比例缩放成一份新的 map */
+    const scaleQ = (p, f) => {
+      if (f == null) return null;
+      const mm = monthMap(p), o = {};
+      for (const m in mm) o[m] = mm[m] * f;
+      return Object.keys(o).length ? o : null;
+    };
     for (const pname in g.plans){
       const p = g.plans[pname];
       const R = planRatio(g, p);
       planR[pname] = R;
-      /* 各模型额度不同（OpenCode Go / Command Code）：5h/周/月额度均随模型变化，显示区间而非基准值 */
-      const qv = p.quota_monthly_by_model
-        ? g.models.filter(m => p.quota_monthly_by_model[m] != null).map(m => p.quota_monthly_by_model[m])
-        : null;
-      const rng = f => (qv && f != null)
-        ? tprice(Math.min.apply(null, qv) * f, kind) + ' ~ ' + tprice(Math.max.apply(null, qv) * f, kind)
-        : null;
+      /* 各模型额度不同（OpenCode Go / Command Code / Claude / ChatGPT）：分模型数据优先直取，
+         没有时退回「分模型月额度 × 该档标量比例」推区间，最后才是单值 */
+      const qcell = (byModel, scalar, f) => rangeOf(byModel) || rangeOf(scaleQ(p, f)) ||
+        (scalar != null ? q(scalar) : '—');
       h += '<tr><td><b>' + pname + '</b></td>' +
         '<td class="fee">' + tprice(p.fee, kind) + '</td></tr>';
       midBody += '<tr>';
-      if (has5h) midBody += '<td class="qa">' + (rng(wRatio(p, 'quota_5h')) || q(p.quota_5h)) + '</td>';
-      if (hasWH) midBody += '<td class="qa">' + (rng(wRatio(p, 'quota_weekly')) || q(p.quota_weekly)) + '</td>';
-      midBody += '<td class="qa">' + (rng(1) || q(eqMonthly(p))) + '</td></tr>';
+      if (has5h) midBody += '<td class="qa">' + qcell(p.quota_5h_by_model, p.quota_5h, wRatio(p, 'quota_5h')) + '</td>';
+      if (hasWH) midBody += '<td class="qa">' + qcell(p.quota_weekly_by_model, p.quota_weekly, wRatio(p, 'quota_weekly')) + '</td>';
+      midBody += '<td class="qa">' + (rangeOf(monthMap(p)) ||
+        (eqMonthly(p) != null ? q(eqMonthly(p)) : '—')) + '</td></tr>';
       if (R){
         const tipId = regTip(ratioTip(gname, pname, kind, R));
         DYN_TIPS.push({id: tipId, build: () => ratioTip(gname, pname, kind, R)});
@@ -1940,15 +1968,20 @@ function heatColor(v){
     const toUsd = g.currency === 'USD';
     for (const pl in g.plans){
       const p = g.plans[pl];
-      if (!p.quota_monthly_by_model) continue;
+      const cms = covered(p);
+      if (!cms.length) continue;
       mplans.push(pl);
       const rmap = {};
       if (planR[pl]) for (const x of planR[pl].rows) rmap[x.m] = x.r;
-      for (const m in p.quota_monthly_by_model){
-        if (g.models.indexOf(m) < 0) continue;
+      for (const m of cms){
         const sp = subPrice(m, g), off = sp ? refPxOf(sp.ch, toUsd) : null;
-        mrows.push({m: m, q: p.quota_monthly_by_model[m], fee: p.fee, pl: pl,
-                    w5: wRatio(p, 'quota_5h'), ww: wRatio(p, 'quota_weekly'),
+        const q = eqMonthly(p, m);
+        const w5r = wRatio(p, 'quota_5h'), wwr = wRatio(p, 'quota_weekly');
+        mrows.push({m: m, q: q, fee: p.fee, pl: pl,
+                    w5: (p.quota_5h_by_model && p.quota_5h_by_model[m] != null) ? p.quota_5h_by_model[m]
+                      : (w5r != null ? q * w5r : null),
+                    ww: (p.quota_weekly_by_model && p.quota_weekly_by_model[m] != null) ? p.quota_weekly_by_model[m]
+                      : (wwr != null ? q * wwr : null),
                     r: rmap[m] != null ? rmap[m] : null,
                     pr: sp ? sp.pr : null, off: off});
       }
@@ -1998,8 +2031,8 @@ function heatColor(v){
         for (const r of mrows) if (r.pl === pl){
           lbody += '<tr data-m="' + r.m + '"><td>' + r.m + '</td></tr>';
           mbody += '<tr data-m="' + r.m + '">' +
-            '<td class="qa">' + (r.w5 != null ? tprice(r.q * r.w5, kind) : '—') + '</td>' +
-            '<td class="qa">' + (r.ww != null ? tprice(r.q * r.ww, kind) : '—') + '</td>' +
+            (has5h ? '<td class="qa">' + (r.w5 != null ? tprice(r.w5, kind) : '—') + '</td>' : '') +
+            (hasWH ? '<td class="qa">' + (r.ww != null ? tprice(r.ww, kind) : '—') + '</td>' : '') +
             '<td class="qa qm">' + tprice(r.q, kind) + '</td>' +
             '<td class="px">' + priceCell(r.pr, r.off, r.m) + '</td></tr>';
           rbody += '<tr data-m="' + r.m + '"><td class="rat">' + (r.r != null ? ratioShow(r.r) : '—') + '</td></tr>';
@@ -2007,7 +2040,8 @@ function heatColor(v){
         h += '<div class="mqp"' + (multi && i ? ' hidden' : '') + '><div class="ptab">' +
           '<div class="pt-side"><table class="plm"><thead><tr><th>模型</th></tr></thead><tbody>' + lbody + '</tbody></table></div>' +
           '<div class="pscroll"><table class="plm"><thead><tr>' +
-          '<th class="qa">5h 额度</th><th class="qa">周额度</th><th class="qa">月额度</th><th class="px">订阅单价</th>' +
+          (has5h ? '<th class="qa">5h 额度</th>' : '') + (hasWH ? '<th class="qa">周额度</th>' : '') +
+          '<th class="qa">月额度</th><th class="px">订阅单价</th>' +
           '</tr></thead><tbody>' + mbody + '</tbody></table></div>' +
           '<div class="pt-side"><table class="plm"><thead><tr><th class="rat">折算比</th></tr></thead><tbody>' + rbody + '</tbody></table></div>' +
           '</div></div>';

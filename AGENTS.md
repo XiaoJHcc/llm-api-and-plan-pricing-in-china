@@ -73,6 +73,7 @@
   "points_channel": "glm_coding_points",     // points 用
   "price_channel": "opencode",               // money_quota 用，缺省按币种回退美元 usd / 人民币 cny
   "plans": { "Lite": { "fee": 118, "quota_5h": 2000, "quota_weekly": 10000, "quota_monthly": …,
+                       "quota_5h_by_model": { "模型": 值 }, "quota_weekly_by_model": { "模型": 值 },
                        "quota_monthly_by_model": { "模型": 值 }, "excluded_models": ["模型"] } },
   "models": ["GLM-5.3"], "notes": [ { "kind": "good", "label": "…", "text": "…" } ],
   "priceOverrideNotes": { "模型": "口径说明" }, "source": "https://…" }
@@ -107,6 +108,7 @@
 | `unified_quota` | 统一额度。金额准确，全模型共用同一额度 —— Kimi 订阅 |
 | `unified_points` | 统一积分。积分计费，与各模型原价成固定等比 —— MiMo |
 | `per_model_quota` | 区分模型额度。各模型额度不同，各模型定价也可能不同 —— OpenCode Go / Ollama Cloud / Command Code |
+| `per_model_floating_quota` | 区分模型浮动额度。金额为标价，各模型额度不同，但用量属第三方实测估算 —— Claude / ChatGPT / Grok 订阅 |
 | `per_model_points` | 区分模型积分。积分计费，与原价不等比、各模型比例不同 —— GLM / 百炼 / 火山 Agent Plan |
 | `paygo` | 按量计费。无月费无额度 —— 中转站 |
 
