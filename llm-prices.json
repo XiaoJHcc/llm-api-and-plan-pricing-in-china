@@ -45,7 +45,7 @@
     "openrouter": { "label": "OpenRouter 模型与价格", "url": "https://openrouter.ai/api/v1/models" }
   },
   "usd_to_cny": 6.71,
-  "updated": "2026.9.30",
+  "updated": "2026.10.8",
   "filter_defaults": {
     "models": [
       "Fable 5.1",
@@ -115,6 +115,7 @@
         "Opus 5",
         "Sonnet 5.5",
         "Sonnet 5",
+        "Haiku 5.5",
         "Haiku 4.5"
       ],
       "notes": [
@@ -503,6 +504,7 @@
           "quota_monthly": 10,
           "excluded_models": [
             "Sonnet 5",
+            "Haiku 5.5",
             "Haiku 4.5",
             "GPT 6.1 Sol",
             "GPT 6 Sol",
@@ -576,6 +578,7 @@
           },
           "excluded_models": [
             "Sonnet 5",
+            "Haiku 5.5",
             "Haiku 4.5",
             "GPT 6.1 Sol",
             "GPT 6 Sol",
@@ -627,6 +630,7 @@
             "MiniMax M2.7": 30,
             "MiniMax M2.5": 30,
             "Sonnet 5": 20,
+            "Haiku 5.5": 20,
             "Haiku 4.5": 20,
             "GPT 6 Sol": 20,
             "GPT 5.6 Terra": 20,
@@ -677,6 +681,7 @@
             "MiniMax M2.7": 150,
             "MiniMax M2.5": 150,
             "Sonnet 5": 100,
+            "Haiku 5.5": 100,
             "Haiku 4.5": 100,
             "GPT 6 Sol": 100,
             "GPT 6.1 Sol": 100,
@@ -728,6 +733,7 @@
             "MiniMax M2.7": 300,
             "MiniMax M2.5": 300,
             "Sonnet 5": 200,
+            "Haiku 5.5": 200,
             "Haiku 4.5": 200,
             "GPT 6 Sol": 200,
             "GPT 6.1 Sol": 200,
@@ -741,6 +747,7 @@
       },
       "models": [
         "Sonnet 5",
+        "Haiku 5.5",
         "Haiku 4.5",
         "GPT 6.1 Sol",
         "GPT 6 Sol",
@@ -897,7 +904,29 @@
         "Sonnet 5.5": {
           "default": {
             "commandcode": { "input": 2, "cache_write_5min": 2.5, "cache_hit": 0.2, "output": 10 },
-            "usd": { "input": 2, "cache_write_5min": 2.5, "cache_write_1h": 4, "cache_hit": 0.2, "output": 10 }
+            "usd": { "input": 2, "cache_write_5min": 2.5, "cache_write_1h": 4, "cache_hit": 0.1, "output": 10 }
+          }
+        },
+        "Haiku 5.5": {
+          "≤100K": {
+            "usd": {
+              "input": 0.1,
+              "cache_write_5min": 0.125,
+              "cache_write_1h": 0.2,
+              "cache_hit": 0.01,
+              "output": 0.5
+            },
+            "commandcode": { "input": 0.1, "cache_write_5min": 0.125, "cache_hit": 0.01, "output": 0.5 }
+          },
+          ">100K": {
+            "usd": {
+              "input": 0.5,
+              "cache_write_5min": 0.625,
+              "cache_write_1h": 1,
+              "cache_hit": 0.05,
+              "output": 2.5
+            },
+            "commandcode": { "input": 0.5, "cache_write_5min": 0.625, "cache_hit": 0.05, "output": 2.5 }
           }
         },
         "Haiku 4.5": {
