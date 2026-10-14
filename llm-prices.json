@@ -45,7 +45,7 @@
     "openrouter": { "label": "OpenRouter 模型与价格", "url": "https://openrouter.ai/api/v1/models" }
   },
   "usd_to_cny": 6.71,
-  "updated": "2026.10.13",
+  "updated": "2026.10.14",
   "filter_defaults": {
     "models": [
       "Fable 5.1",
@@ -54,6 +54,7 @@
       "GPT 6 Astra",
       "GPT 6.1 Sol",
       "Grok 4.7",
+      "Gemini 4 Argon",
       "Gemini 3.8 Flash",
       "GLM-5.3",
       "GLM-5.3-Flash",
@@ -887,7 +888,7 @@
               "cache_hit": 0.2,
               "output": 20
             },
-            "packy_cc_sale": { "input": 3.2, "cache_write_5min": 4, "cache_hit": 0.16, "output": 16 }
+            "packy_cc_sale": [ { "input": 3.2, "cache_write_5min": 4, "cache_hit": 0.16, "output": 16, "until": "2026-10-13" } ]
           }
         },
         "Opus 5": {
@@ -899,12 +900,9 @@
               "cache_hit": 0.5,
               "output": 25
             },
-            "packy_cc_sale": {
-              "input": 4,
-              "cache_write_5min": 5,
-              "cache_hit": 0.4,
-              "output": 20
-            }
+            "packy_cc_sale": [
+              { "input": 4, "cache_write_5min": 5, "cache_hit": 0.4, "output": 20, "until": "2026-10-13" }
+            ]
           }
         },
         "Sonnet 5": {
@@ -917,12 +915,9 @@
               "cache_hit": 0.2,
               "output": 10
             },
-            "packy_cc_sale": {
-              "input": 1.6,
-              "cache_write_5min": 2,
-              "cache_hit": 0.16,
-              "output": 8
-            }
+            "packy_cc_sale": [
+              { "input": 1.6, "cache_write_5min": 2, "cache_hit": 0.16, "output": 8, "until": "2026-10-13" }
+            ]
           }
         },
         "Sonnet 5.5": {
@@ -963,12 +958,9 @@
               "cache_hit": 0.1,
               "output": 5
             },
-            "packy_cc_sale": {
-              "input": 0.8,
-              "cache_write_5min": 1,
-              "cache_hit": 0.08,
-              "output": 4
-            }
+            "packy_cc_sale": [
+              { "input": 0.8, "cache_write_5min": 1, "cache_hit": 0.08, "output": 4, "until": "2026-10-13" }
+            ]
           }
         }
       },
@@ -1299,8 +1291,24 @@
       "weights_note": "估算值，未经实测",
       "hit_rate": { "estimated": true },
       "models": {
+        "Gemini 4 Argon": {
+          "首发价": [
+            {
+              "usd": { "input": 2, "cache_hit": 0.1, "output": 10 },
+              "commandcode": { "input": 2, "cache_hit": 0.1, "output": 10 },
+              "packy_gemini_slb": { "input": 6, "cache_hit": 0.3, "output": 30 },
+              "until": "2026-11-30"
+            }
+          ],
+          "标准价": [
+            {
+              "usd": { "input": 4, "cache_hit": 0.2, "output": 20 },
+              "from": "2026-12-01"
+            }
+          ]
+        },
         "Gemini 3.8 Flash": {
-          "2026 年": [
+          "首发价": [
             {
               "commandcode": { "input": 1.5, "cache_hit": 0.15, "output": 7.5 },
               "usd": {
@@ -1316,7 +1324,7 @@
               "until": "2026-12-31"
             }
           ],
-          "2027 年": [
+          "标准价": [
             {
               "commandcode": { "input": 1.5, "cache_hit": 0.15, "output": 7.5 },
               "usd": {
