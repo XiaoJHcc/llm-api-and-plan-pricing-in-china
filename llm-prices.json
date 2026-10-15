@@ -45,7 +45,7 @@
     "openrouter": { "label": "OpenRouter 模型与价格", "url": "https://openrouter.ai/api/v1/models" }
   },
   "usd_to_cny": 6.71,
-  "updated": "2026.10.14",
+  "updated": "2026.10.15",
   "filter_defaults": {
     "models": [
       "Fable 5.1",
@@ -418,7 +418,7 @@
             "Muse Spark 1.2 Contributor": 60,
             "Hy4 Preview": 30,
             "Hy3": 60,
-            "GPT 6 Luna": 15
+            "GPT 6 Luna": 15, "Gemini 4 Argon": 60, "Haiku 5.5": 15, "Space Bunny": 30
           }
         },
         "Go Plus": {
@@ -435,7 +435,8 @@
             "Qwen 3.8 Max": 60, "Qwen 3.8 Flash": 90, "Qwen 3.7 Plus": 180,
             "DeepSeek V4.1 Flash": 120, "DeepSeek V4 Pro": 60, "DeepSeek V4 Flash": 120,
             "DeepSeek V4 Flash Vision Exp": 60, "Hy4 Preview": 120, "Hy3": 240,
-            "Grok 4.7": 60, "Grok 4.6": 60, "GPT 6 Luna": 60, "GPT 5.6 Luna": 60
+            "Grok 4.7": 60, "Grok 4.6": 60, "GPT 6 Luna": 60, "GPT 5.6 Luna": 60,
+            "Gemini 4 Argon": 240, "Haiku 5.5": 60, "Space Bunny": 120
           }
         }
       },
@@ -468,8 +469,10 @@
         "Hy4 Preview",
         "Hy3",
         "GPT 6 Luna",
+        "Haiku 5.5",
+        "Gemini 4 Argon",
         "LongCat 2.5 Preview Free",
-        "Space Bunny Free"
+        "Space Bunny"
       ],
       "notes": [
         {"kind": "crit", "label": "降智", "text": "DeepSeek V4.1 Flash 与官方版本相比降智严重，出现各种幻觉、事实性错误、睁眼说瞎话，疑似经过过度量化。", "link": "https://weibo.com/1880890480/RktVmzUA5"},
@@ -565,10 +568,18 @@
             "Hy3": 70,
             "Kimi K2.7 Code": 60,
             "DeepSeek V4 Flash": 60,
-            "DeepSeek V4.1 Flash": 60,
+            "DeepSeek V4.1 Flash": [
+              { "value": 60, "until": "2026-10-12" },
+              { "value": 100, "from": "2026-10-13", "until": "2026-10-16" },
+              { "value": 80, "from": "2026-10-17" }
+            ],
             "LongCat-2.0": 50,
             "MiniMax M3": 47,
-            "GLM-5.3-Flash": 40,
+            "GLM-5.3-Flash": [
+              { "value": 60, "until": "2026-10-13" },
+              { "value": 100, "from": "2026-10-14", "until": "2026-10-17" },
+              { "value": 80, "from": "2026-10-18" }
+            ],
             "Gemini 3.8 Flash": 40,
             "Qwen 3.7 Max": 33,
             "Qwen 3.7 Plus": 33,
@@ -622,10 +633,18 @@
             "Hy3": 80,
             "Kimi K2.7 Code": 70,
             "DeepSeek V4 Flash": 70,
-            "DeepSeek V4.1 Flash": 70,
+            "DeepSeek V4.1 Flash": [
+              { "value": 70, "until": "2026-10-12" },
+              { "value": 100, "from": "2026-10-13", "until": "2026-10-16" },
+              { "value": 90, "from": "2026-10-17" }
+            ],
             "LongCat-2.0": 60,
             "MiniMax M3": 57,
-            "GLM-5.3-Flash": 50,
+            "GLM-5.3-Flash": [
+              { "value": 70, "until": "2026-10-13" },
+              { "value": 100, "from": "2026-10-14", "until": "2026-10-17" },
+              { "value": 90, "from": "2026-10-18" }
+            ],
             "Gemini 3.8 Flash": 50,
             "Qwen 3.7 Max": 43,
             "Qwen 3.7 Plus": 43,
@@ -935,7 +954,8 @@
               "cache_hit": 0.01,
               "output": 0.5
             },
-            "commandcode": { "input": 0.1, "cache_write_5min": 0.125, "cache_hit": 0.01, "output": 0.5 }
+            "commandcode": { "input": 0.1, "cache_write_5min": 0.125, "cache_hit": 0.01, "output": 0.5 },
+            "opencode": { "input": 0.1, "cache_write_5min": 0.125, "cache_hit": 0.01, "output": 0.5 }
           },
           ">100K": {
             "usd": {
@@ -945,7 +965,8 @@
               "cache_hit": 0.05,
               "output": 2.5
             },
-            "commandcode": { "input": 0.5, "cache_write_5min": 0.625, "cache_hit": 0.05, "output": 2.5 }
+            "commandcode": { "input": 0.5, "cache_write_5min": 0.625, "cache_hit": 0.05, "output": 2.5 },
+            "opencode": { "input": 0.5, "cache_write_5min": 0.625, "cache_hit": 0.05, "output": 2.5 }
           }
         },
         "Haiku 4.5": {
@@ -1292,23 +1313,25 @@
       "hit_rate": { "estimated": true },
       "models": {
         "Gemini 4 Argon": {
-          "首发价": [
+          "default": [
             {
               "usd": { "input": 2, "cache_hit": 0.1, "output": 10 },
               "commandcode": { "input": 2, "cache_hit": 0.1, "output": 10 },
+              "opencode": { "input": 4, "cache_hit": 0.2, "output": 20 },
               "packy_gemini_slb": { "input": 6, "cache_hit": 0.3, "output": 30 },
               "until": "2026-11-30"
-            }
-          ],
-          "标准价": [
+            },
             {
               "usd": { "input": 4, "cache_hit": 0.2, "output": 20 },
+              "commandcode": { "input": 4, "cache_hit": 0.2, "output": 20 },
+              "opencode": { "input": 4, "cache_hit": 0.2, "output": 20 },
+              "packy_gemini_slb": { "input": 6, "cache_hit": 0.3, "output": 30 },
               "from": "2026-12-01"
             }
           ]
         },
         "Gemini 3.8 Flash": {
-          "首发价": [
+          "default": [
             {
               "commandcode": { "input": 1.5, "cache_hit": 0.15, "output": 7.5 },
               "usd": {
@@ -1322,15 +1345,18 @@
                 "output": 11.25
               },
               "until": "2026-12-31"
-            }
-          ],
-          "标准价": [
+            },
             {
               "commandcode": { "input": 1.5, "cache_hit": 0.15, "output": 7.5 },
               "usd": {
                 "input": 1.5,
                 "cache_hit": 0.15,
                 "output": 7.5
+              },
+              "packy_gemini_slb": {
+                "input": 2.25,
+                "cache_hit": 0.225,
+                "output": 11.25
               },
               "from": "2027-01-01"
             }
@@ -2447,9 +2473,9 @@
     },
     "Space Bunny": {
       "models": {
-        "Space Bunny Free": {
+        "Space Bunny": {
           "default": {
-            "opencode": { "input": 0, "cache_hit": 0, "output": 0 }
+            "opencode": { "input": 0.15, "cache_hit": 0.03, "output": 0.6 }
           }
         }
       }
