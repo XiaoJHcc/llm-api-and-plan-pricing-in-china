@@ -45,7 +45,7 @@
     "openrouter": { "label": "OpenRouter 模型与价格", "url": "https://openrouter.ai/api/v1/models" }
   },
   "usd_to_cny": 6.71,
-  "updated": "2026.10.15",
+  "updated": "2026.10.24",
   "filter_defaults": {
     "models": [
       "Fable 5.1",
@@ -58,7 +58,7 @@
       "Gemini 3.8 Flash",
       "GLM-5.3",
       "GLM-5.3-Flash",
-      "Kimi K3",
+      "Kimi K3.1 Pro",
       "Kimi K2.8 Preview",
       "DeepSeek V4.1 Flash",
       "Qwen 3.8 Max",
@@ -68,7 +68,7 @@
     ],
     "channels": [
       "reseller:Packy",
-      "sub:Kimi 订阅",
+      "sub:Kimi 老会员",
       "sub:GLM Coding Plan",
       "sub:MiMo Token Plan",
       "sub:百炼 Token Plan",
@@ -182,39 +182,66 @@
       ],
       "source": "https://x.ai/pricing"
     },
-    "Kimi 订阅": {
+    "Kimi 老会员": {
       "currency": "CNY",
       "type": "money_quota",
-      "billing": "unified_quota",
+      "billing": "floating_quota",
       "plans": {
-        "Plus": {
+        "Moderato": {
           "fee": 99,
-          "quota_5h": 65,
-          "quota_monthly": 1392.86
+          "quota_5h": 22,
+          "quota_weekly": 110,
+          "quota_monthly": 550
         },
-        "Pro": {
+        "Allegretto": {
           "fee": 199,
           "quota_5h": 130,
-          "quota_monthly": 2785.71
+          "quota_weekly": 650,
+          "quota_monthly": 2700
         },
-        "Max": {
+        "Allegro": {
           "fee": 699,
-          "quota_5h": 455,
-          "quota_monthly": 9750.02
+          "quota_5h": 325,
+          "quota_weekly": 1625,
+          "quota_monthly": 6750
         }
       },
       "models": [
+        "Kimi K3.1 Pro",
         "Kimi K3",
-        "Kimi K2.8 Preview"
+        "Kimi K2.8 Preview",
+        "Kimi K2.7 Code",
+        "Kimi K2.6"
       ],
       "notes": [
-        {"kind": "good", "label": "额度一致", "text": "官方未明确额度，但可根据用量百分比反推，且据观察不会随机浮动。"},
-        {"kind": "info", "label": "额度来源", "text": "来自 2026 年 8 月个人 Kimi 订阅用量反推，准确度较高。但未经官方验证。", "hover": "额度来自个人用量反推，未经官方验证"},
-        {"kind": "warn", "label": "特殊限制", "text": "Plus 可用 K3 但仅 256K 上下文。"}
+        {"kind": "info", "label": "额度来源", "text": "Moderato 和 Allegretto 额度来自 2026 年 7~10 月个人 Kimi 订阅用量反推，Allegro 为合理外推。社区反馈额度可能不一致，未经官方验证。", "hover": "额度来自个人用量反推，未经官方验证"},
+        {"kind": "warn", "label": "特殊限制", "text": "Moderato 可用 K3 但仅 256K 上下文，可用 K3.1 Pro 1M 但 5 小时限额不足以跑完单次任务，且无 Highspeed。"}
       ],
       "priceOverrideNotes": {
         "Kimi K2.8 Preview": "API 未上线，¥ 官方价为按 K2.7 Code 同价的估算值"
       },
+      "source": "https://www.kimi.com/help/membership/membership-pricing"
+    },
+    "Kimi 新会员": {
+      "currency": "CNY",
+      "type": "money_quota",
+      "billing": "floating_quota",
+      "plans": {
+        "Plus": { "fee": 99 },
+        "Pro": { "fee": 199 },
+        "Max": { "fee": 699 },
+        "Ultra": { "fee": 1399 }
+      },
+      "models": [
+        "Kimi K3.1 Pro",
+        "Kimi K3",
+        "Kimi K2.8 Preview",
+        "Kimi K2.7 Code",
+        "Kimi K2.6"
+      ],
+      "notes": [
+        {"kind": "warn", "label": "额度未知", "text": "新套餐相比老套餐额度大幅下降，且具体额度未知。"}
+      ],
       "source": "https://www.kimi.com/help/membership/membership-pricing"
     },
     "GLM Coding Plan": {
@@ -1520,6 +1547,24 @@
         "stats": { "cache_write": 46175031, "cache_hit": 1701238549, "output": 8950506 }
       },
       "models": {
+        "Kimi K3.1 Pro": {
+          "default": {
+            "usd": {
+              "input": 2,
+              "cache_write_5min": 2,
+              "cache_write_1h": 4,
+              "cache_hit": 0.2,
+              "output": 10
+            },
+            "cny": {
+              "input": 13,
+              "cache_write_5min": 13,
+              "cache_write_1h": 26,
+              "cache_hit": 1.3,
+              "output": 68
+            }
+          }
+        },
         "Kimi K3": {
           "default": {
             "commandcode": { "input": 3, "cache_hit": 0.3, "output": 15 },

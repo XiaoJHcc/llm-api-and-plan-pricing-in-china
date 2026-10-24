@@ -39,7 +39,7 @@
 
 ## 二、数据字段
 
-顶层：`components`（分量 key → 中文名，表头与浮窗文案的唯一来源）/ `weights_baseline`（**不参与计算**，只做权重丸的基准对比）/ `channels` / `api_refs` / `usd_to_cny` / `updated` / `filter_defaults`（首屏默认勾选的模型与渠道 key，如 `reseller:Packy` / `sub:Kimi 订阅`；缺失即全选）/ `billing_types` / `subscriptions` / `resellers` / `providers`。
+顶层：`components`（分量 key → 中文名，表头与浮窗文案的唯一来源）/ `weights_baseline`（**不参与计算**，只做权重丸的基准对比）/ `channels` / `api_refs` / `usd_to_cny` / `updated` / `filter_defaults`（首屏默认勾选的模型与渠道 key，如 `reseller:Packy` / `sub:Kimi 老会员`；缺失即全选）/ `billing_types` / `subscriptions` / `resellers` / `providers`。
 
 ```jsonc
 // providers[厂商]
@@ -102,14 +102,14 @@
 - 算法只看 `type`，`billing` 不参与计算（只决定胶囊文案与配色）：`money_quota` = 额度按标价金额计，成本 = 标价渠道（`price_channel`，缺省按币种取 `usd` / `cny`）综合价 × 月费 ÷ 月额度；`points` = 额度按积分计，成本 = 积分渠道（`points_channel`）综合消耗 × 月费 ÷ 月额度。
 - `billing` 按折算比的显示形态选：区间用 `per_model_*`，全档单一值用 `unified_*` / `floating_*`，中转站卡固定 `paygo`。
 
-| `billing` | 含义与现有 |
+| `billing` | 含义与典型 |
 | --- | --- |
-| `floating_quota` | 浮动额度。金额为标价，用量属非官方估算 —— Claude / ChatGPT 订阅 |
-| `unified_quota` | 统一额度。金额准确，全模型共用同一额度 —— Kimi 订阅 |
-| `unified_points` | 统一积分。积分计费，与各模型原价成固定等比 —— MiMo |
+| `floating_quota` | 浮动额度。金额为标价，用量属非官方估算 |
+| `unified_quota` | 统一额度。金额准确，全模型共用同一额度 |
+| `unified_points` | 统一积分。积分计费，与各模型原价成固定等比 —— MiMo Coding Plan |
 | `per_model_quota` | 区分模型额度。各模型额度不同，各模型定价也可能不同 —— OpenCode Go / Ollama Cloud / Command Code |
 | `per_model_floating_quota` | 区分模型浮动额度。金额为标价，各模型额度不同，但用量属第三方实测估算 —— Claude / ChatGPT / Grok 订阅 |
-| `per_model_points` | 区分模型积分。积分计费，与原价不等比、各模型比例不同 —— GLM / 百炼 / 火山 Agent Plan |
+| `per_model_points` | 区分模型积分。积分计费，与原价不等比、各模型比例不同 —— GLM Coding Plan |
 | `paygo` | 按量计费。无月费无额度 —— 中转站 |
 
 ## 四、来源与维护
