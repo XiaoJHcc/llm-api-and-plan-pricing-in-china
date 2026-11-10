@@ -45,7 +45,7 @@
     "openrouter": { "label": "OpenRouter 模型与价格", "url": "https://openrouter.ai/api/v1/models" }
   },
   "usd_to_cny": 6.69,
-  "updated": "2026.11.05",
+  "updated": "2026.11.10",
   "filter_defaults": {
     "models": [
       "Fable 5.1",
@@ -318,19 +318,19 @@
       "plans": {
         "Lite": {
           "fee": 39,
-          "quota_monthly": 11500
+          "quota_monthly": 20000
         },
         "Essential": {
           "fee": 79,
-          "quota_monthly": 25500
+          "quota_monthly": 45000
         },
         "Standard": {
           "fee": 139,
-          "quota_monthly": 45000
+          "quota_monthly": 80000
         },
         "Pro": {
-          "fee": 499,
-          "quota_monthly": 180000
+          "fee": 312,
+          "quota_monthly": 200000
         }
       },
       "models": [
