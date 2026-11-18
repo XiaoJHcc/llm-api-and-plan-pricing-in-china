@@ -2144,7 +2144,7 @@ function heatColor(v){
         ? '<span class="tag t-bill-m" data-tip="' + regTip(infoTip(bill.label + ' · 计费方式', bill.desc)) + '">' + bill.label + '</span>'
         : '';
       let h = '<div class="pc"><div class="pch"><span class="pn">' + rname + '</span>' +
-        srcLinks(r.source, 'psrc', '官网↗') + '<span class="tags">' + tagCur + tagBill + '</span></div>';
+        srcLinks(r.homepage || r.source, 'psrc', '官网↗') + '<span class="tags">' + tagCur + tagBill + '</span></div>';
       /* 单表三列（分组 | 覆盖模型 | 折算比）：中段无需横向滚动（超宽裁切），单表保证行高天然对齐 */
       let rowsH = '';
       for (const gk in r.groups){

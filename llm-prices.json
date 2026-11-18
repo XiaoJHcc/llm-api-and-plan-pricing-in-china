@@ -878,6 +878,7 @@
     "Packy": {
       "currency": "CNY",
       "source": "https://www.packyapi.com/pricing",
+      "homepage": "https://www.packyapi.com/register?aff=7Mul",
       "api": "https://www.packyapi.com/api/pricing",
       "notes": [],
       "groups": {

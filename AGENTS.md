@@ -65,7 +65,8 @@
   "source": "https://…", "api": "https://…", // source = 定价依据页；api = 可选，渠道自家机读端点
   "note": "换算口径，可选，显示在原始价格表表头 ⓘ" }
 // resellers[名称]：分组 key 被 providers 引用即成为主表渠道列（列名取 label）
-{ "currency": "CNY", "source": "…", "api": "…", "notes": [],
+// source = 定价依据页；homepage = 卡片「官网」链接，可填邀请链接，缺省回退到 source
+{ "currency": "CNY", "source": "…", "homepage": "…", "api": "…", "notes": [],
   "groups": { "packy_grok_sale": { "label": "grok-sale", "note": "可选，进表头与浮窗" } } }
 // subscriptions[名称]：priceOverrides 按模型覆盖标价，代码已支持但当前无数据
 { "currency": "CNY", "type": "money_quota",  // money_quota | points —— 决定算法分支
