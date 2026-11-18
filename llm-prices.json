@@ -404,9 +404,8 @@
         "Kimi K3.1 Pro"
       ],
       "notes": [
-        {"kind": "good", "label": "积分透明", "text": "官方明确了各模型抵扣系数。"},
         {"kind": "warn", "label": "不适合编程任务", "text": "无缓存命中优惠，所有输入统一计费。高级别订阅的编程性价比不如原价 API，低级别订阅 5 小时限额不足以完成编程任务。"},
-        {"kind": "good", "label": "适合聊天机器人", "text": "适合聊天、翻译、生图、TTS 等短流程任务。9.9 元入门搭建聊天机器人。"}
+        {"kind": "crit", "label": "言论审查", "text": "抱歉，您的问题我无法识别。"}
       ],
       "source": "https://www.volcengine.com/docs/82379/2366394"
     },
