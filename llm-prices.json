@@ -45,14 +45,14 @@
     "openrouter": { "label": "OpenRouter 模型与价格", "url": "https://openrouter.ai/api/v1/models" }
   },
   "usd_to_cny": 6.69,
-  "updated": "2026.11.11",
+  "updated": "2026.11.18",
   "filter_defaults": {
     "models": [
-      "Fable 5.1",
+      "Fable 5.2",
       "Opus 5.5",
       "Sonnet 5.5",
-      "GPT 6 Astra",
-      "GPT 6.1 Sol",
+      "GPT 6.2 Astra",
+      "GPT 6.2 Sol",
       "Grok 4.7",
       "Gemini 4 Argon",
       "Gemini 3.8 Flash",
@@ -911,8 +911,21 @@
         "stats": { "cache_write": 74444000, "cache_hit": 1381493000, "output": 10455000 }
       },
       "models": {
+        "Fable 5.2": {
+          "default": {
+            "commandcode": { "input": 8, "cache_write_5min": 10, "cache_hit": 0.2, "output": 40 },
+            "usd": {
+              "input": 8,
+              "cache_write_5min": 10,
+              "cache_write_1h": 16,
+              "cache_hit": 0.2,
+              "output": 40
+            }
+          }
+        },
         "Fable 5.1": {
           "default": {
+            "commandcode": { "input": 10, "cache_write_5min": 12.5, "cache_hit": 0.25, "output": 50 },
             "usd": {
               "input": 10,
               "cache_write_5min": 12.5,
@@ -924,6 +937,7 @@
         },
         "Fable 5": {
           "default": {
+            "commandcode": { "input": 10, "cache_write_5min": 12.5, "cache_hit": 1, "output": 50 },
             "usd": {
               "input": 10,
               "cache_write_5min": 12.5,
@@ -935,6 +949,7 @@
         },
         "Opus 5.5": {
           "default": {
+            "commandcode": { "input": 4, "cache_write_5min": 5, "cache_hit": 0.2, "output": 20 },
             "usd": {
               "input": 4,
               "cache_write_5min": 5,
@@ -947,6 +962,7 @@
         },
         "Opus 5": {
           "default": {
+            "commandcode": { "input": 5, "cache_write_5min": 6.25, "cache_hit": 0.5, "output": 25 },
             "usd": {
               "input": 5,
               "cache_write_5min": 6.25,
@@ -1028,6 +1044,46 @@
       "weights_note": "估算值，未经实测",
       "hit_rate": { "estimated": true },
       "models": {
+        "GPT 6.2 Astra": {
+          "≤272K": {
+            "commandcode": { "input": 8, "cache_write_30min": 10, "cache_hit": 0.4, "output": 40 },
+            "usd": {
+              "input": 8,
+              "cache_write_30min": 10,
+              "cache_hit": 0.4,
+              "output": 40
+            }
+          },
+          ">272K": {
+            "commandcode": { "input": 16, "cache_write_30min": 20, "cache_hit": 0.8, "output": 60 },
+            "usd": {
+              "input": 16,
+              "cache_write_30min": 20,
+              "cache_hit": 0.8,
+              "output": 60
+            }
+          }
+        },
+        "GPT 6.2 Sol": {
+          "≤272K": {
+            "commandcode": { "input": 2, "cache_write_30min": 2.5, "cache_hit": 0.1, "output": 10 },
+            "usd": {
+              "input": 2,
+              "cache_write_30min": 2.5,
+              "cache_hit": 0.1,
+              "output": 10
+            }
+          },
+          ">272K": {
+            "commandcode": { "input": 4, "cache_write_30min": 5, "cache_hit": 0.2, "output": 15 },
+            "usd": {
+              "input": 4,
+              "cache_write_30min": 5,
+              "cache_hit": 0.2,
+              "output": 15
+            }
+          }
+        },
         "GPT 6 Astra": {
           "≤272K": {
             "commandcode": { "input": 10, "cache_write_30min": 12.5, "cache_hit": 1, "output": 50 },
