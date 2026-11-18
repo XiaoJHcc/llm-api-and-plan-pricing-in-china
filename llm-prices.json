@@ -920,7 +920,8 @@
               "cache_write_1h": 16,
               "cache_hit": 0.2,
               "output": 40
-            }
+            },
+            "packy_cc_sale": { "input": 6.4, "cache_write_5min": 8, "cache_hit": 0.16, "output": 32 }
           }
         },
         "Fable 5.1": {
@@ -990,7 +991,7 @@
           "default": {
             "commandcode": { "input": 2, "cache_write_5min": 2.5, "cache_hit": 0.2, "output": 10 },
             "usd": { "input": 2, "cache_write_5min": 2.5, "cache_write_1h": 4, "cache_hit": 0.1, "output": 10 },
-            "packy_cc_sale": { "input": 1.6, "cache_write_5min": 2, "cache_hit": 0.16, "output": 8 }
+            "packy_cc_sale": { "input": 1.6, "cache_write_5min": 2, "cache_hit": 0.08, "output": 8 }
           }
         },
         "Haiku 5.5": {
@@ -1062,6 +1063,9 @@
               "cache_hit": 0.8,
               "output": 60
             }
+          },
+          "default": {
+            "packy_codex_sale": { "input": 2.4, "cache_write_30min": 3, "cache_hit": 0.12, "output": 12 }
           }
         },
         "GPT 6.2 Sol": {
@@ -1082,6 +1086,9 @@
               "cache_hit": 0.2,
               "output": 15
             }
+          },
+          "default": {
+            "packy_codex_sale": { "input": 0.6, "cache_write_30min": 0.75, "cache_hit": 0.03, "output": 3 }
           }
         },
         "GPT 6 Astra": {
@@ -1104,7 +1111,7 @@
             }
           },
           "default": {
-            "packy_codex_sale": { "input": 5, "cache_write_30min": 6.25, "cache_hit": 0.5, "output": 25 }
+            "packy_codex_sale": { "input": 3, "cache_write_30min": 3.75, "cache_hit": 0.3, "output": 15 }
           }
         },
         "GPT 6.1 Sol": {
@@ -1127,7 +1134,7 @@
             }
           },
           "default": {
-            "packy_codex_sale": { "input": 1, "cache_write_30min": 1.25, "cache_hit": 0.05, "output": 5 }
+            "packy_codex_sale": { "input": 0.6, "cache_write_30min": 0.75, "cache_hit": 0.03, "output": 3 }
           }
         },
         "GPT 6.1 Terra": {
@@ -1148,6 +1155,9 @@
               "cache_hit": 0.1,
               "output": 7.5
             }
+          },
+          "default": {
+            "packy_codex_sale": { "input": 0.3, "cache_write_30min": 0.375, "cache_hit": 0.015, "output": 1.5 }
           }
         },
         "GPT 6 Sol": {
@@ -1160,10 +1170,10 @@
               "output": 10
             },
             "packy_codex_sale": {
-              "input": 1,
-              "cache_write_30min": 1.25,
-              "cache_hit": 0.1,
-              "output": 5
+              "input": 0.6,
+              "cache_write_30min": 0.75,
+              "cache_hit": 0.06,
+              "output": 3
             }
           },
           ">272K": {
@@ -1175,10 +1185,10 @@
               "output": 15
             },
             "packy_codex_sale": {
-              "input": 2,
-              "cache_write_30min": 2.5,
-              "cache_hit": 0.2,
-              "output": 7.5
+              "input": 1.2,
+              "cache_write_30min": 1.5,
+              "cache_hit": 0.12,
+              "output": 4.5
             }
           }
         },
@@ -1214,10 +1224,10 @@
               "output": 20
             },
             "packy_codex_sale": {
-              "input": 2,
-              "cache_write_30min": 2.5,
-              "cache_hit": 0.2,
-              "output": 10
+              "input": 1.2,
+              "cache_write_30min": 1.5,
+              "cache_hit": 0.12,
+              "output": 6
             }
           },
           ">272K": {
@@ -1229,10 +1239,10 @@
               "output": 30
             },
             "packy_codex_sale": {
-              "input": 4,
-              "cache_write_30min": 5,
-              "cache_hit": 0.4,
-              "output": 15
+              "input": 2.4,
+              "cache_write_30min": 3,
+              "cache_hit": 0.24,
+              "output": 9
             }
           }
         },
@@ -1802,7 +1812,7 @@
               { "input": 250, "cache_hit": 250, "output": 250 },
               { "input": 125, "cache_hit": 125, "output": 125, "from": "2026-09-15", "until": "2026-12-30" }
             ],
-            "packy_deepseek_sale": { "input": 1, "cache_hit": 0.02, "output": 4 }
+            "packy_deepseek_sale": { "input": 0.8, "cache_hit": 0.016, "output": 3.2 }
           },
           "梁文谷": {
             "commandcode": { "input": 0.15, "cache_hit": 0.003, "output": 0.6 },
@@ -1821,7 +1831,7 @@
               "cache_hit": 0.02,
               "output": 4
             },
-            "packy_deepseek_sale": { "input": 0.5, "cache_hit": 0.01, "output": 2 }
+            "packy_deepseek_sale": { "input": 0.4, "cache_hit": 0.008, "output": 1.6 }
           },
           "Ollama 谷时": {
             "ollama": { "input": 0.15, "cache_hit": 0.003, "output": 0.60 }
