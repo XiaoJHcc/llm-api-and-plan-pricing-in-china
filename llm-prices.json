@@ -45,7 +45,7 @@
     "openrouter": { "label": "OpenRouter 模型与价格", "url": "https://openrouter.ai/api/v1/models" }
   },
   "usd_to_cny": 6.69,
-  "updated": "2026.11.18",
+  "updated": "2026.11.21",
   "filter_defaults": {
     "models": [
       "Fable 5.2",
@@ -54,8 +54,9 @@
       "GPT 6.2 Astra",
       "GPT 6.2 Sol",
       "Grok 4.7",
-      "Gemini 4 Argon",
-      "Gemini 3.8 Flash",
+      "Gemini 4 Carbon",
+      "Gemini 4 Neon",
+      "Gemini 4 Hydrogen",
       "GLM-5.3",
       "GLM-5.3-Flash",
       "Kimi K3.1 Pro",
@@ -574,6 +575,9 @@
             "Grok 4.7",
             "Grok 4.6",
             "Gemini 3.8 Flash",
+            "Gemini 4 Argon",
+            "Gemini 4 Carbon",
+            "Gemini 4 Neon",
             "Sonnet 5.5",
             "GPT 6 Astra",
             "GPT 6.1 Terra"
@@ -648,7 +652,10 @@
             "GPT 6 Sol",
             "GPT 5.6 Terra",
             "GPT 6 Astra",
-            "GPT 6.1 Terra"
+            "GPT 6.1 Terra",
+            "Gemini 4 Argon",
+            "Gemini 4 Carbon",
+            "Gemini 4 Neon"
           ]
         },
         "Pro": {
@@ -669,6 +676,9 @@
             "MiniMax M3": 57,
             "GLM-5.3-Flash": 110,
             "Gemini 3.8 Flash": 50,
+            "Gemini 4 Argon": 20,
+            "Gemini 4 Carbon": 30,
+            "Gemini 4 Neon": 20,
             "Qwen 3.7 Max": 43,
             "Qwen 3.7 Plus": 43,
             "Qwen 3.6 Plus": 43,
@@ -726,6 +736,9 @@
             "MiniMax M3": 150,
             "GLM-5.3-Flash": 150,
             "Gemini 3.8 Flash": 150,
+            "Gemini 4 Argon": 100,
+            "Gemini 4 Carbon": 100,
+            "Gemini 4 Neon": 100,
             "Qwen 3.7 Max": 150,
             "Qwen 3.7 Plus": 150,
             "Qwen 3.6 Plus": 150,
@@ -781,6 +794,9 @@
             "MiniMax M3": 300,
             "GLM-5.3-Flash": 300,
             "Gemini 3.8 Flash": 300,
+            "Gemini 4 Argon": 200,
+            "Gemini 4 Carbon": 200,
+            "Gemini 4 Neon": 200,
             "Qwen 3.7 Max": 300,
             "Qwen 3.7 Plus": 300,
             "Qwen 3.6 Plus": 300,
@@ -834,6 +850,9 @@
         "Grok 4.6",
         "Grok 4.5",
         "Gemini 3.8 Flash",
+        "Gemini 4 Argon",
+        "Gemini 4 Carbon",
+        "Gemini 4 Neon",
         "GLM-5.3",
         "GLM-5.3-Flash",
         "GLM-5.2",
@@ -1445,6 +1464,31 @@
               "from": "2026-12-01"
             }
           ]
+        },
+        "Gemini 4 Carbon": {
+          "default": [
+            {
+              "usd": { "input": 2, "cache_hit": 0.1, "output": 10 },
+              "commandcode": { "input": 2, "cache_hit": 0.1, "output": 10 },
+              "until": "2026-11-30"
+            },
+            {
+              "usd": { "input": 4, "cache_hit": 0.2, "output": 20 },
+              "commandcode": { "input": 4, "cache_hit": 0.2, "output": 20 },
+              "from": "2026-12-01"
+            }
+          ]
+        },
+        "Gemini 4 Neon": {
+          "default": {
+            "usd": { "input": 3, "cache_hit": 0.15, "output": 15 },
+            "commandcode": { "input": 3, "cache_hit": 0.15, "output": 15 }
+          }
+        },
+        "Gemini 4 Hydrogen": {
+          "default": {
+            "usd": { "input": 1.5, "cache_hit": 0.075, "output": 7.5 }
+          }
         },
         "Gemini 3.8 Flash": {
           "default": [
